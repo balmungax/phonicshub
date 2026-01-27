@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary</title>
+    <style>
+        /* Base Setup */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Century Gothic', AppleGothic, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+        
+        /* Menu Container */
+        .menu-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            width: 100%;
+        }
+        
+        /* Activity Card */
+        .activity-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            border: 5px solid transparent;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+        }
+        
+        /* Card Icons */
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Card Content */
+        .card-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .card-description {
+            color: #5a6c7d;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            flex-grow: 1;
+            font-size: 1rem;
+        }
+        
+        /* Play Button */
+        .play-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-family: 'Century Gothic', sans-serif;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            text-align: center;
+        }
+        
+        .play-btn:hover {
+            background: linear-gradient(to right, #2980b9, #1f6396);
+            transform: scale(1.05);
+        }
+        
+        /* Card Colors - Different borders for each activity */
+        .card-1 { border-color: #3498db; }
+        .card-2 { border-color: #2ecc71; }
+        .card-3 { border-color: #e74c3c; }
+        .card-4 { border-color: #f39c12; }
+        .card-5 { border-color: #9b59b6; }
+        
+        .card-1 .play-btn { background: linear-gradient(to right, #3498db, #2980b9); }
+        .card-2 .play-btn { background: linear-gradient(to right, #2ecc71, #27ae60); }
+        .card-3 .play-btn { background: linear-gradient(to right, #e74c3c, #c0392b); }
+        .card-4 .play-btn { background: linear-gradient(to right, #f39c12, #d35400); }
+        .card-5 .play-btn { background: linear-gradient(to right, #9b59b6, #8e44ad); }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .menu-container {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .activity-card {
+                padding: 20px;
+            }
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 40px;
+            color: white;
+            text-align: center;
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Build Your Vocabulary</h1>
+        <p></p>
+    </div>
+    
+    <div class="menu-container">
+        <!-- Activity 1: Word Scramble -->
+        <div class="activity-card card-1">
+            <div class="card-icon">🔤</div>
+            <h2 class="card-title">Word Scramble</h2>
+            <p class="card-description">Unscramble mixed-up letters to form correct vocabulary words. Test your spelling and pattern recognition skills with this challenging puzzle game.</p>
+            <a href="scramble.html" class="play-btn">
+                <span>Play Now</span> 🎮
+            </a>
+        </div>
+        
+        <!-- Activity 2: Picture Vocabulary -->
+        <div class="activity-card card-2">
+            <div class="card-icon">🖼️</div>
+            <h2 class="card-title">Picture Vocabulary</h2>
+            <p class="card-description">Look at images and type the correct word. Practice visual recognition and spelling with our on-screen keyboard interface.</p>
+            <a href="vocabulary.html" class="play-btn">
+                <span>Play Now</span> 🖼️
+            </a>
+        </div>
+        
+        <!-- Activity 3: Word Match -->
+        <div class="activity-card card-3">
+            <div class="card-icon">🎯</div>
+            <h2 class="card-title">Word Match</h2>
+            <p class="card-description">Match words with their definitions or synonyms. Improve your understanding of word meanings and relationships.</p>
+            <a href="word-match.html" class="play-btn">
+                <span>Play Now</span> 🔄
+            </a>
+        </div>
+        
+        <!-- Activity 4: Fill in the Blank -->
+        <div class="activity-card card-4">
+            <div class="card-icon">📝</div>
+            <h2 class="card-title">Fill in the Blank</h2>
+            <p class="card-description">Complete sentences with the correct vocabulary words. Practice word usage in context to improve your language skills.</p>
+            <a href="fill-blank.html" class="play-btn">
+                <span>Play Now</span> ✏️
+            </a>
+        </div>
+        
+        <!-- Activity 5: Spelling Bee -->
+        <div class="activity-card card-5">
+            <div class="card-icon">🐝</div>
+            <h2 class="card-title">Spelling Bee</h2>
+            <p class="card-description">Listen to words and spell them correctly. Perfect for auditory learners who want to improve their spelling and listening skills.</p>
+            <a href="spelling-bee.html" class="play-btn">
+                <span>Play Now</span> 🎵
+            </a>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>Vocabulary Learning Suite | Designed for educational purposes</p>
+    </div>
+</body>
+</html>
