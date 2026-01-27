@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>English → Russian Translator</title>
+
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #7ec8ff, #b9f6ca);
+    font-family: "Arial Rounded MT Bold", Arial, sans-serif;
+  }
+
+  .card {
+    width: 760px;
+    background: white;
+    border-radius: 24px;
+    padding: 30px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+  }
+
+  h1 {
+    text-align: center;
+    color: #1976d2;
+    margin-bottom: 25px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .box {
+    display: flex;
+    flex-direction: column;
+  }
+
+  label {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    height: 140px;
+    font-size: 18px;
+    padding: 15px;
+    border-radius: 16px;
+    border: 2px solid #90caf9;
+    resize: none;
+  }
+
+  textarea[readonly] {
+    background: #f1f8e9;
+    border-color: #aed581;
+  }
+
+  button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 18px;
+    font-size: 22px;
+    font-weight: bold;
+    border: none;
+    border-radius: 18px;
+    background: #ffca28;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: #ffb300;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="card">
+  <h1>English → Russian Translator</h1>
+
+  <div class="grid">
+    <div class="box">
+      <label>English</label>
+      <textarea id="enText" placeholder="Type any word or sentence"></textarea>
+    </div>
+
+    <div class="box">
+      <label>Russian</label>
+      <textarea id="ruText" placeholder="Translation" readonly></textarea>
+    </div>
+  </div>
+
+  <button onclick="translateText()">Translate</button>
+</div>
+
+<script>
+async function translateText() {
+  const en = document.getElementById("enText").value.trim();
+  const ru = document.getElementById("ruText");
+
+  if (!en) {
+    ru.value = "Please type something 🙂";
+    return;
+  }
+
+  ru.value = "Translating...";
+
+  try {
+    const url =
+      "https://api.mymemory.translated.net/get?q=" +
+      encodeURIComponent(en) +
+      "&langpair=en|ru";
+
+    const response = await fetch(url);
+    const data = await response.json();
+
+    ru.value = data.responseData.translatedText;
+  } catch (error) {
+    ru.value = "Translation error. Try again.";
+  }
+}
+</script>
+
+</body>
+</html>

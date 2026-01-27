@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  :root {
+    --bg: #e1f5fe;
+    --card-bg: #ffffff;
+    --primary: #0288d1;
+    --text: #333;
+  }
+
+  body {
+    background: var(--bg);
+    font-family: "Century Gothic", sans-serif;
+    margin: 0; padding: 20px;
+  }
+
+  h2 { text-align: center; color: #01579b; margin-bottom: 5px; }
+  .hint { text-align: center; font-size: 12px; color: #666; margin-bottom: 20px; }
+
+  /* Goal Zones - Stable Grid */
+  .zones-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+    min-height: 200px;
+  }
+
+  .zone {
+    background: var(--card-bg);
+    border: 3px dashed #90caf9;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 160px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .zone h4 { margin: 0 0 10px 0; font-size: 16px; color: var(--primary); text-transform: uppercase; }
+
+  /* Student Pool */
+  .student-pool {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    border: 2px solid #fff;
+    min-height: 120px;
+  }
+
+  .student-card {
+    background: white; border-radius: 6px;
+    width: 140px; height: 38px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: grab; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    border-left: 5px solid var(--primary);
+    font-weight: bold; font-size: 14px; color: var(--text);
+    user-select: none;
+  }
+
+  .controls { display: flex; justify-content: center; gap: 15px; margin-top: 30px; }
+
+  .btn {
+    padding: 10px 20px; border-radius: 8px; border: none;
+    font-weight: bold; cursor: pointer; font-family: inherit;
+  }
+
+  .btn-add { background: #4caf50; color: white; }
+  .btn-reset { background: #0288d1; color: white; }
+  .btn-clear-goals { background: #ff8a80; color: white; }
+</style>
+</head>
+<body>
+
+<h2>🌟 Weekly Goals 🌟</h2>
+
+
+<div class="zones-container" id="zones"></div>
+<div class="student-pool" id="pool" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+
+<div class="controls">
+  <button class="btn btn-add" onclick="addNewGoal()">+ Add Goal Category</button>
+  <button class="btn btn-reset" onclick="resetStudentsToPool()">🧹 Reset Names to Pool</button>
+  <button class="btn btn-clear-goals" onclick="resetEntireWeek()">🗑️ Clear All (New Week)</button>
+</div>
+
+<script>
+  // The Permanent List
+  const defaultNames = ["Aizere", "Alimkhan", "Alisa", "Barlas", "Bulat", "Dameli", "Danial", "Dasariya", "David", "Ideliya", "Ildar", "Laura", "Liyara", "Mira", "Mukhammedrakhym", "Ruslan", "Rustem", "Zhasmin"];
+  const defaultGoals = ["Listening", "Helping", "Attention", "Neat Work", "Hard Work"];
+
+  // State Management
+  let currentGoals = JSON.parse(localStorage.getItem('savedGoals')) || [...defaultGoals];
+
+  const zonesDiv = document.getElementById('zones');
+  const poolDiv = document.getElementById('pool');
+
+  function renderBoard() {
+    // 1. Clear the zones
+    zonesDiv.innerHTML = "";
+    currentGoals.forEach((goal, idx) => {
+      const zone = document.createElement('div');
+      zone.className = 'zone';
+      zone.id = `zone-${idx}`;
+      zone.setAttribute('ondrop', 'drop(event)');
+      zone.setAttribute('ondragover', 'allowDrop(event)');
+      zone.innerHTML = `<h4>${goal}</h4>`;
+      zonesDiv.appendChild(zone);
+    });
+
+    // 2. Clear and Refill Students
+    poolDiv.innerHTML = "";
+    defaultNames.forEach((name, i) => {
+      const card = document.createElement('div');
+      card.className = 'student-card';
+      card.id = `student-${i}`;
+      card.draggable = true;
+      card.setAttribute('ondragstart', 'drag(event)');
+      card.textContent = name;
+      poolDiv.appendChild(card);
+    });
+
+    // 3. Put everyone back in their saved positions
+    loadPositions();
+  }
+
+  function addNewGoal() {
+    const newGoal = prompt("Enter a new goal category:");
+    if (newGoal) {
+      currentGoals.push(newGoal);
+      localStorage.setItem('savedGoals', JSON.stringify(currentGoals));
+      renderBoard(); // This now handles saving/loading positions automatically
+    }
+  }
+
+  function resetStudentsToPool() {
+    if(confirm("Move all students back to the pool?")) {
+      localStorage.removeItem('goalBoardPositions');
+      renderBoard();
+    }
+  }
+
+  function resetEntireWeek() {
+    if(confirm("Clear EVERYTHING? This will reset your goals and names for a new week.")) {
+      localStorage.removeItem('savedGoals');
+      localStorage.removeItem('goalBoardPositions');
+      currentGoals = [...defaultGoals];
+      renderBoard();
+    }
+  }
+
+  // Drag and Drop Core
+  function allowDrop(ev) { ev.preventDefault(); }
+  function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData("text");
+    const draggedElement = document.getElementById(data);
+    let target = ev.target;
+    while (target && !target.classList.contains('zone') && !target.classList.contains('student-pool')) {
+      target = target.parentElement;
+    }
+    if (target && draggedElement) {
+      target.appendChild(draggedElement);
+      savePositions();
+    }
+  }
+
+  function savePositions() {
+    const positions = {};
+    document.querySelectorAll('.student-card').forEach(card => {
+      if (card.parentElement) positions[card.id] = card.parentElement.id;
+    });
+    localStorage.setItem('goalBoardPositions', JSON.stringify(positions));
+  }
+
+  function loadPositions() {
+    const savedPos = JSON.parse(localStorage.getItem('goalBoardPositions'));
+    if (savedPos) {
+      Object.keys(savedPos).forEach(id => {
+        const card = document.getElementById(id);
+        const parent = document.getElementById(savedPos[id]);
+        if (card && parent) parent.appendChild(card);
+      });
+    }
+  }
+
+  // Initial render
+  renderBoard();
+</script>
+
+</body>
+</html>

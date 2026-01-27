@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vocabulary Practice</title>
+    <style>
+        /* 1. Base Setup */
+        body { 
+            font-family: 'Century Gothic', AppleGothic, sans-serif; 
+            background-color: #ecf0f1; 
+            margin: 0; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh;
+        }
+
+        /* 2. The Activity Card (The Frame) */
+        .activity-card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 850px;
+            padding: 30px;
+            border-radius: 40px;
+            border: 10px solid #3498db;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        /* Image Display */
+        .image-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        #target-image {
+            height: 200px;
+            border: 4px solid #f1f1f1;
+            border-radius: 20px;
+        }
+
+        .nav-btn {
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        /* 3. The Input Box (Where students see their typing) */
+        #input-box {
+            width: 70%;
+            height: 60px;
+            background: #f9f9f9;
+            border: 4px dashed #3498db;
+            border-radius: 15px;
+            margin: 15px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px; /* Slightly larger for clarity */
+            color: #2c3e50;
+            font-weight: bold;
+            letter-spacing: 5px;
+        }
+
+        #feedback-msg {
+            height: 30px;
+            font-weight: bold;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        /* 4. Keyboard Styles */
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .key {
+            height: 55px;
+            font-family: 'Century Gothic', sans-serif;
+            font-size: 20px;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px #7f8c8d;
+        }
+
+        .vowel { background-color: #FF8C00; color: white; }
+        .consonant { background-color: #2ECC71; color: white; }
+        .special { background-color: #bdc3c7; font-size: 25px; }
+        .check-btn { 
+            grid-column: span 2; 
+            background-color: #3498db; 
+            color: white; 
+            font-size: 18px;
+        }
+
+        /* Animations */
+        .error-shake { animation: shake 0.4s; color: #e74c3c; }
+        .success-bounce { animation: bounce 0.5s; color: #27ae60; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="activity-card">
+        <div class="image-container">
+            <button class="nav-btn" onclick="move(-1)">◀</button>
+            <img id="target-image" src="" alt="Vocabulary Image">
+            <button class="nav-btn" onclick="move(1)">▶</button>
+        </div>
+
+        <div id="feedback-msg"></div>
+
+        <div id="input-box">_ _ _ _ _</div>
+
+        <div class="keyboard-grid">
+            <button class="vowel key" onclick="add('a')">a</button>
+            <button class="consonant key" onclick="add('b')">b</button>
+            <button class="consonant key" onclick="add('c')">c</button>
+            <button class="consonant key" onclick="add('d')">d</button>
+            <button class="vowel key" onclick="add('e')">e</button>
+            <button class="consonant key" onclick="add('f')">f</button>
+            <button class="consonant key" onclick="add('g')">g</button>
+            <button class="consonant key" onclick="add('h')">h</button>
+            <button class="vowel key" onclick="add('i')">i</button>
+            <button class="consonant key" onclick="add('j')">j</button>
+            <button class="consonant key" onclick="add('k')">k</button>
+            <button class="consonant key" onclick="add('l')">l</button>
+            <button class="consonant key" onclick="add('m')">m</button>
+            <button class="consonant key" onclick="add('n')">n</button>
+            <button class="vowel key" onclick="add('o')">o</button>
+            <button class="consonant key" onclick="add('p')">p</button>
+            <button class="consonant key" onclick="add('q')">q</button>
+            <button class="consonant key" onclick="add('r')">r</button>
+            <button class="consonant key" onclick="add('s')">s</button>
+            <button class="consonant key" onclick="add('t')">t</button>
+            <button class="vowel key" onclick="add('u')">u</button>
+            <button class="consonant key" onclick="add('v')">v</button>
+            <button class="consonant key" onclick="add('w')">w</button>
+            <button class="consonant key" onclick="add('x')">x</button>
+            <button class="consonant key" onclick="add('y')">y</button>
+            <button class="consonant key" onclick="add('z')">z</button>
+
+            <button class="key special" onclick="del()">⌫</button>
+            <button class="key special" onclick="clearAll()">🗑️</button>
+            <button class="key check-btn" onclick="check()">CHECK ✅</button>
+        </div>
+    </div>
+
+    <script>
+        // DATA: Your images and words
+        const list = [
+            { word: "leaves", img: "plants/leaves.png" },
+            { word: "stem", img: "plants/stem.png" },
+            { word: "roots", img: "plants/root.png" },
+            { word: "fruit", img: "plants/fruit.png" },
+            { word: "petals", img: "plants/petals.png" },
+            { word: "pollen", img: "plants/pollen.jpg" },
+            { word: "flower", img: "plants/flower.png" },
+            { word: "soil", img: "plants/soil.png" },
+        ];
+
+        let current = 0;
+        let typedText = "";
+        const box = document.getElementById('input-box');
+        const img = document.getElementById('target-image');
+        const feedback = document.getElementById('feedback-msg');
+
+        function updateDisplay() {
+            box.innerText = typedText === "" ? "_ _ _ _" : typedText;
+        }
+
+        function load() {
+            img.src = list[current].img;
+            typedText = "";
+            feedback.innerText = "";
+            feedback.className = "";
+            updateDisplay();
+        }
+
+        function add(letter) {
+            typedText += letter;
+            updateDisplay();
+        }
+
+        function del() {
+            typedText = typedText.slice(0, -1);
+            updateDisplay();
+        }
+
+        function clearAll() {
+            typedText = "";
+            updateDisplay();
+        }
+
+        function move(step) {
+            current += step;
+            if (current < 0) current = list.length - 1;
+            if (current >= list.length) current = 0;
+            load();
+        }
+
+        function check() {
+            const answer = list[current].word.toLowerCase();
+            if (typedText.toLowerCase() === answer) {
+                feedback.innerText = "EXCELLENT! 🌟";
+                feedback.className = "success-bounce";
+            } else {
+                feedback.innerText = "TRY AGAIN ❌";
+                feedback.className = "error-shake";
+                // Clear after a second so they can try again
+                setTimeout(() => {
+                    typedText = "";
+                    updateDisplay();
+                    feedback.innerText = "";
+                    feedback.className = "";
+                }, 1500);
+            }
+        }
+
+        load(); // Initial start
+    </script>
+</body>
+</html>

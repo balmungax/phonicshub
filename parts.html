@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parts of the Plant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  padding:30px;
+  font-family:"Century Gothic", Arial, sans-serif;
+  background:#f4f7f6;
+}
+
+h1{text-align:center;margin-bottom:6px;}
+.subtitle{text-align:center;color:#666;margin-bottom:25px;}
+
+.layout{
+  max-width:1000px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:30px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+/* LEFT: PARTS */
+.part{
+  background:#e8f5e9;
+  border-radius:14px;
+  padding:14px;
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:12px;
+  cursor:grab;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.part span{font-size:26px;}
+.part:active{cursor:grabbing;}
+
+/* RIGHT: DESCRIPTIONS */
+.dropzone{
+  background:#fafafa;
+  border-radius:14px;
+  padding:18px;
+  margin-bottom:14px;
+  min-height:64px;
+  border:2px dashed #ccc;
+  font-size:18px;
+  transition:0.2s;
+}
+
+.dropzone.hover{
+  background:#e3f2fd;
+  border-color:#42a5f5;
+}
+
+.dropzone.correct{
+  background:#c8e6c9;
+  border-color:#2e7d32;
+}
+
+.answer{
+  margin-top:8px;
+  font-weight:bold;
+  color:#2e7d32;
+}
+
+.desc-icon{
+  font-size:24px;
+  margin-right:10px;
+}
+
+/* Mobile */
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<h1>Parts of the Plant</h1>
+<div class="subtitle">Drag each part to the correct description</div>
+
+<div class="layout">
+
+  <!-- LEFT -->
+  <div class="card" id="partsContainer"></div>
+
+  <!-- RIGHT -->
+  <div class="card" id="descContainer"></div>
+
+</div>
+
+<script>
+const parts = [
+  { id:"roots", label:"Roots", icon:"🌱" },
+  { id:"stem", label:"Stem", icon:"🌿" },
+  { id:"leaves", label:"Leaves", icon:"🍃" },
+  { id:"flower", label:"Flower", icon:"🌸" },
+  { id:"fruit", label:"Fruit", icon:"🍎" }
+];
+
+const descriptions = [
+  { id:"roots", text:"Grows under the ground and holds the plant", icon:"⬇️" },
+  { id:"stem", text:"Carries water and food", icon:"🚰" },
+  { id:"leaves", text:"Makes food using sunlight", icon:"☀️" },
+  { id:"flower", text:"Makes seeds", icon:"🌼" },
+  { id:"fruit", text:"Protects the seeds", icon:"🛡️" }
+];
+
+// Shuffle helper
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
+
+let draggedPart = null;
+
+// Render parts
+shuffle(parts).forEach(p=>{
+  const div = document.createElement("div");
+  div.className="part";
+  div.draggable=true;
+  div.dataset.part=p.id;
+  div.innerHTML=`<span>${p.icon}</span>${p.label}`;
+  div.addEventListener("dragstart",()=>draggedPart=p.id);
+  document.getElementById("partsContainer").appendChild(div);
+});
+
+// Render descriptions
+shuffle(descriptions).forEach(d=>{
+  const zone = document.createElement("div");
+  zone.className="dropzone";
+  zone.dataset.part=d.id;
+  zone.innerHTML=`<span class="desc-icon">${d.icon}</span>${d.text}`;
+
+  zone.addEventListener("dragover",e=>{
+    e.preventDefault();
+    zone.classList.add("hover");
+  });
+
+  zone.addEventListener("dragleave",()=>{
+    zone.classList.remove("hover");
+  });
+
+  zone.addEventListener("drop",()=>{
+    zone.classList.remove("hover");
+    if(zone.dataset.part===draggedPart){
+      zone.classList.add("correct");
+      zone.innerHTML+=`<div class="answer">✔ Correct!</div>`;
+      document.querySelector(`.part[data-part='${draggedPart}']`).style.display="none";
+    }
+  });
+
+  document.getElementById("descContainer").appendChild(zone);
+});
+</script>
+
+</body>
+</html>

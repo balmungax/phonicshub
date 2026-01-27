@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Plant That Eats Bugs | Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Navigation / Header -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="font-extrabold text-2xl tracking-tight text-pink-600">NATURE<span class="text-green-500">FACTS</span></span>
+                </div>
+                <div class="text-sm font-semibold text-gray-500">
+                    <!-- "Interactive Infographic" removed here -->
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-gray-900 mb-4">
+                The Plant That <span class="text-pink-600">Eats Bugs</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600">
+                Most plants get nutrients from soil. But the Venus Flytrap is different. It is a <span class="font-bold text-green-600">meat-eater!</span>
+            </p>
+        </div>
+
+        <!-- Grid Layout -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+
+            <!-- Section 1: The Concept (Comparison) -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 transform transition duration-500 hover:scale-[1.01]">
+                <div class="border-l-4 border-green-500 pl-4 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Why Eat Bugs?</h2>
+                    <p class="text-sm text-gray-500 uppercase tracking-wide mt-1">Nutrient Acquisition Strategy</p>
+                </div>
+                
+                <p class="text-gray-600 mb-6">
+                    Plants usually get their food from the soil. However, Venus Flytraps live in poor soil that lacks essential nutrients like Nitrogen. To survive, they have adapted to become <strong>carnivorous</strong>, getting their vitamins from insects instead of the dirt.
+                </p>
+
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <canvas id="dietComparisonChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-gray-400 mt-2">Fig 1. Nutrient Sources: Standard Plants vs. Flytraps</p>
+            </div>
+
+            <!-- Section 2: Prey Composition -->
+            <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 transform transition duration-500 hover:scale-[1.01]">
+                <div class="border-l-4 border-purple-600 pl-4 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">What's on the Menu?</h2>
+                    <p class="text-sm text-gray-500 uppercase tracking-wide mt-1">Typical Diet Composition</p>
+                </div>
+
+                <p class="text-gray-600 mb-6">
+                    While they are called "Flytraps," they actually eat more crawling bugs than flying ones! Ants and spiders are their favorite meals because they crawl right into the trap.
+                </p>
+
+                <!-- Chart Container -->
+                <div class="chart-container">
+                    <canvas id="preyChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-gray-400 mt-2">Fig 2. Breakdown of Captured Prey Types</p>
+            </div>
+
+        </div>
+
+        <!-- Section 3: The Mechanism (Flow / Process) -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 mb-12">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-gray-900">How It Works: <span class="text-pink-600">The SNAP!</span></h2>
+                <p class="mt-2 text-gray-600">It closes its leaves like a mouth to catch the bug.</p>
+            </div>
+
+            <!-- CSS Flowchart (No Mermaid, No SVG) -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                <!-- Step 1 -->
+                <div class="bg-green-50 rounded-xl p-6 border-2 border-green-200 text-center relative">
+                    <div class="w-10 h-10 bg-green-500 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-md">1</div>
+                    <h3 class="font-bold text-lg mb-2">The Lure</h3>
+                    <p class="text-sm text-gray-600">The plant produces sweet nectar to attract a hungry bug.</p>
+                    <!-- Arrow for Desktop -->
+                    <div class="hidden md:block absolute top-1/2 -right-6 transform -translate-y-1/2 z-10 text-green-300 text-4xl font-bold">&rarr;</div>
+                    <!-- Arrow for Mobile -->
+                    <div class="md:hidden text-green-300 text-2xl font-bold mt-2">&darr;</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="bg-purple-50 rounded-xl p-6 border-2 border-purple-200 text-center relative">
+                    <div class="w-10 h-10 bg-purple-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-md">2</div>
+                    <h3 class="font-bold text-lg mb-2">The Trigger</h3>
+                    <p class="text-sm text-gray-600">The bug touches tiny sensitive hairs on the leaf <strong>twice</strong>.</p>
+                     <!-- Arrow for Desktop -->
+                     <div class="hidden md:block absolute top-1/2 -right-6 transform -translate-y-1/2 z-10 text-purple-300 text-4xl font-bold">&rarr;</div>
+                     <!-- Arrow for Mobile -->
+                     <div class="md:hidden text-purple-300 text-2xl font-bold mt-2">&darr;</div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="bg-pink-50 rounded-xl p-6 border-2 border-pink-200 text-center relative shadow-inner ring-4 ring-pink-100 ring-opacity-50">
+                    <div class="w-10 h-10 bg-pink-600 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-md">3</div>
+                    <h3 class="font-bold text-lg mb-2 text-pink-700">SNAP!</h3>
+                    <p class="text-sm text-gray-600">In less than <strong>0.1 seconds</strong>, the trap shuts tight!</p>
+                     <!-- Arrow for Desktop -->
+                     <div class="hidden md:block absolute top-1/2 -right-6 transform -translate-y-1/2 z-10 text-pink-300 text-4xl font-bold">&rarr;</div>
+                     <!-- Arrow for Mobile -->
+                     <div class="md:hidden text-pink-300 text-2xl font-bold mt-2">&darr;</div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="bg-blue-50 rounded-xl p-6 border-2 border-blue-200 text-center relative">
+                    <div class="w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-md">4</div>
+                    <h3 class="font-bold text-lg mb-2">Digestion</h3>
+                    <p class="text-sm text-gray-600">The plant turns into a stomach and dissolves the bug for nutrients.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 4: Key Stats (Big Numbers) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-gradient-to-br from-green-400 to-green-600 rounded-2xl p-6 text-white text-center shadow-lg">
+                <div class="text-5xl font-extrabold mb-2">0.1s</div>
+                <div class="text-sm font-medium uppercase tracking-wider opacity-90">Closing Speed</div>
+                <p class="text-xs mt-2 opacity-75">Faster than you can blink!</p>
+            </div>
+            <div class="bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl p-6 text-white text-center shadow-lg">
+                <div class="text-5xl font-extrabold mb-2">10</div>
+                <div class="text-sm font-medium uppercase tracking-wider opacity-90">Days to Digest</div>
+                <p class="text-xs mt-2 opacity-75">It takes a long time to eat.</p>
+            </div>
+            <div class="bg-gradient-to-br from-pink-500 to-pink-700 rounded-2xl p-6 text-white text-center shadow-lg">
+                <div class="text-5xl font-extrabold mb-2">3-4</div>
+                <div class="text-sm font-medium uppercase tracking-wider opacity-90">Traps per Leaf</div>
+                <p class="text-xs mt-2 opacity-75">After catching 3 bugs, the leaf dies.</p>
+            </div>
+        </div>
+
+        <!-- Section 5: Efficiency (Bar Chart) -->
+        <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+            <div class="flex flex-col md:flex-row items-center justify-between mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800">Survival Efficiency</h2>
+                    <p class="text-sm text-gray-500">Success rate of hunting attempts</p>
+                </div>
+            </div>
+            <p class="text-gray-600 mb-6">
+                Hunting is hard work! The plant spends a lot of energy to close. If it closes on a rock or stick (a "false alarm"), it wastes energy.
+            </p>
+            <div class="chart-container">
+                <canvas id="efficiencyChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-16 text-center text-gray-400 text-sm pb-8">
+        </footer>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- UTILITY FUNCTIONS ---
+        function processLabels(labels, maxLength = 16) {
+            return labels.map(label => {
+                if (label.length <= maxLength) return label;
+                const words = label.split(' ');
+                const lines = [];
+                let currentLine = words[0];
+
+                for (let i = 1; i < words.length; i++) {
+                    if ((currentLine + ' ' + words[i]).length <= maxLength) {
+                        currentLine += ' ' + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            });
+        }
+
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: DIET COMPARISON (Stacked Bar) ---
+        const ctxDiet = document.getElementById('dietComparisonChart').getContext('2d');
+        const rawLabelsDiet = ['Standard Garden Plants', 'Venus Flytrap'];
+        const processedLabelsDiet = processLabels(rawLabelsDiet);
+
+        new Chart(ctxDiet, {
+            type: 'bar',
+            data: {
+                labels: processedLabelsDiet,
+                datasets: [
+                    {
+                        label: 'Soil Nutrients',
+                        data: [90, 40],
+                        backgroundColor: '#00E676',
+                    },
+                    {
+                        label: 'Insects & Bugs',
+                        data: [0, 60],
+                        backgroundColor: '#F50057',
+                    }
+                    // Sunlight dataset completely removed
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { 
+                        stacked: true,
+                        beginAtZero: true,
+                        title: { display: true, text: 'Percentage of Nutrient Intake' }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: commonTooltipConfig,
+                    title: {
+                        display: false,
+                        text: 'Where do they get their food?'
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: PREY COMPOSITION (Doughnut) ---
+        const ctxPrey = document.getElementById('preyChart').getContext('2d');
+        const rawLabelsPrey = [
+            'Ants and Crawling Bugs', 
+            'Spiders and Arachnids', 
+            'Flying Insects (Flies)', 
+            'Beetles and Others'
+        ];
+        const processedLabelsPrey = processLabels(rawLabelsPrey);
+
+        new Chart(ctxPrey, {
+            type: 'doughnut',
+            data: {
+                labels: processedLabelsPrey,
+                datasets: [{
+                    label: 'Diet %',
+                    data: [33, 30, 27, 10],
+                    backgroundColor: [
+                        '#6200EA',
+                        '#00E676',
+                        '#F50057',
+                        '#FFC107'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' },
+                    tooltip: commonTooltipConfig
+                },
+                cutout: '60%'
+            }
+        });
+
+        // --- CHART 3: EFFICIENCY (Horizontal Bar) ---
+        const ctxEff = document.getElementById('efficiencyChart').getContext('2d');
+        const rawLabelsEff = ['Successful Catches', 'False Alarms (Wasted Energy)'];
+        const processedLabelsEff = processLabels(rawLabelsEff);
+
+        new Chart(ctxEff, {
+            type: 'bar',
+            data: {
+                labels: processedLabelsEff,
+                datasets: [{
+                    label: 'Attempts',
+                    data: [75, 25],
+                    backgroundColor: ['#00E676', '#9E9E9E'],
+                    borderRadius: 8,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { 
+                        beginAtZero: true, 
+                        max: 100,
+                        grid: { display: false }
+                    },
+                    y: { grid: { display: false } }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

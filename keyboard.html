@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        /* Apply Century Gothic */
+        body { 
+            font-family: 'Century Gothic', AppleGothic, sans-serif; 
+            text-align: center; 
+            padding: 20px; 
+            background-color: #f0f4f8;
+            overflow: hidden;
+        }
+        
+        /* Display Area: Top-Left alignment and fixed font size */
+        #display-area {
+            width: 65%;
+            height: 250px; 
+            background: white;
+            border: 5px solid #2c3e50;
+            border-radius: 15px;
+            margin: 0 auto 30px;
+            
+            /* Text Settings */
+            font-size: 40px; 
+            color: #333;
+            text-align: left;
+            
+            /* Alignment to Top-Left */
+            display: block; 
+            padding: 15px;
+            
+            /* Behavior */
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+            word-break: break-all;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Ensures spaces are visible */
+        }
+
+        .keyboard-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 10px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        button {
+            height: 60px;
+            font-family: 'Century Gothic', sans-serif;
+            font-size: 20px; /* Requested size */
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px #777;
+            transition: all 0.1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button:active { 
+            transform: translateY(2px); 
+            box-shadow: 0 1px #444; 
+        }
+
+        /* Color Coding */
+        .vowel { background-color: #FF8C00; color: white; }
+        .consonant { background-color: #2ECC71; color: white; }
+        
+        /* Functional Buttons */
+        .icon-btn { background-color: #bdc3c7; color: #2c3e50; }
+        .backspace { background-color: #e74c3c; color: white; }
+        .clear { background-color: #95a5a6; color: white; }
+        .space { background-color: #3498db; color: white; grid-column: span 3; }
+        .punct { background-color: #34495e; color: white; }
+
+        .shift-on { background-color: #f1c40f !important; color: black; outline: 2px solid black; }
+    </style>
+</head>
+<body>
+
+    <div id="display-area"></div>
+
+    <div class="keyboard-grid">
+        <button class="vowel" onclick="addLetter('a')">a</button>
+        <button class="consonant" onclick="addLetter('b')">b</button>
+        <button class="consonant" onclick="addLetter('c')">c</button>
+        <button class="consonant" onclick="addLetter('d')">d</button>
+        <button class="vowel" onclick="addLetter('e')">e</button>
+        <button class="consonant" onclick="addLetter('f')">f</button>
+        <button class="consonant" onclick="addLetter('g')">g</button>
+        <button class="consonant" onclick="addLetter('h')">h</button>
+        <button class="vowel" onclick="addLetter('i')">i</button>
+        <button class="consonant" onclick="addLetter('j')">j</button>
+        <button class="consonant" onclick="addLetter('k')">k</button>
+        <button class="consonant" onclick="addLetter('l')">l</button>
+        <button class="consonant" onclick="addLetter('m')">m</button>
+        <button class="consonant" onclick="addLetter('n')">n</button>
+        <button class="vowel" onclick="addLetter('o')">o</button>
+        <button class="consonant" onclick="addLetter('p')">p</button>
+        <button class="consonant" onclick="addLetter('q')">q</button>
+        <button class="consonant" onclick="addLetter('r')">r</button>
+        <button class="consonant" onclick="addLetter('s')">s</button>
+        <button class="consonant" onclick="addLetter('t')">t</button>
+        <button class="vowel" onclick="addLetter('u')">u</button>
+        <button class="consonant" onclick="addLetter('v')">v</button>
+        <button class="consonant" onclick="addLetter('w')">w</button>
+        <button class="consonant" onclick="addLetter('x')">x</button>
+        <button class="consonant" onclick="addLetter('y')">y</button>
+        <button class="consonant" onclick="addLetter('z')">z</button>
+
+        <button class="punct" onclick="addLetter('.')">.</button>
+        <button class="punct" onclick="addLetter(',')">,</button>
+        <button class="punct" onclick="addLetter('?')">?</button>
+        <button class="punct" onclick="addLetter('!')">!</button>
+        
+        <button id="shift-btn" class="icon-btn" onclick="toggleShift()">⬆️</button>
+        <button class="space" onclick="addLetter(' ')">⎵</button>
+        <button class="backspace" onclick="del()">⌫</button>
+        <button class="clear" onclick="clearAll()">🗑️</button>
+    </div>
+
+    <script>
+        let isShift = false;
+        const display = document.getElementById('display-area');
+
+        function addLetter(char) {
+            // Correctly handles both letters and spaces
+            let textToAdd = isShift ? char.toUpperCase() : char.toLowerCase();
+            display.innerText += textToAdd;
+        }
+
+        function del() {
+            display.innerText = display.innerText.slice(0, -1);
+        }
+
+        function clearAll() {
+            display.innerText = "";
+        }
+
+        function toggleShift() {
+            isShift = !isShift;
+            const btn = document.getElementById('shift-btn');
+            const keys = document.querySelectorAll('.vowel, .consonant');
+            
+            if (isShift) {
+                btn.classList.add('shift-on');
+                keys.forEach(k => k.innerText = k.innerText.toUpperCase());
+            } else {
+                btn.classList.remove('shift-on');
+                keys.forEach(k => k.innerText = k.innerText.toLowerCase());
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fruit Seed Word Bank</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #fdfdfd; padding: 15px; color: #333; }
+        .container { max-width: 1200px; margin: auto; }
+        
+        h1 { text-align: center; color: #444; margin-bottom: 20px; font-size: 1.8em; }
+        
+        .main-grid { 
+            display: grid; 
+            grid-template-columns: repeat(3, 1fr); 
+            gap: 15px; 
+            align-items: start;
+        }
+
+        .category-container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
+
+        .header { padding: 10px 15px; color: #2c3e50; font-weight: bold; border-bottom: 3px solid; font-size: 0.95em; }
+        .fruit-header { border-bottom-color: #4caf50; }
+        .location-header { border-bottom-color: #ff9800; }
+        .number-header { border-bottom-color: #9c27b0; }
+        .feel-header { border-bottom-color: #2196f3; }
+        .look-header { border-bottom-color: #e91e63; }
+
+        .word-list { padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+
+        .card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .en-side { font-weight: 600; display: flex; align-items: center; gap: 8px; color: #2c3e50; font-size: 1em; }
+        .ru-side { color: #aaa; font-style: italic; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🍎 Fruit Seed Word Bank | Банк слов</h1>
+
+    <div class="main-grid">
+        <div class="category-container">
+            <div class="header fruit-header">1. Name of Fruit / Название</div>
+            <div class="word-list">
+                <div class="card"><div class="en-side">🍓 Strawberries</div><div class="ru-side">Клубника</div></div>
+                <div class="card"><div class="en-side">🍊 Oranges</div><div class="ru-side">Апельсины</div></div>
+                <div class="card"><div class="en-side">🍎 Apples</div><div class="ru-side">Яблоки</div></div>
+                <div class="card"><div class="en-side">🥒 Cucumbers</div><div class="ru-side">Огурцы</div></div>
+                <div class="card"><div class="en-side">🍌 Bananas</div><div class="ru-side">Бананы</div></div>
+            </div>
+        </div>
+
+        <div class="category-container">
+            <div class="header location-header">2. Seed Location / Где находятся</div>
+            <div class="word-list">
+                <div class="card"><div class="en-side">📥 Inside</div><div class="ru-side">Внутри</div></div>
+                <div class="card"><div class="en-side">📤 Outside</div><div class="ru-side">Снаружи</div></div>
+                <div class="card"><div class="en-side">🎯 Center</div><div class="ru-side">В центре</div></div>
+                <div class="card"><div class="en-side">🌌 Scattered</div><div class="ru-side">Рассеяны</div></div>
+            </div>
+        </div>
+
+        <div class="category-container">
+            <div class="header number-header">3. Number of Seeds / Количество</div>
+            <div class="word-list">
+                <div class="card"><div class="en-side">☝️ Only 1</div><div class="ru-side">Только одна</div></div>
+                <div class="card"><div class="en-side">✌️ A few</div><div class="ru-side">Немного</div></div>
+                <div class="card"><div class="en-side">🔢 Many</div><div class="ru-side">Много</div></div>
+                <div class="card"><div class="en-side">💯 Hundreds</div><div class="ru-side">Сотни</div></div>
+            </div>
+        </div>
+
+        <div class="category-container">
+            <div class="header feel-header">4. Seed Feels / На ощупь</div>
+            <div class="word-list">
+                <div class="card"><div class="en-side">🧊 Smooth</div><div class="ru-side">Гладкая</div></div>
+                <div class="card"><div class="en-side">🌵 Rough</div><div class="ru-side">Шершавая</div></div>
+                <div class="card"><div class="en-side">🧱 Hard</div><div class="ru-side">Твердая</div></div>
+                <div class="card"><div class="en-side">☁️ Soft</div><div class="ru-side">Мягкая</div></div>
+                <div class="card"><div class="en-side">🌊 Slimy</div><div class="ru-side">Склизкая</div></div>
+            </div>
+        </div>
+
+        <div class="category-container">
+            <div class="header look-header">5. Seed Looks / Внешний вид</div>
+            <div class="word-list">
+                <div class="card"><div class="en-side">🤏 Tiny</div><div class="ru-side">Крошечная</div></div>
+                <div class="card"><div class="en-side">🐘 Large</div><div class="ru-side">Крупная</div></div>
+                <div class="card"><div class="en-side">⚪ Round</div><div class="ru-side">Круглая</div></div>
+                <div class="card"><div class="en-side">➖ Flat</div><div class="ru-side">Плоская</div></div>
+                <div class="card"><div class="en-side">⚫ Dark</div><div class="ru-side">Темная</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

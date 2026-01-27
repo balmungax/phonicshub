@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>2C Classroom</title>
+
+<style>
+/* Base Layout */
+body { 
+    display: flex; 
+    height: 100vh; 
+    margin: 0; 
+    font-family: 'Century Gothic', AppleGothic, sans-serif; 
+    overflow: hidden; 
+    background-color: #f4f7f6;
+}
+
+/* SIDEBAR */
+#menu {
+    width: 260px;
+    background-color: #263238; 
+    display: flex;
+    flex-direction: column;
+    padding: 15px; /* Slightly reduced padding */
+    gap: 10px; /* Reduced gap to fit more items */
+    border-right: 6px solid #FBC02D; 
+    transition: width 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    flex-shrink: 0;
+    box-sizing: border-box;
+}
+
+#menu.contracted {
+    width: 85px;
+    padding: 15px 10px;
+}
+
+/* IMPROVED TOGGLE BUTTON */
+#toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+#toggle-btn {
+    background: #37474f;
+    border: 2px solid #FBC02D;
+    color: #FBC02D;
+    border-radius: 12px;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+#toggle-btn:hover {
+    background: #FBC02D;
+    color: #263238;
+}
+
+/* Menu Links */
+.menu-link {
+    height: 50px; /* Reduced height to fit 11 items */
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 0.95rem; /* Slightly smaller font */
+    display: flex;
+    align-items: center;
+    padding-left: 15px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.menu-link span:first-child {
+    font-size: 1.4rem;
+}
+
+.menu-link:hover { 
+    transform: translateX(6px); 
+    filter: brightness(1.1);
+}
+
+/* Contracted behavior */
+#menu.contracted .menu-link {
+    padding-left: 0;
+    justify-content: center;
+}
+
+.link-text {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    margin-left: 12px;
+}
+
+#menu.contracted .link-text {
+    opacity: 0;
+    display: none;
+}
+
+/* COLORS */
+.btn-schedule { background-color: #7CB342; }
+.btn-keyboard { background-color: #42A5F5; }
+.btn-phonics  { background-color: #26A69A; }
+.btn-vocab    { background-color: #F57C00; }
+.btn-math     { background-color: #8E24AA; }
+.btn-trans    { background-color: #3949AB; }
+.btn-words    { background-color: #C0CA33; }
+.btn-grammar  { background-color: #EF5350; }
+.btn-goal     { background-color: #FF7043; } /* Weekly Goal color */
+.btn-new1     { background-color: #546E7A; } /* Placeholder color 1 */
+.btn-new2     { background-color: #D81B60; } /* Placeholder color 2 */
+
+/* Content frame */
+#content-frame {
+    flex-grow: 1;
+    border: none;
+    background-color: white;
+}
+</style>
+</head>
+
+<body>
+
+<nav id="menu">
+    <div id="toggle-container">
+        <button id="toggle-btn" onclick="toggleMenu()">☰</button>
+    </div>
+
+    <a href="schedule.html" target="content-view" class="menu-link btn-schedule">
+        <span>📅</span><span class="link-text">Schedule</span>
+    </a>
+
+    <a href="keyboard.html" target="content-view" class="menu-link btn-keyboard">
+        <span>💻</span><span class="link-text">Keyboard</span>
+    </a>
+
+    <a href="plants.html" target="content-view" class="menu-link btn-phonics">
+        <span>🗣️</span><span class="link-text">Plants</span>
+    </a>
+
+    <a href="vocabulary.html" target="content-view" class="menu-link btn-vocab">
+        <span>📚</span><span class="link-text">Vocabulary</span>
+    </a>
+
+    <a href="place.html" target="content-view" class="menu-link btn-math">
+        <span>➖</span><span class="link-text">Subtraction</span>
+    </a>
+
+    <a href="translator.html" target="content-view" class="menu-link btn-trans">
+        <span>🌍</span><span class="link-text">Translator</span>
+    </a>
+
+    <a href="words2.html" target="content-view" class="menu-link btn-words">
+        <span>🗂️</span><span class="link-text">Word Bank</span>
+    </a>
+
+    <a href="grammar.html" target="content-view" class="menu-link btn-grammar">
+        <span>✔️</span><span class="link-text">Checker</span>
+    </a>
+
+    <a href="goal.html" target="content-view" class="menu-link btn-goal">
+        <span>🌟</span><span class="link-text">Weekly Goal</span>
+    </a>
+
+    <a href="#" target="content-view" class="menu-link btn-new1">
+        <span>❓</span><span class="link-text">Puzzle</span>
+    </a>
+
+    <a href="#" target="content-view" class="menu-link btn-new2">
+        <span>❓</span><span class="link-text">games</span>
+    </a>
+</nav>
+
+<iframe name="content-view" id="content-frame" src="schedule.html"></iframe>
+
+<script>
+function toggleMenu() {
+    document.getElementById('menu').classList.toggle('contracted');
+}
+</script>
+
+</body>
+</html>

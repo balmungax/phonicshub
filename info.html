@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Dispersal Adventure!</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Arial Rounded MT Bold', sans-serif;
+        }
+        
+        body {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, #81c784, #4caf50);
+            color: white;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        h2 {
+            color: #1b5e20;
+            border-bottom: 4px dashed #81c784;
+            padding-bottom: 8px;
+            margin: 25px 0 15px 0;
+            font-size: 1.8rem;
+        }
+        
+        h3 {
+            color: #388e3c;
+            margin: 15px 0 10px 0;
+            font-size: 1.5rem;
+        }
+        
+        .intro {
+            background-color: #f1f8e9;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 8px solid #4caf50;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        
+        .methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .method-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .method-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+        
+        .method-title {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: #1b5e20;
+        }
+        
+        .tree-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .tree-btn {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .tree-btn:hover {
+            background-color: #388e3c;
+            transform: scale(1.05);
+        }
+        
+        .tree-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .tree-info {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            display: none;
+            border-top: 8px solid #4caf50;
+        }
+        
+        .tree-info.active {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .tree-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .tree-icon {
+            font-size: 3rem;
+            color: #388e3c;
+        }
+        
+        .tree-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .detail-card {
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .detail-title {
+            font-weight: bold;
+            color: #1b5e20;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+        
+        .fact-box {
+            background-color: #fffde7;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 8px solid #ffd54f;
+        }
+        
+        .fact-title {
+            color: #f57c00;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .fact-list {
+            list-style-type: none;
+        }
+        
+        .fact-list li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .fact-list li:before {
+            content: "🌱";
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .activity {
+            background-color: #e3f2fd;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 25px 0;
+            border-left: 8px solid #2196f3;
+        }
+        
+        .activity-title {
+            color: #1565c0;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px dashed #81c784;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .seed-icon {
+            font-size: 1.5rem;
+            margin: 0 5px;
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .tree-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tree-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Seed Dispersal Adventure!</h1>
+        <p>How Do Seeds Travel to Grow New Plants?</p>
+        <div style="margin-top: 15px; font-size: 2rem;">
+            <i class="fas fa-seedling"></i>
+            <i class="fas fa-wind"></i>
+            <i class="fas fa-water"></i>
+            <i class="fas fa-dove"></i>
+        </div>
+    </header>
+    
+    <div class="intro">
+        <p>Seeds need to move away from the parent plant to find space, sunlight, and soil to grow. This trip is called <strong>Seed Dispersal</strong>!</p>
+    </div>
+    
+    <h2>4 Main Travel Methods</h2>
+    
+    <div class="methods-grid">
+        <div class="method-card">
+            <div class="method-icon">🍃💨</div>
+            <div class="method-title">Wind</div>
+            <p>Seeds are light and have wings or parachutes to fly.</p>
+            <p><strong>Example:</strong> Dandelion, Maple tree</p>
+        </div>
+        
+        <div class="method-card">
+            <div class="method-icon">💧🌊</div>
+            <div class="method-title">Water</div>
+            <p>Seeds can float on rivers, lakes, or oceans.</p>
+            <p><strong>Example:</strong> Coconut, Koa tree</p>
+        </div>
+        
+        <div class="method-card">
+            <div class="method-icon">🐿️💩</div>
+            <div class="method-title">Animals</div>
+            <p>Seeds stick to fur or are eaten and pooped out later.</p>
+            <p><strong>Example:</strong> Berries, Rain tree</p>
+        </div>
+        
+        <div class="method-card">
+            <div class="method-icon">💥📢</div>
+            <div class="method-title">Explosion</div>
+            <p>Seed pods dry and POP! flinging seeds away.</p>
+            <p><strong>Example:</strong> Pea plant, Violet</p>
+        </div>
+    </div>
+    
+    <h2>Interactive Tree Explorer</h2>
+    <p style="text-align: center; margin-bottom: 20px;">Click the buttons to learn about special trees!</p>
+    
+    <div class="tree-buttons">
+        <button class="tree-btn" id="koa-btn">
+            <i class="fas fa-tree"></i> Koa Tree
+        </button>
+        
+        <button class="tree-btn" id="maple-btn">
+            <i class="fas fa-leaf"></i> Maple Tree
+        </button>
+        
+        <button class="tree-btn" id="rain-btn">
+            <i class="fas fa-cloud-rain"></i> Rain Tree
+        </button>
+    </div>
+    
+    <div id="koa-info" class="tree-info">
+        <div class="tree-header">
+            <div class="tree-icon">🌳</div>
+            <h3>Koa Tree</h3>
+        </div>
+        <p>The Koa tree has special seeds that travel in a unique way!</p>
+        
+        <div class="tree-details">
+            <div class="detail-card">
+                <div class="detail-title">🌱 Seed Type</div>
+                <p>Hard pod with seeds inside.</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">✈️ Dispersal Method</div>
+                <p><strong>POD FLOATS!</strong> It can fall into streams and travel by water.</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">📍 Home</div>
+                <p>Hawaii forests</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">🎸 Fun Fact</div>
+                <p>Koa wood is used to make surfboards and ukuleles!</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="maple-info" class="tree-info">
+        <div class="tree-header">
+            <div class="tree-icon">🍁</div>
+            <h3>Maple Tree</h3>
+        </div>
+        <p>Maple trees have amazing flying seeds!</p>
+        
+        <div class="tree-details">
+            <div class="detail-card">
+                <div class="detail-title">🌱 Seed Type</div>
+                <p>Has two "helicopter" wings (called samara).</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">✈️ Dispersal Method</div>
+                <p><strong>WIND</strong> spins it like a helicopter away from the tree.</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">📍 Home</div>
+                <p>North America, Asia</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">🌀 Fun Fact</div>
+                <p>Maple seeds can spin up to 100 times per second as they fall!</p>
+            </div>
+        </div>
+    </div>
+    
+    <div id="rain-info" class="tree-info">
+        <div class="tree-header">
+            <div class="tree-icon">☔</div>
+            <h3>Rain Tree</h3>
+        </div>
+        <p>The Rain tree has a clever way to spread its seeds!</p>
+        
+        <div class="tree-details">
+            <div class="detail-card">
+                <div class="detail-title">🌱 Seed Type</div>
+                <p>Pod with sweet pulp around seeds.</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">✈️ Dispersal Method</div>
+                <p><strong>ANIMALS</strong> (bats, monkeys) eat the pulp and drop the seeds.</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">📍 Home</div>
+                <p>Tropical Americas (now in Asia too)</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-title">🌙 Fun Fact</div>
+                <p>Its leaves fold up at night or before rain, so it's called the "Rain Tree."</p>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Why is Seed Dispersal Important?</h2>
+    <div style="background-color: #f1f8e9; padding: 20px; border-radius: 15px; margin: 20px 0;">
+        <p style="margin-bottom: 10px;"><span class="seed-icon">✅</span> Reduces competition for water and sunlight.</p>
+        <p style="margin-bottom: 10px;"><span class="seed-icon">✅</span> Helps plants grow in new places.</p>
+        <p><span class="seed-icon">✅</span> Makes sure plants don't all grow in one spot.</p>
+    </div>
+    
+    <div class="fact-box">
+        <div class="fact-title">
+            <i class="fas fa-star"></i> Wow Facts!
+        </div>
+        <ul class="fact-list">
+            <li>The coco-de-mer seed can weigh up to 18 kg (like a 4-year-old child!) and floats in the ocean.</li>
+            <li>Some seeds can travel over 10,000 km by ocean currents.</li>
+            <li>Burdock seeds inspired the invention of VELCRO® because they stick so well!</li>
+        </ul>
+    </div>
+    
+    <div class="activity">
+        <div class="activity-title">
+            <i class="fas fa-search"></i> Can you find seeds outside?
+        </div>
+        <p>Look for:</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+            <div style="background-color: white; padding: 15px; border-radius: 10px;">
+                <span style="font-size: 1.5rem;">🍁</span>
+                <p><strong>Helicopter seeds</strong> (maple)</p>
+            </div>
+            <div style="background-color: white; padding: 15px; border-radius: 10px;">
+                <span style="font-size: 1.5rem;">🧦</span>
+                <p><strong>Sticky seeds</strong> on your socks</p>
+            </div>
+            <div style="background-color: white; padding: 15px; border-radius: 10px;">
+                <span style="font-size: 1.5rem;">🫐</span>
+                <p><strong>Berries</strong> that birds eat</p>
+            </div>
+            <div style="background-color: white; padding: 15px; border-radius: 10px;">
+                <span style="font-size: 1.5rem;">🌼</span>
+                <p><strong>Dandelion fluff</strong> in the wind</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p><strong>Sources:</strong> Royal Botanic Gardens, Kew; USDA Forest Service; National Wildlife Federation; University of Hawaii</p>
+        <p style="margin-top: 10px;">Designed for Grade 2 ESL Students <i class="fas fa-graduation-cap"></i></p>
+        <p style="margin-top: 10px; font-size: 1.2rem;">🌱🌍🌳</p>
+    </footer>
+
+    <script>
+        // Get all the buttons and info sections
+        const koaBtn = document.getElementById('koa-btn');
+        const mapleBtn = document.getElementById('maple-btn');
+        const rainBtn = document.getElementById('rain-btn');
+        
+        const koaInfo = document.getElementById('koa-info');
+        const mapleInfo = document.getElementById('maple-info');
+        const rainInfo = document.getElementById('rain-info');
+        
+        // Function to hide all info sections
+        function hideAllInfo() {
+            koaInfo.classList.remove('active');
+            mapleInfo.classList.remove('active');
+            rainInfo.classList.remove('active');
+        }
+        
+        // Show Koa tree info
+        koaBtn.addEventListener('click', function() {
+            hideAllInfo();
+            koaInfo.classList.add('active');
+            
+            // Reset button styles
+            koaBtn.style.backgroundColor = '#1b5e20';
+            mapleBtn.style.backgroundColor = '#4caf50';
+            rainBtn.style.backgroundColor = '#4caf50';
+        });
+        
+        // Show Maple tree info
+        mapleBtn.addEventListener('click', function() {
+            hideAllInfo();
+            mapleInfo.classList.add('active');
+            
+            // Reset button styles
+            koaBtn.style.backgroundColor = '#4caf50';
+            mapleBtn.style.backgroundColor = '#1b5e20';
+            rainBtn.style.backgroundColor = '#4caf50';
+        });
+        
+        // Show Rain tree info
+        rainBtn.addEventListener('click', function() {
+            hideAllInfo();
+            rainInfo.classList.add('active');
+            
+            // Reset button styles
+            koaBtn.style.backgroundColor = '#4caf50';
+            mapleBtn.style.backgroundColor = '#4caf50';
+            rainBtn.style.backgroundColor = '#1b5e20';
+        });
+        
+        // Show Koa tree by default when page loads
+        window.addEventListener('load', function() {
+            koaBtn.click();
+        });
+    </script>
+</body>
+</html>

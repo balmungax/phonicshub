@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>What Do Plants Need?</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  padding:30px;
+  font-family:"Century Gothic", Arial, sans-serif;
+  background:#f4f7f6;
+}
+
+h1{text-align:center;margin-bottom:6px;}
+.subtitle{text-align:center;color:#666;margin-bottom:25px;}
+
+.layout{
+  max-width:1000px;
+  margin:0 auto;
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:30px;
+}
+
+.card{
+  background:white;
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  display:flex;
+  flex-direction:column;
+}
+
+/* Left column specific styling */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Back button - moved to left column, smaller, at bottom */
+.back-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:#e3f2fd;
+  color:#0d47a1;
+  text-decoration:none;
+  font-size:16px;
+  font-weight:bold;
+  padding:10px 16px;
+  border-radius:12px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.08);
+  margin-top:auto;
+  transition:0.3s;
+  width:fit-content;
+  align-self:center;
+}
+
+.back-btn:hover{
+  background:#bbdefb;
+  transform:translateY(-2px);
+}
+
+/* Needs */
+.need{
+  background:#e3f2fd;
+  border-radius:14px;
+  padding:14px;
+  font-size:20px;
+  font-weight:bold;
+  margin-bottom:12px;
+  cursor:grab;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.need span{font-size:26px;}
+.need:active{cursor:grabbing;}
+
+/* Descriptions - made smaller */
+.dropzone{
+  background:#fafafa;
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:12px;
+  min-height:56px;
+  border:2px dashed #ccc;
+  font-size:16px;
+  transition:0.2s;
+  display:flex;
+  align-items:center;
+}
+
+.dropzone.hover{
+  background:#e8f5e9;
+  border-color:#66bb6a;
+}
+
+.dropzone.correct{
+  background:#c8e6c9;
+  border-color:#2e7d32;
+}
+
+.answer{
+  margin-top:6px;
+  font-weight:bold;
+  color:#2e7d32;
+  font-size:14px;
+}
+
+.desc-icon{
+  font-size:20px;
+  margin-right:10px;
+  min-width:30px;
+}
+
+/* Mobile */
+@media(max-width:800px){
+  .layout{grid-template-columns:1fr;}
+  .left-column {
+    order: 2;
+  }
+  .right-column {
+    order: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<h1>What Do Plants Need?</h1>
+<p class="subtitle">Drag each plant need to its correct description</p>
+
+<div class="layout">
+  
+  <!-- LEFT COLUMN -->
+  <div class="left-column">
+    <div class="card">
+      <div id="needsContainer"></div>
+      <a href="plantts.html" class="back-btn">⬅ Back to Plants</a>
+    </div>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div class="card right-column" id="descContainer"></div>
+
+</div>
+
+<script>
+const needs = [
+  { id:"sun", label:"Sunlight", icon:"☀️" },
+  { id:"water", label:"Water", icon:"💧" },
+  { id:"air", label:"Air", icon:"🌬️" },
+  { id:"soil", label:"Soil", icon:"🌍" },
+  { id:"space", label:"Space", icon:"📏" },
+  { id:"temp", label:"Right Temperature", icon:"🌡️" }
+];
+
+const descriptions = [
+  { id:"sun", text:"Helps the plant make food", icon:"🌱" },
+  { id:"water", text:"They need ___________ to dissolve the minerals so they can drink them up through their roots.", icon:"🥤" },
+  { id:"air", text:"Helps the plant breathe", icon:"🫁" },
+  { id:"soil", text:"Holds the plant and gives nutrients", icon:"🪴" },
+  { id:"space", text:"Gives the plant room to grow", icon:"↔️" },
+  { id:"temp", text:"Keeps the plant healthy and growing properly", icon:"🌱" }
+];
+
+// Shuffle function
+function shuffle(arr){
+  return arr.sort(()=>Math.random()-0.5);
+}
+
+let draggedNeed = null;
+
+// Render Needs
+shuffle(needs).forEach(n=>{
+  const div = document.createElement("div");
+  div.className="need";
+  div.draggable=true;
+  div.dataset.need=n.id;
+  div.innerHTML=`<span>${n.icon}</span>${n.label}`;
+  div.addEventListener("dragstart",()=>draggedNeed=n.id);
+  document.getElementById("needsContainer").appendChild(div);
+});
+
+// Render Descriptions
+shuffle(descriptions).forEach(d=>{
+  const zone = document.createElement("div");
+  zone.className="dropzone";
+  zone.dataset.need=d.id;
+  zone.innerHTML=`<span class="desc-icon">${d.icon}</span>${d.text}`;
+
+  zone.addEventListener("dragover",e=>{
+    e.preventDefault();
+    zone.classList.add("hover");
+  });
+
+  zone.addEventListener("dragleave",()=>{
+    zone.classList.remove("hover");
+  });
+
+  zone.addEventListener("drop",()=>{
+    zone.classList.remove("hover");
+    if(zone.dataset.need===draggedNeed){
+      zone.classList.add("correct");
+      zone.innerHTML+=`<div class="answer">✔ Correct!</div>`;
+      document.querySelector(`.need[data-need='${draggedNeed}']`).style.display="none";
+    }
+  });
+
+  document.getElementById("descContainer").appendChild(zone);
+});
+
+// Prevent default drag behaviors
+document.addEventListener('dragover', e => e.preventDefault());
+document.addEventListener('drop', e => e.preventDefault());
+</script>
+
+</body>
+</html>

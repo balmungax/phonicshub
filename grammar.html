@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Grammar Whiteboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script src="https://unpkg.com/compromise@13.11.3/builds/compromise.min.js"></script>
+
+<style>
+:root{
+  --verb:#1e88e5;
+  --noun:#43a047;
+  --adj:#8e24aa;
+  --key:#9fd8ff;
+  --shift-active: #ffcc00;
+}
+
+body{
+  margin:0;
+  padding:20px;
+  background:linear-gradient(180deg,#e8f6ff,#f5fff2);
+  /* Primary Font: Century Gothic */
+  font-family: "Century Gothic", "AppleGothic", "CenturyGothic", sans-serif;
+}
+
+h1{text-align:center;margin-bottom:4px;}
+.subtitle{text-align:center;color:#555;margin-bottom:15px;}
+
+.layout{
+  display:grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap:20px;
+  max-width:1200px;
+  margin:0 auto;
+}
+
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  box-shadow:0 12px 30px rgba(0,0,0,0.08);
+}
+
+/* Whiteboard */
+.whiteboard{
+  min-height:140px;
+  border-radius:14px;
+  border:3px solid #dceef9;
+  padding:14px;
+  font-size:24px;
+  line-height:1.6;
+  background:#fff;
+  white-space:pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Specific Font Rule for Question Marks */
+.q-mark {
+  font-family: Arial, sans-serif !important;
+}
+
+.word.verb{color:var(--verb);font-weight:700;}
+.word.noun{color:var(--noun);font-weight:700;}
+.word.adj{color:var(--adj);font-weight:700;}
+
+/* Keyboard */
+.keyboard{
+  margin-top:18px;
+  background:#f4fbff;
+  border-radius:16px;
+  padding:12px;
+}
+
+.row{
+  display:flex;
+  justify-content:center;
+  gap:6px;
+  margin-bottom:6px;
+}
+
+.key{
+  width:44px;
+  height:44px;
+  background:var(--key);
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  user-select:none;
+  box-shadow:0 4px rgba(0,0,0,0.12);
+}
+
+.key:active{
+  transform:translateY(2px);
+  box-shadow:0 2px rgba(0,0,0,0.1);
+}
+
+.key.space{width:240px;}
+.key.back{width:90px;}
+.key.shift{width:70px;}
+.key.clear{width:70px;}
+.key.active{background:var(--shift-active); color:#000;}
+
+/* Analysis Lists */
+.analysis h3{text-align:center;margin-bottom:6px;}
+
+.list{
+  background:#f9f9f9;
+  border-radius:14px;
+  padding:12px;
+  min-height:100px;
+  font-size:18px;
+  margin-bottom:15px;
+}
+
+.verbs{border-left:6px solid var(--verb);}
+.nouns{border-left:6px solid var(--noun);}
+.adjs{border-left:6px solid var(--adj);}
+
+.list div{margin:4px 0;}
+
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="card">
+  <div id="whiteboard" class="whiteboard"></div>
+
+  <div class="keyboard">
+    <div class="row">
+      <div class="key letter">q</div><div class="key letter">w</div><div class="key letter">e</div>
+      <div class="key letter">r</div><div class="key letter">t</div><div class="key letter">y</div>
+      <div class="key letter">u</div><div class="key letter">i</div><div class="key letter">o</div><div class="key letter">p</div>
+    </div>
+    <div class="row">
+      <div class="key letter">a</div><div class="key letter">s</div><div class="key letter">d</div>
+      <div class="key letter">f</div><div class="key letter">g</div><div class="key letter">h</div>
+      <div class="key letter">j</div><div class="key letter">k</div><div class="key letter">l</div>
+    </div>
+    <div class="row">
+      <div class="key shift" id="shift">⇧</div>
+      <div class="key letter">z</div><div class="key letter">x</div><div class="key letter">c</div>
+      <div class="key letter">v</div><div class="key letter">b</div><div class="key letter">n</div>
+      <div class="key letter">m</div>
+      <div class="key">,</div><div class="key">.</div><div class="key">?</div><div class="key">!</div>
+    </div>
+    <div class="row">
+      <div class="key clear" id="clear">🗑</div>
+      <div class="key space" id="space">␣</div>
+      <div class="key back" id="back">⌫</div>
+    </div>
+  </div>
+</div>
+
+<div class="card analysis">
+  <h3>🔵 Verbs</h3>
+  <div id="verbs" class="list verbs"></div>
+
+  <h3>🟢 Nouns</h3>
+  <div id="nouns" class="list nouns"></div>
+
+  <h3>🟣 Adjectives</h3>
+  <div id="adjs" class="list adjs"></div>
+</div>
+
+</div>
+
+<script>
+let text = "";
+let isShifted = false;
+
+const wb = document.getElementById("whiteboard");
+const verbsBox = document.getElementById("verbs");
+const nounsBox = document.getElementById("nouns");
+const adjsBox = document.getElementById("adjs");
+const shiftKey = document.getElementById("shift");
+const letterKeys = document.querySelectorAll(".key.letter");
+
+// Changes visual keyboard letters to Upper/Lower case
+function updateKeyboardVisuals() {
+    letterKeys.forEach(k => {
+        k.textContent = isShifted ? k.textContent.toUpperCase() : k.textContent.toLowerCase();
+    });
+}
+
+function analyse(){
+  wb.innerHTML = "";
+  verbsBox.innerHTML = "";
+  nounsBox.innerHTML = "";
+  adjsBox.innerHTML = "";
+
+  if(!text) return;
+
+  // Use NLP to analyze the full context
+  const doc = nlp(text);
+  const found = {verb:new Set(), noun:new Set(), adj:new Set()};
+
+  // Split text into chunks (words + spaces + punctuation)
+  const parts = text.split(/(\s+)/);
+
+  parts.forEach(part => {
+    if(!part) return;
+
+    // If it's just space, add it to whiteboard and move on
+    if(/^\s+$/.test(part)) {
+        wb.appendChild(document.createTextNode(part));
+        return;
+    }
+
+    // Clean punctuation for NLP lookup
+    const clean = part.replace(/[.,!?]/g,"").toLowerCase();
+    
+    // Look up this specific word's tags within the context of the sentence
+    const term = doc.match(clean);
+    let cls = "";
+
+    if(term.has("#Verb")) {
+        cls = "verb";
+        found.verb.add(clean);
+    } 
+    else if(term.has("#Adjective")) {
+        cls = "adj";
+        found.adj.add(clean);
+    } 
+    else if(term.has("#Noun")) {
+        cls = "noun";
+        found.noun.add(clean);
+    }
+
+    // Render to Whiteboard
+    const span = document.createElement("span");
+    if(cls) span.className = "word " + cls;
+
+    // Special font logic for Question Mark
+    if (part.includes("?")) {
+        const subParts = part.split("?");
+        subParts.forEach((p, i) => {
+            span.appendChild(document.createTextNode(p));
+            if (i < subParts.length - 1) {
+                const qSpan = document.createElement("span");
+                qSpan.className = "q-mark";
+                qSpan.textContent = "?";
+                span.appendChild(qSpan);
+            }
+        });
+    } else {
+        span.textContent = part;
+    }
+    
+    wb.appendChild(span);
+  });
+
+  // Update Sidebar Lists
+  found.verb.forEach(w => verbsBox.innerHTML += `<div>- ${w}</div>`);
+  found.noun.forEach(w => nounsBox.innerHTML += `<div>- ${w}</div>`);
+  found.adj.forEach(w => adjsBox.innerHTML += `<div>- ${w}</div>`);
+}
+
+function handleInput(char) {
+  if (char === "SHIFT") {
+    isShifted = !isShifted;
+    shiftKey.classList.toggle("active", isShifted);
+    updateKeyboardVisuals();
+    return;
+  }
+
+  if (char === "BACKSPACE") {
+    text = text.slice(0, -1);
+  } else if (char === "CLEAR") {
+    text = "";
+    isShifted = false;
+    shiftKey.classList.remove("active");
+    updateKeyboardVisuals();
+  } else {
+    // Sticky Shift Logic
+    if (isShifted) {
+      text += char.toUpperCase();
+      isShifted = false;
+      shiftKey.classList.remove("active");
+      updateKeyboardVisuals();
+    } else {
+      text += char.toLowerCase();
+    }
+  }
+  analyse();
+}
+
+/* Mouse Support */
+document.querySelectorAll(".key").forEach(k=>{
+  k.onclick = ()=>{
+    const v = k.textContent;
+    if(v === "␣") handleInput(" ");
+    else if(v === "⌫") handleInput("BACKSPACE");
+    else if(v === "🗑") handleInput("CLEAR");
+    else if(v === "⇧") handleInput("SHIFT");
+    else handleInput(v);
+  };
+});
+
+/* Physical Keyboard Support */
+document.addEventListener("keydown", e=>{
+  if(e.key === "Backspace"){ handleInput("BACKSPACE"); }
+  else if(e.key === " "){ handleInput(" "); }
+  else if(e.key === "Shift"){ handleInput("SHIFT"); }
+  else if(e.key === "Escape"){ handleInput("CLEAR"); }
+  else if(e.key.length === 1){
+    handleInput(e.key);
+  }
+  e.preventDefault();
+});
+
+// Start with empty boards
+analyse();
+</script>
+
+</body>
+</html>

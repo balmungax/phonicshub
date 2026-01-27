@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>All About Plants</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+  margin:0;
+  padding:30px;
+  font-family:"Century Gothic", Arial, sans-serif;
+  background:#f4f7f6;
+}
+
+.container{
+  max-width:900px;
+  margin:0 auto;
+  background:white;
+  border-radius:20px;
+  padding:30px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.subtitle{
+  text-align:center;
+  color:#666;
+  margin-bottom:25px;
+}
+
+.section{
+  margin-bottom:25px;
+}
+
+.section h2{
+  color:#43a047;
+  margin-bottom:10px;
+}
+
+.section p{
+  font-size:18px;
+  line-height:1.6;
+  color:#333;
+}
+
+/* Links */
+.links{
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  margin-top:30px;
+  flex-wrap:wrap;
+}
+
+.link-card{
+  background:#e3f2fd;
+  border-radius:16px;
+  padding:18px 24px;
+  font-size:18px;
+  font-weight:bold;
+  text-decoration:none;
+  color:#0d47a1;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  box-shadow:0 6px 14px rgba(0,0,0,0.1);
+  transition:0.3s;
+}
+
+.link-card:hover{
+  background:#bbdefb;
+  transform:translateY(-3px);
+}
+
+.link-card span{
+  font-size:26px;
+}
+
+/* Mobile */
+@media(max-width:700px){
+  .container{padding:20px;}
+  .links{gap:15px;}
+  .link-card{padding:15px 20px;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1>All About Plants</h1>
+
+  <!-- INTRO -->
+  <div class="section">
+    <p>
+      They grow, need food, and need care.
+      Plants are important because they help people, animals, and the Earth.
+    </p>
+  </div>
+
+  <!-- PARTS -->
+  <div class="section">
+    <h2>🌱 Parts of a Plant</h2>
+    <p>
+      A plant has different parts. Each part has a job.
+      Roots grow under the ground and hold the plant.
+      The stem holds the plant up.
+      Leaves make food for the plant.
+      Flowers make seeds.
+      Fruits protect the seeds.
+    </p>
+  </div>
+
+  <!-- NEEDS -->
+  <div class="section">
+    <h2>☀️ What Plants Need</h2>
+    <p>
+      Plants need a few important things to live and grow.
+      They need sunlight to make food.
+      They need water to drink.
+      They need air to breathe.
+      They need soil for nutrients.
+      They also need space to grow.
+    </p>
+  </div>
+
+  <!-- LINKS -->
+  <div class="links">
+    <a href="parts.html" class="link-card">
+      <span>🌿</span>Parts of the Plant
+    </a>
+
+    <a href="needs.html" class="link-card">
+      <span>💧</span>What Plants Need
+    </a>
+    
+    <a href="venus.html" class="link-card">
+      <span>🪴</span>Venus
+    </a>
+    
+    <a href="bamboo.html" class="link-card">
+      <span>🎋</span>Bamboo
+    </a>
+  </div>
+
+</div>
+
+</body>
+</html>

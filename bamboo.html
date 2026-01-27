@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bamboo: The Super Grass! | Kids Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Lexend:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f0fdf4;
+        }
+        h1, h2, .font-fun {
+            font-family: 'Fredoka One', cursive;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            height: 300px;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 2rem;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            animation: popIn 0.3s ease-out;
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #4ADE80;
+        }
+        .question-btn {
+            transition: all 0.3s ease;
+        }
+        .question-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .option-btn {
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+        .option-btn:hover {
+            transform: scale(1.02);
+        }
+        .correct {
+            background-color: #4ADE80 !important;
+            color: white !important;
+        }
+        .incorrect {
+            background-color: #FB7185 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <!-- Playful Header -->
+    <header class="bg-white py-6 shadow-sm border-b-4 border-yellow-400">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-3xl">🎋</span>
+                <span class="text-2xl font-bold text-green-600 tracking-wide">KIDS<span class="text-yellow-500">EXPLORE</span></span>
+            </div>
+            <div class="bg-pink-100 text-pink-600 px-4 py-1 rounded-full text-sm font-bold animate-bounce">
+                Plant Race!
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-10">
+
+        <!-- Hero Section -->
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl text-green-700 mb-4 drop-shadow-sm">
+                Bamboo: The <span class="text-yellow-500">Super Grass!</span>
+            </h1>
+            <div class="max-w-2xl mx-auto bg-white p-6 rounded-3xl border-4 border-green-200 shadow-xl relative">
+                <p class="text-lg md:text-xl leading-relaxed">
+                    Did you know? Bamboo isn't a tree... it's a giant, super-strong type of <strong>grass!</strong> 🌿 It grows faster than you can imagine!
+                </p>
+                <div class="hidden md:block absolute -top-6 -right-6 text-5xl">✨</div>
+            </div>
+        </div>
+
+        <!-- Growth Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+            
+            <!-- Growth Chart -->
+            <div class="bg-white rounded-[2rem] shadow-xl p-8 border-b-8 border-green-400">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-2xl mr-4">🚀</div>
+                    <h2 class="text-2xl text-green-800">Plant Race! Who's Fastest?</h2>
+                </div>
+                <p class="text-gray-600 mb-6">
+                    Bamboo is the <strong>world champion</strong> of plant growing! Let's see how it compares to other plants:
+                </p>
+                <div class="chart-container">
+                    <canvas id="growthChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-green-400 font-bold mt-4">🌱 Centimeters grown in ONE DAY 🌱</p>
+            </div>
+
+            <!-- Strength Section -->
+            <div class="bg-white rounded-[2rem] shadow-xl p-8 border-b-8 border-purple-400">
+                <div class="flex items-center mb-6">
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center text-2xl mr-4">💪</div>
+                    <h2 class="text-2xl text-purple-800">Super Strength</h2>
+                </div>
+                <p class="text-gray-600 mb-6">
+                    Bamboo is <strong>stronger than some steel!</strong> People build houses and bridges with it because it doesn't break easily.
+                </p>
+                <div class="chart-container">
+                    <canvas id="strengthChart"></canvas>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Plant Comparison Icons -->
+        <div class="bg-blue-50 rounded-[3rem] p-10 mb-12 border-4 border-dashed border-blue-300">
+            <h2 class="text-3xl text-center text-blue-700 mb-10">Meet the Plant Family! 🌿</h2>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="flex flex-col items-center group bg-white p-4 rounded-2xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl shadow-md">🎋</div>
+                    <span class="mt-3 font-bold text-blue-800">Bamboo</span>
+                    <span class="text-sm text-green-600 font-bold">Speed King!</span>
+                    <p class="text-xs text-gray-600 mt-1 text-center">91 cm/day - The fastest!</p>
+                </div>
+                <div class="flex flex-col items-center group bg-white p-4 rounded-2xl">
+                    <div class="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center text-3xl shadow-md">🌻</div>
+                    <span class="mt-3 font-bold text-blue-800">Sunflower</span>
+                    <span class="text-sm text-yellow-600 font-bold">Fast Grower!</span>
+                    <p class="text-xs text-gray-600 mt-1 text-center">2.5 cm/day - Follows the sun!</p>
+                </div>
+                <div class="flex flex-col items-center group bg-white p-4 rounded-2xl">
+                    <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center text-3xl shadow-md">🪴</div>
+                    <span class="mt-3 font-bold text-blue-800">Venus Flytrap</span>
+                    <span class="text-sm text-red-600 font-bold">Slow & Steady</span>
+                    <p class="text-xs text-gray-600 mt-1 text-center">0.1 cm/day - Eats bugs!</p>
+                </div>
+                <div class="flex flex-col items-center group bg-white p-4 rounded-2xl">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center text-3xl shadow-md">🍎</div>
+                    <span class="mt-3 font-bold text-blue-800">Apple Tree</span>
+                    <span class="text-sm text-purple-600 font-bold">Very Slow</span>
+                    <p class="text-xs text-gray-600 mt-1 text-center">0.3 cm/day - Makes fruit!</p>
+                </div>
+                <div class="flex flex-col items-center group bg-white p-4 rounded-2xl">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-3xl shadow-md">🌿</div>
+                    <span class="mt-3 font-bold text-blue-800">Fern</span>
+                    <span class="text-sm text-green-600 font-bold">Medium Speed</span>
+                    <p class="text-xs text-gray-600 mt-1 text-center">1 cm/day - Loves shade!</p>
+                </div>
+                <div class="flex flex-col items-center group bg-white p-4 rounded-2xl">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-3xl shadow-md">🌱</div>
+                    <span class="mt-3 font-bold text-blue-800">Normal Grass</span>
+                    <span class="text-sm text-gray-600 font-bold">Regular Speed</span>
+                    <p class="text-xs text-gray-600 mt-1 text-center">0.5 cm/day - On lawns!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- What Can We Do With It? -->
+        <div class="bg-yellow-50 rounded-[3rem] p-10 mb-12 border-4 border-dashed border-yellow-300">
+            <h2 class="text-3xl text-center text-yellow-700 mb-10">What can we make with bamboo?</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-md group-hover:scale-110 transition">🏠</div>
+                    <span class="mt-4 font-bold text-yellow-800 text-center">Houses</span>
+                    <p class="text-sm text-gray-600 mt-2 text-center">Strong homes that don't break</p>
+                </div>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-md group-hover:scale-110 transition">🐼</div>
+                    <span class="mt-4 font-bold text-yellow-800 text-center">Panda Food</span>
+                    <p class="text-sm text-gray-600 mt-2 text-center">Pandas eat 20kg every day!</p>
+                </div>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-md group-hover:scale-110 transition">👕</div>
+                    <span class="mt-4 font-bold text-yellow-800 text-center">Soft Clothes</span>
+                    <p class="text-sm text-gray-600 mt-2 text-center">Softer than cotton shirts</p>
+                </div>
+                <div class="flex flex-col items-center group">
+                    <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center text-4xl shadow-md group-hover:scale-110 transition">🌱</div>
+                    <span class="mt-4 font-bold text-yellow-800 text-center">Clean Air</span>
+                    <p class="text-sm text-gray-600 mt-2 text-center">Makes fresh air for us</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Fun Facts Section -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div class="bg-green-500 text-white rounded-3xl p-8 text-center shadow-lg transform -rotate-2">
+                <div class="text-4xl mb-2">🌍</div>
+                <div class="text-3xl font-bold">12 Tons</div>
+                <p class="text-sm font-bold uppercase">Clean Air Power!</p>
+                <p class="text-xs mt-2 opacity-80">One bamboo forest cleans 12 tons of dirty air each year!</p>
+            </div>
+            <div class="bg-pink-500 text-white rounded-3xl p-8 text-center shadow-lg transform rotate-2">
+                <div class="text-4xl mb-2">📏</div>
+                <div class="text-3xl font-bold">36x</div>
+                <p class="text-sm font-bold uppercase">Faster Than Ferns</p>
+                <p class="text-xs mt-2 opacity-80">Grows 36 times faster than ferns!</p>
+            </div>
+            <div class="bg-purple-500 text-white rounded-3xl p-8 text-center shadow-lg transform -rotate-1">
+                <div class="text-4xl mb-2">💧</div>
+                <div class="text-3xl font-bold">1/3 Water</div>
+                <p class="text-sm font-bold uppercase">Needs Less Water</p>
+                <p class="text-xs mt-2 opacity-80">Bamboo needs only 1/3 the water of cotton plants</p>
+            </div>
+        </div>
+
+        <!-- Quiz Section -->
+        <div class="bg-white rounded-[2rem] shadow-xl p-8 mb-12 border-4 border-blue-300">
+            <h2 class="text-3xl text-center text-blue-700 mb-8">Bamboo Quiz Time! 🎉</h2>
+            <p class="text-center text-gray-600 mb-8">Click the buttons to test your plant knowledge!</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Question 1 -->
+                <button class="question-btn bg-green-100 hover:bg-green-200 text-green-800 p-4 rounded-2xl border-2 border-green-300 flex flex-col items-center justify-center" onclick="showQuestion(0)">
+                    <div class="text-2xl mb-2">🌿</div>
+                    <span class="font-bold text-lg">What is bamboo?</span>
+                    <span class="text-sm mt-2">3 choices!</span>
+                </button>
+                
+                <!-- Question 2 -->
+                <button class="question-btn bg-yellow-100 hover:bg-yellow-200 text-yellow-800 p-4 rounded-2xl border-2 border-yellow-300 flex flex-col items-center justify-center" onclick="showQuestion(1)">
+                    <div class="text-2xl mb-2">🚀</div>
+                    <span class="font-bold text-lg">Who grows fastest?</span>
+                    <span class="text-sm mt-2">Choose the winner!</span>
+                </button>
+                
+                <!-- Question 3 -->
+                <button class="question-btn bg-pink-100 hover:bg-pink-200 text-pink-800 p-4 rounded-2xl border-2 border-pink-300 flex flex-col items-center justify-center" onclick="showQuestion(2)">
+                    <div class="text-2xl mb-2">💪</div>
+                    <span class="font-bold text-lg">How strong is bamboo?</span>
+                    <span class="text-sm mt-2">Pick the right answer!</span>
+                </button>
+                
+                <!-- Question 4 -->
+                <button class="question-btn bg-purple-100 hover:bg-purple-200 text-purple-800 p-4 rounded-2xl border-2 border-purple-300 flex flex-col items-center justify-center" onclick="showQuestion(3)">
+                    <div class="text-2xl mb-2">🐼</div>
+                    <span class="font-bold text-lg">Panda Food</span>
+                    <span class="text-sm mt-2">How much do they eat?</span>
+                </button>
+                
+                <!-- Question 5 -->
+                <button class="question-btn bg-blue-100 hover:bg-blue-200 text-blue-800 p-4 rounded-2xl border-2 border-blue-300 flex flex-col items-center justify-center" onclick="showQuestion(4)">
+                    <div class="text-2xl mb-2">🌍</div>
+                    <span class="font-bold text-lg">Earth Helper</span>
+                    <span class="text-sm mt-2">How does bamboo help?</span>
+                </button>
+                
+                <!-- Question 6 -->
+                <button class="question-btn bg-red-100 hover:bg-red-200 text-red-800 p-4 rounded-2xl border-2 border-red-300 flex flex-col items-center justify-center" onclick="showQuestion(5)">
+                    <div class="text-2xl mb-2">👕</div>
+                    <span class="font-bold text-lg">Water Saving</span>
+                    <span class="text-sm mt-2">How much water saved?</span>
+                </button>
+            </div>
+        </div>
+
+        <footer class="text-center py-10">
+            <p class="text-green-600 font-bold">Stay Curious, Little Explorer! 🗺️</p>
+            <p class="text-gray-500 text-sm mt-2">Bamboo: The fastest plant on Earth!</p>
+        </footer>
+
+    </main>
+
+    <!-- Modal -->
+    <div id="quizModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div id="modalContent">
+                <!-- Content will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Plant growth data (centimeters per day)
+        const plantData = {
+            labels: ['Bamboo', 'Sunflower', 'Fern', 'Normal Grass', 'Apple Tree', 'Venus Flytrap'],
+            growth: [91, 2.5, 1, 0.5, 0.3, 0.1],
+            colors: ['#4ADE80', '#FDE047', '#10B981', '#6EE7B7', '#FB7185', '#DC2626']
+        };
+
+        // Quiz Questions with Multiple Choice
+        const quizQuestions = [
+            {
+                question: "What type of plant is bamboo?",
+                options: ["A type of tree", "A type of grass", "A type of flower"],
+                correct: 1,
+                explanation: "Bamboo is a special type of GRASS, not a tree! 🌿 That's why it grows so fast!"
+            },
+            {
+                question: "Which plant grows the fastest in one day?",
+                options: ["Apple Tree (0.3 cm)", "Bamboo (91 cm)", "Venus Flytrap (0.1 cm)"],
+                correct: 1,
+                explanation: "Bamboo is the CHAMPION! 🏆 It grows 91 cm in one day - that's almost a meter!"
+            },
+            {
+                question: "How strong is bamboo compared to steel?",
+                options: ["Weaker than steel", "About the same as steel", "Stronger than some steel"],
+                correct: 2,
+                explanation: "Bamboo is SUPER STRONG - it's actually stronger than some types of steel! 💪 People build houses with it!"
+            },
+            {
+                question: "How much bamboo does a panda eat every day?",
+                options: ["5 kilograms", "20 kilograms", "50 kilograms"],
+                correct: 1,
+                explanation: "Pandas eat about 20 KILOGRAMS of bamboo every day! 🐼 That's like 40 bags of chips!"
+            },
+            {
+                question: "How does bamboo help our planet Earth?",
+                options: ["It makes plastic", "It cleans dirty air", "It makes more water"],
+                correct: 1,
+                explanation: "Bamboo forests clean 12 TONS of dirty air every year! 🌍 They're Earth's helpers!"
+            },
+            {
+                question: "How much water does bamboo need compared to cotton?",
+                options: ["More water than cotton", "The same as cotton", "1/3 the water of cotton"],
+                correct: 2,
+                explanation: "Bamboo needs only ONE-THIRD of the water that cotton needs! 💧 It saves lots of water!"
+            }
+        ];
+
+        // Initialize Growth Chart
+        const growthCtx = document.getElementById('growthChart').getContext('2d');
+        new Chart(growthCtx, {
+            type: 'bar',
+            data: {
+                labels: plantData.labels,
+                datasets: [{
+                    label: 'Growth per day (cm)',
+                    data: plantData.growth,
+                    backgroundColor: plantData.colors,
+                    borderRadius: 15,
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        display: false 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed.y} cm per day`;
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { display: false },
+                        title: {
+                            display: true,
+                            text: 'Centimeters per Day',
+                            font: {
+                                size: 14,
+                                weight: 'bold'
+                            }
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' cm';
+                            }
+                        }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { 
+                            font: { 
+                                weight: 'bold',
+                                size: 12
+                            } 
+                        } 
+                    }
+                }
+            }
+        });
+
+        // Initialize Strength Chart
+        const strengthCtx = document.getElementById('strengthChart').getContext('2d');
+        new Chart(strengthCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Bamboo', 'Steel', 'Oak Wood', 'Pine Wood'],
+                datasets: [{
+                    data: [95, 90, 40, 25],
+                    backgroundColor: ['#4ADE80', '#A855F7', '#FDE047', '#FB7185'],
+                    borderRadius: 15
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { 
+                        display: false 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.label}: ${context.parsed.y}% strong`;
+                            }
+                        }
+                    }
+                },
+                scales: { 
+                    y: { 
+                        display: true,
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '% strong';
+                            }
+                        }
+                    },
+                    x: { 
+                        grid: { display: false },
+                        ticks: { 
+                            font: { 
+                                weight: 'bold', 
+                                size: 12 
+                            } 
+                        } 
+                    }
+                }
+            }
+        });
+
+        // Quiz Functions
+        let currentQuestionIndex = 0;
+        let answered = false;
+
+        function showQuestion(index) {
+            currentQuestionIndex = index;
+            answered = false;
+            const question = quizQuestions[index];
+            const modal = document.getElementById('quizModal');
+            const modalContent = document.getElementById('modalContent');
+            
+            modalContent.innerHTML = `
+                <div class="text-center">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6">${question.question}</h3>
+                    
+                    <div class="space-y-3 mb-6">
+                        ${question.options.map((option, i) => `
+                            <button onclick="checkAnswer(${i})" 
+                                    class="option-btn w-full bg-gray-100 hover:bg-gray-200 text-gray-800 p-4 rounded-xl border-2 border-gray-300 text-left">
+                                <span class="font-bold mr-2">${String.fromCharCode(65 + i)}.</span> ${option}
+                            </button>
+                        `).join('')}
+                    </div>
+                    
+                    <div id="answerResult" class="hidden">
+                        <div id="resultMessage" class="p-4 rounded-xl mb-4"></div>
+                        <button onclick="closeModal()" class="bg-green-500 text-white px-6 py-2 rounded-full font-bold hover:bg-green-600">
+                            Next Question! →
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function checkAnswer(selectedIndex) {
+            if (answered) return;
+            
+            answered = true;
+            const question = quizQuestions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-btn');
+            const answerResult = document.getElementById('answerResult');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            // Color the buttons
+            optionButtons.forEach((btn, index) => {
+                if (index === question.correct) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex && index !== question.correct) {
+                    btn.classList.add('incorrect');
+                }
+                btn.disabled = true;
+            });
+            
+            // Show result message
+            if (selectedIndex === question.correct) {
+                resultMessage.innerHTML = `
+                    <div class="text-green-600">
+                        <div class="text-3xl">🎉 CORRECT! 🎉</div>
+                        <p class="mt-2">${question.explanation}</p>
+                    </div>
+                `;
+            } else {
+                resultMessage.innerHTML = `
+                    <div class="text-pink-600">
+                        <div class="text-3xl">🤔 GOOD TRY!</div>
+                        <p class="mt-2">The correct answer was: <strong>${question.options[question.correct]}</strong></p>
+                        <p class="mt-2">${question.explanation}</p>
+                    </div>
+                `;
+            }
+            
+            answerResult.classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('quizModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('quizModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Fun animation for question buttons
+        document.querySelectorAll('.question-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px)';
+            });
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>

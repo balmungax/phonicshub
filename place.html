@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Math Adventure – Subtraction</title>
+
+<style>
+body {
+  font-family: "Comic Sans MS", cursive;
+  background:#f0faff;
+  padding:20px;
+}
+.app {
+  max-width:900px;
+  margin:auto;
+  background:white;
+  padding:25px;
+  border-radius:25px;
+  border:6px solid #ffca3a;
+}
+.setup {
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  margin-bottom:20px;
+}
+input {
+  width:120px;
+  font-size:1.3rem;
+  padding:8px;
+  text-align:center;
+}
+button {
+  background:#8ac926;
+  color:white;
+  border:none;
+  border-radius:40px;
+  padding:10px 30px;
+  font-size:1.2rem;
+  cursor:pointer;
+}
+.workspace {
+  display:none;
+  grid-template-columns:320px 1fr;
+  gap:20px;
+}
+
+/* === EXPLANATION BOX FIX === */
+.explain {
+  background:#e3f2fd;
+  padding:20px;
+  border-radius:20px;
+  display:flex;
+  flex-direction:column;
+  height:260px;                 /* FIXED HEIGHT */
+}
+#text {
+  font-size:1.3rem;
+  line-height:1.4;
+  flex-grow:1;                  /* TEXT TAKES SPACE */
+  overflow-y:auto;              /* SCROLL IF NEEDED */
+  margin-bottom:10px;
+}
+.next {
+  background:#ff595e;
+  min-height:48px;              /* BUTTON NEVER JUMPS */
+}
+
+/* === TABLE === */
+table {
+  width:100%;
+  border-collapse:collapse;
+  text-align:center;
+  font-size:1.6rem;
+}
+th, td {
+  border:2px solid #ddd;
+  padding:20px;
+  position:relative;
+}
+.active {
+  background:#fff3bf;
+  border-color:#ffb703;
+}
+.old {
+  position:absolute;
+  top:4px;
+  left:6px;
+  font-size:1rem;
+  color:#999;
+  text-decoration:line-through;
+}
+.new {
+  color:#d00;
+  font-weight:bold;
+}
+.res {
+  background:#f8f9fa;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+<div class="app">
+<h1 style="text-align:center;">Math Adventure 🚀</h1>
+
+<div class="setup">
+  <input id="n1" type="number" value="">
+  <span style="font-size:2rem;">−</span>
+  <input id="n2" type="number" value="">
+  <button onclick="start()">Start</button>
+</div>
+
+<div class="workspace" id="ws">
+  <div class="explain">
+    <div id="text"></div>
+    <button class="next" onclick="next()">Next ➜</button>
+  </div>
+
+  <table>
+    <thead><tr id="head"></tr></thead>
+    <tbody>
+      <tr id="r1"></tr>
+      <tr id="r2"></tr>
+      <tr id="rr" class="res"></tr>
+    </tbody>
+  </table>
+</div>
+</div>
+
+<script>
+/* ===============================
+   INTERNAL MODEL
+================================ */
+
+const ALL_COLS = ["TH","H","T","O"];
+let steps = [];
+let stepIndex = 0;
+let state = {};
+let visibleCols = [];
+
+function split(n) {
+  return {
+    TH: Math.floor(n / 1000),
+    H: Math.floor((n % 1000) / 100),
+    T: Math.floor((n % 100) / 10),
+    O: n % 10
+  };
+}
+
+function clone(o) {
+  return JSON.parse(JSON.stringify(o));
+}
+
+/* ===============================
+   UI HELPERS
+================================ */
+
+function drawTable() {
+  head.innerHTML = r1.innerHTML = r2.innerHTML = rr.innerHTML = "";
+  visibleCols.forEach(c => {
+    head.innerHTML += `<th>${c}</th>`;
+    r1.innerHTML += `<td></td>`;
+    r2.innerHTML += `<td></td>`;
+    rr.innerHTML += `<td></td>`;
+  });
+}
+
+function clearHighlight() {
+  document.querySelectorAll(".active").forEach(e => e.classList.remove("active"));
+}
+
+function highlight(col) {
+  if (!col) return;
+  const i = visibleCols.indexOf(col);
+  if (i === -1) return;
+  [r1, r2, rr].forEach(row => row.children[i].classList.add("active"));
+}
+
+/* ===============================
+   STEP SYSTEM
+================================ */
+
+function addStep(message, column, apply) {
+  steps.push({ message, column, apply });
+}
+
+/* ===============================
+   MAIN
+================================ */
+
+function start() {
+  const a = +n1.value;
+  const b = +n2.value;
+  if (a < b) return alert("First number must be bigger.");
+
+  const A = split(a);
+  const B = split(b);
+
+  state = { A: clone(A), B: clone(B), R: {} };
+
+  visibleCols = ALL_COLS.filter(c => A[c] !== 0 || B[c] !== 0 || c === "O");
+
+  steps = [];
+  stepIndex = 0;
+  drawTable();
+
+  buildPlacementSteps();
+  buildSubtractionSteps();
+
+  ws.style.display = "grid";
+  showStep();
+}
+
+/* ===============================
+   PLACEMENT
+================================ */
+
+function buildPlacementSteps() {
+  addStep("Place the first number.", null, () => {});
+  visibleCols.forEach(c => {
+    addStep(`Place the ${c}.`, c, s => {
+      r1.children[visibleCols.indexOf(c)].innerText = s.A[c];
+    });
+  });
+
+  addStep("Place the second number.", null, () => {});
+  visibleCols.forEach(c => {
+    addStep(`Place the ${c}.`, c, s => {
+      r2.children[visibleCols.indexOf(c)].innerText = s.B[c];
+    });
+  });
+}
+
+/* ===============================
+   SUBTRACTION
+================================ */
+
+function buildSubtractionSteps() {
+  const gen = clone(state.A);
+
+  for (let i = ALL_COLS.length - 1; i >= 0; i--) {
+    const col = ALL_COLS[i];
+    if (!visibleCols.includes(col)) continue;
+
+    addStep(`Check the ${col} place.`, col, () => {});
+
+    if (gen[col] < state.B[col]) {
+      borrowFinder(gen, i);
+    }
+
+    addStep(`Subtract the ${col} numbers.`, col, s => {
+      const idx = visibleCols.indexOf(col);
+      const result = s.A[col] - s.B[col];
+      s.R[col] = result;
+      rr.children[idx].innerText = result;
+      s.A[col] = result;   // lock column
+    });
+
+    gen[col] -= state.B[col];
+  }
+}
+
+/* ===============================
+   BORROW FINDER (SEARCH + WALK)
+================================ */
+
+function borrowFinder(gen, targetIndex) {
+  let source = targetIndex - 1;
+  while (source >= 0 && gen[ALL_COLS[source]] === 0) source--;
+  if (source < 0) return;
+
+  for (let i = source; i < targetIndex; i++) {
+    const from = ALL_COLS[i];
+    const to = ALL_COLS[i + 1];
+
+    addStep(`Take 1 from the ${from}.`, from, s => {
+      const idx = visibleCols.indexOf(from);
+      const old = s.A[from];
+      s.A[from]--;
+      if (idx !== -1)
+        r1.children[idx].innerHTML =
+          `<span class="old">${old}</span><span class="new">${s.A[from]}</span>`;
+    });
+    gen[from]--;
+
+    addStep(`Add 10 to the ${to}.`, to, s => {
+      const idx = visibleCols.indexOf(to);
+      const old = s.A[to];
+      s.A[to] += 10;
+      if (idx !== -1)
+        r1.children[idx].innerHTML =
+          `<span class="old">${old}</span><span class="new">${s.A[to]}</span>`;
+    });
+    gen[to] += 10;
+  }
+}
+
+/* ===============================
+   PLAYER
+================================ */
+
+function showStep() {
+  clearHighlight();
+  const s = steps[stepIndex];
+  text.innerHTML = s.message;
+  highlight(s.column);
+  if (s.apply) s.apply(state);
+
+  document.querySelector(".next").style.display =
+    stepIndex === steps.length - 1 ? "none" : "block";
+}
+
+function next() {
+  if (stepIndex < steps.length - 1) {
+    stepIndex++;
+    showStep();
+  }
+}
+</script>
+</body>
+</html>

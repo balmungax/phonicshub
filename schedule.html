@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Schedule Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Century+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Century Gothic', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 95%;
+            max-width: 1400px;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .header {
+            text-align: center;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .day-title {
+            font-size: 2.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .date-subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+        
+        .activities-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .activity-card {
+            border-radius: 15px;
+            padding: 30px 25px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+        }
+        
+        .current-activity {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+        
+        .next-activity {
+            background: linear-gradient(135deg, #f39c12, #f1c40f);
+            color: white;
+        }
+        
+        .activity-name {
+            font-size: 2.2em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        .activity-time {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+        
+        .next-label {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .next-activity-content {
+            font-size: 1.8em;
+            font-weight: 600;
+        }
+        
+        .schedule-panel {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 1.6em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 12px;
+            border-bottom: 3px solid #34495e;
+        }
+        
+        .schedule-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .schedule-table th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            padding: 18px;
+            text-align: left;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .schedule-table td {
+            padding: 16px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background-color 0.2s;
+        }
+        
+        .schedule-table tr:not(.current-period):hover td {
+            background-color: #f1f8ff;
+        }
+        
+        .time-column {
+            width: 180px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .activity-column {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .activity-buttons {
+            margin-left: 10px;
+            display: inline-flex;
+            gap: 5px;
+        }
+        
+        .activity-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 8px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .activity-btn:hover {
+            background: #2980b9;
+        }
+        
+        .current-period {
+            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .current-period .time-column,
+        .current-period .activity-column {
+            color: white !important;
+        }
+        
+        .message-container {
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .weekend-message {
+            background: linear-gradient(135deg, #e8f6f3, #d1f2eb);
+            color: #2c3e50;
+            padding: 25px;
+            border-radius: 15px;
+            font-size: 1.8em;
+            font-weight: bold;
+            border: 3px solid #27ae60;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .no-school {
+            background: linear-gradient(135deg, #ecf0f1, #d5dbdb);
+            color: #7f8c8d;
+            padding: 40px;
+            border-radius: 15px;
+            font-size: 1.6em;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .progress-container {
+            margin-top: 20px;
+            background: #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 10px;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        
+        /* Budokan/Club Popup Styles */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .popup-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+        
+        .popup-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .popup-subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .assignments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .student-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-left: 4px solid #3498db;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+        }
+        
+        .student-name {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        
+        .student-activity {
+            color: #27ae60;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .student-location {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        
+        .activity-filters {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            padding: 8px 16px;
+            background: #ecf0f1;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+        }
+        
+        .filter-btn:hover:not(.active) {
+            background: #d5dbdb;
+        }
+        
+        .popup-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1.2em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .popup-close:hover {
+            background: #c0392b;
+        }
+        
+        .activity-summary {
+            background: #e8f6f3;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .summary-item {
+            display: inline-block;
+            margin: 0 10px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .activities-panel {
+                flex-direction: row;
+            }
+            
+            .activity-card {
+                flex: 1;
+            }
+            
+            .assignments-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .activities-panel {
+                flex-direction: column;
+            }
+            
+            .day-title {
+                font-size: 1.8em;
+            }
+            
+            .activity-name {
+                font-size: 1.8em;
+            }
+            
+            .activity-time {
+                font-size: 1.4em;
+            }
+            
+            .popup-content {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .assignments-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .activity-filters {
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="day-title" id="day-title">Loading...</div>
+            <div class="date-subtitle" id="date-subtitle"></div>
+        </div>
+        
+        <div class="message-container">
+            <div id="weekend-message" class="weekend-message" style="display: none;">
+                🎉 Have a wonderful weekend! 🎉
+            </div>
+            <div id="no-school-message" class="no-school" style="display: none;">
+                No school today! Enjoy your day off! 🎉
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="activities-panel">
+                <div class="activity-card current-activity">
+                    <div class="activity-name" id="current-activity-name">-</div>
+                    <div class="activity-time" id="current-activity-time">-</div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                    <div class="status-bar">
+                        <span>Started</span>
+                        <span id="time-remaining">-</span>
+                    </div>
+                </div>
+                
+                <div class="activity-card next-activity">
+                    <div class="next-label">NEXT LESSON</div>
+                    <div class="next-activity-content" id="next-activity">-</div>
+                </div>
+            </div>
+            
+            <div class="schedule-panel">
+                <div class="section-title">TODAY'S FULL SCHEDULE</div>
+                <table class="schedule-table" id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th class="time-column">TIME</th>
+                            <th class="activity-column">ACTIVITY</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body">
+                        <!-- Schedule will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Budokan/Club Assignments Popup -->
+    <div class="popup-overlay" id="assignments-popup">
+        <div class="popup-content">
+            <button class="popup-close" id="close-popup">&times;</button>
+            <div class="popup-title" id="popup-title">Student Assignments</div>
+            <div class="popup-subtitle" id="popup-subtitle"></div>
+            
+            <div class="activity-summary">
+                <div class="summary-item">📋 <span id="total-students">0</span> Students</div>
+                <div class="summary-item">🏃 <span id="total-activities">0</span> Activities</div>
+                <div class="summary-item">📍 <span id="total-locations">0</span> Locations</div>
+            </div>
+            
+            <div class="activity-filters" id="activity-filters">
+                <!-- Filters will be generated dynamically -->
+            </div>
+            
+            <div class="assignments-grid" id="assignments-grid">
+                <!-- Student cards will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio elements for sounds -->
+    <audio id="transition-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    
+    <audio id="budokan-sound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-sport-start-whistle-316.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // NEW schedule data based on the updated image - with "Clubs" renamed
+        const schedule = {
+            'Mo': [
+                { time: "08:40 - 09:00", activity: "Circle Time" },
+                { time: "09:00 - 09:15", activity: "Breakfast" },
+                { time: "09:20 - 10:00", activity: "Math" },
+                { time: "10:00 - 10:05", activity: "Break 1" },
+                { time: "10:05 - 10:45", activity: "English" },
+                { time: "10:45 - 11:00", activity: "Snack" },
+                { time: "11:00 - 11:40", activity: "Science" },
+                { time: "11:50 - 12:30", activity: "Budokan" },
+                { time: "12:30 - 13:00", activity: "Lunch" },
+                { time: "13:00 - 14:00", activity: "Outside Play" },
+                { time: "14:05 - 14:45", activity: "Art" },
+                { time: "14:45 - 15:05", activity: "Reflection" },
+                { time: "15:05 - 15:15", activity: "Snack" },
+                { time: "15:15 - 16:15", activity: "Clubs" }
+            ],
+            'Tu': [
+                { time: "08:40 - 09:00", activity: "Kaz Color Circle" },
+                { time: "09:00 - 09:15", activity: "Breakfast" },
+                { time: "09:20 - 10:00", activity: "B204 Kaz Color Circle" },
+                { time: "10:00 - 10:05", activity: "Break 1" },
+                { time: "10:05 - 10:45", activity: "Kazakh" },
+                { time: "10:45 - 11:00", activity: "Snack" },
+                { time: "11:00 - 11:40", activity: "Science" },
+                { time: "11:50 - 12:30", activity: "Budokan" },
+                { time: "12:30 - 13:00", activity: "Lunch" },
+                { time: "13:00 - 14:00", activity: "Outside Play" },
+                { time: "14:05 - 14:45", activity: "English" },
+                { time: "14:45 - 15:05", activity: "Reflection" },
+                { time: "15:05 - 15:15", activity: "Snack" },
+                { time: "15:15 - 16:15", activity: "Clubs" }
+            ],
+            'We': [
+                { time: "08:40 - 09:00", activity: "Circle Time" },
+                { time: "09:00 - 09:15", activity: "Breakfast" },
+                { time: "09:20 - 10:00", activity: "Indoor SH PE Pr" },
+                { time: "10:00 - 10:05", activity: "Break 1" },
+                { time: "10:05 - 10:45", activity: "Russian" },
+                { time: "10:45 - 11:00", activity: "Snack" },
+                { time: "11:00 - 11:40", activity: "Math" },
+                { time: "11:50 - 12:30", activity: "Budokan" },
+                { time: "12:30 - 13:00", activity: "Lunch" },
+                { time: "13:00 - 14:00", activity: "Outside Play" },
+                { time: "14:05 - 14:45", activity: "Science" },
+                { time: "14:45 - 15:05", activity: "Reflection" },
+                { time: "15:05 - 15:15", activity: "Snack" },
+                { time: "15:15 - 16:15", activity: "Clubs" }
+            ],
+            'Th': [
+                { time: "08:40 - 09:00", activity: "Circle Time" },
+                { time: "09:00 - 09:15", activity: "Breakfast" },
+                { time: "09:20 - 10:45", activity: "B109 Eng Color Circle" },
+                { time: "10:45 - 11:00", activity: "Snack" },
+                { time: "11:00 - 11:40", activity: "Art" },
+                { time: "11:50 - 12:30", activity: "Budokan" },
+                { time: "12:30 - 13:00", activity: "Lunch" },
+                { time: "13:00 - 14:00", activity: "Outside Play" },
+                { time: "14:05 - 14:45", activity: "Kazakh" },
+                { time: "14:45 - 15:05", activity: "Reflection" },
+                { time: "15:05 - 15:15", activity: "Snack" },
+                { time: "15:15 - 16:15", activity: "Clubs" }
+            ],
+            'Fr': [
+                { time: "08:40 - 09:00", activity: "Circle Time" },
+                { time: "09:00 - 09:15", activity: "Breakfast" },
+                { time: "09:20 - 10:00", activity: "Math" },
+                { time: "10:00 - 10:05", activity: "Break 1" },
+                { time: "10:05 - 10:45", activity: "English" },
+                { time: "10:45 - 11:00", activity: "Snack" },
+                { time: "11:00 - 11:40", activity: "Russian" },
+                { time: "11:50 - 12:30", activity: "Budokan" },
+                { time: "12:30 - 13:00", activity: "Lunch" },
+                { time: "13:00 - 14:00", activity: "Outside Play" },
+                { time: "14:05 - 14:45", activity: "Science" },
+                { time: "14:45 - 15:05", activity: "Reflection" },
+                { time: "15:05 - 15:15", activity: "Snack" },
+                { time: "15:10 - 15:30", activity: "Buses leave at 15:30" }
+            ],
+            'Sa': [],
+            'Su': []
+        };
+
+        // All student names
+        const allStudents = [
+            "Aizere", "Alimkhan", "Alisa", "Barlas", "Bulat", "Dameli", 
+            "Danial", "Dasariya", "David", "Ideliya", "Ildar", "Laura", 
+            "Liyara", "Mira", "Mukhammedrakhym", "Ruslan", "Rustem", "Zhasmin"
+        ];
+
+        // Activities and their locations
+        const activities = {
+            "Football": "Main Field",
+            "Chess": "Library",
+            "Kendo": "Dojo 1",
+            "Piano": "Music Room",
+            "Judo": "Dojo 2",
+            "Basketball": "Court A",
+            "Swimming": "Pool",
+            "Volleyball": "Court B",
+            "Table Tennis": "Room 101",
+            "Badminton": "Court C",
+            "Dance": "Dance Studio",
+            "Gymnastics": "Gym Hall",
+            "Robotics": "Lab 1"
+        };
+
+        // Clubs and their locations
+        const clubs = {
+            "Art Club": "Art Room",
+            "Science Club": "Science Lab",
+            "Music Club": "Music Room",
+            "Drama Club": "Auditorium",
+            "Debate Club": "Room 204",
+            "Coding Club": "Computer Lab",
+            "Photography Club": "Studio 3",
+            "Math Club": "Room 105",
+            "Eco Club": "Garden Area",
+            "Book Club": "Library",
+            "Cooking Club": "Home Ec Room"
+        };
+
+        // Student assignments for Budokan and Clubs (different each day)
+        const studentAssignments = {
+            'Mo': {
+                'Budokan': generateDailyAssignments('Mo', 'Budokan'),
+                'Clubs': generateDailyAssignments('Mo', 'Clubs')
+            },
+            'Tu': {
+                'Budokan': generateDailyAssignments('Tu', 'Budokan'),
+                'Clubs': generateDailyAssignments('Tu', 'Clubs')
+            },
+            'We': {
+                'Budokan': generateDailyAssignments('We', 'Budokan'),
+                'Clubs': generateDailyAssignments('We', 'Clubs')
+            },
+            'Th': {
+                'Budokan': generateDailyAssignments('Th', 'Budokan'),
+                'Clubs': generateDailyAssignments('Th', 'Clubs')
+            },
+            'Fr': {
+                'Budokan': generateDailyAssignments('Fr', 'Budokan'),
+                'Clubs': generateDailyAssignments('Fr', 'Clubs')
+            }
+        };
+
+        // Helper function to generate assignments
+        function generateDailyAssignments(day, type) {
+            const assignments = [];
+            const activitySet = type === 'Budokan' ? activities : clubs;
+            const activityKeys = Object.keys(activitySet);
+            
+            // Special assignments for Thursday (as requested)
+            if (day === 'Th' && type === 'Budokan') {
+                assignments.push({ name: "Alimkhan", activity: "Football", location: "Main Field" });
+                assignments.push({ name: "Alisa", activity: "Football", location: "Main Field" });
+            }
+            
+            // Assign remaining students
+            const assignedStudents = assignments.map(a => a.name);
+            const remainingStudents = allStudents.filter(student => !assignedStudents.includes(student));
+            
+            remainingStudents.forEach((student, index) => {
+                const activityIndex = (index * 7 + day.charCodeAt(0) + day.charCodeAt(1)) % activityKeys.length;
+                const activity = activityKeys[activityIndex];
+                const location = activitySet[activity];
+                assignments.push({ name: student, activity, location });
+            });
+            
+            return assignments;
+        }
+
+        let lastActivityIndex = -1;
+        let currentDay = '';
+        let weekendMessageShown = false;
+
+        // Initialize everything when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeSchedule();
+            
+            // Setup popup close button
+            document.getElementById('close-popup').addEventListener('click', function() {
+                document.getElementById('assignments-popup').style.display = 'none';
+            });
+            
+            // Close popup when clicking outside
+            document.getElementById('assignments-popup').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+
+        function initializeSchedule() {
+            const now = new Date();
+            const currentDay = getCurrentDay();
+            const dayName = getDayName(currentDay);
+            const date = now.getDate();
+            const month = now.toLocaleString('en-US', { month: 'long' });
+            const year = now.getFullYear();
+            const suffix = getOrdinalSuffix(date);
+            
+            // Update header
+            document.getElementById('day-title').textContent = dayName;
+            document.getElementById('date-subtitle').textContent = `${date}${suffix} ${month} ${year}`;
+            
+            // Update schedule table
+            updateScheduleTable(currentDay);
+            
+            // Start the real-time updates
+            setInterval(updateDisplay, 1000);
+            updateDisplay(); // Initial call
+        }
+
+        function getCurrentDay() {
+            const days = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            return days[new Date().getDay()];
+        }
+
+        function getDayName(dayAbbr) {
+            const dayNames = {
+                'Mo': 'Monday',
+                'Tu': 'Tuesday',
+                'We': 'Wednesday',
+                'Th': 'Thursday',
+                'Fr': 'Friday',
+                'Sa': 'Saturday',
+                'Su': 'Sunday'
+            };
+            return dayNames[dayAbbr];
+        }
+
+        function getOrdinalSuffix(day) {
+            if (day > 3 && day < 21) return 'th';
+            switch (day % 10) {
+                case 1: return "st";
+                case 2: return "nd";
+                case 3: return "rd";
+                default: return "th";
+            }
+        }
+
+        function updateScheduleTable(day) {
+            const tbody = document.getElementById('schedule-body');
+            tbody.innerHTML = '';
+            
+            const todaySchedule = schedule[day] || [];
+            
+            if (todaySchedule.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="2" style="text-align: center; padding: 40px; color: #7f8c8d;">No school today!</td></tr>';
+                return;
+            }
+            
+            todaySchedule.forEach((activity, index) => {
+                const row = document.createElement('tr');
+                const hasButton = activity.activity.includes("Budokan") || activity.activity.includes("Clubs");
+                
+                row.innerHTML = `
+                    <td class="time-column">${activity.time}</td>
+                    <td class="activity-column">
+                        ${activity.activity}
+                        ${hasButton ? `<span class="activity-buttons">
+                            <button class="activity-btn" data-index="${index}" data-type="${activity.activity.includes('Budokan') ? 'Budokan' : 'Clubs'}">
+                                👥 View
+                            </button>
+                        </span>` : ''}
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Add event listeners to the buttons
+            tbody.querySelectorAll('.activity-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const type = this.getAttribute('data-type');
+                    showStudentAssignments(type);
+                });
+            });
+        }
+
+        function updateDisplay() {
+            const now = new Date();
+            const today = getCurrentDay();
+            const currentTime = getCurrentTimeInMinutes();
+            
+            const todaySchedule = schedule[today] || [];
+            const noSchoolMsg = document.getElementById('no-school-message');
+            const weekendMsg = document.getElementById('weekend-message');
+            
+            // Handle no school days
+            if (todaySchedule.length === 0) {
+                noSchoolMsg.style.display = 'block';
+                weekendMsg.style.display = 'none';
+                document.getElementById('current-activity-name').textContent = "No School Today";
+                document.getElementById('current-activity-time').textContent = "";
+                document.getElementById('next-activity').textContent = "Enjoy your day off!";
+                document.getElementById('progress-bar').style.width = '0%';
+                document.getElementById('time-remaining').textContent = '';
+                return;
+            } else {
+                noSchoolMsg.style.display = 'none';
+            }
+            
+            // Find current and next activities
+            let currentActivity = null;
+            let nextActivity = null;
+            let currentIndex = -1;
+            
+            for (let i = 0; i < todaySchedule.length; i++) {
+                const activity = todaySchedule[i];
+                const times = parseTime(activity.time);
+                
+                if (times) {
+                    const startTime = timeToMinutes(times.startStr);
+                    const endTime = timeToMinutes(times.endStr);
+                    
+                    if (currentTime >= startTime && currentTime <= endTime) {
+                        currentActivity = { activity: activity, times: times, index: i };
+                        currentIndex = i;
+                    } else if (currentTime < startTime && !nextActivity) {
+                        nextActivity = activity;
+                    }
+                }
+            }
+            
+            // Update current activity display
+            if (currentActivity) {
+                document.getElementById('current-activity-name').textContent = currentActivity.activity.activity;
+                document.getElementById('current-activity-time').textContent = currentActivity.activity.time;
+                
+                // Update progress bar
+                const startTime = timeToMinutes(currentActivity.times.startStr);
+                const endTime = timeToMinutes(currentActivity.times.endStr);
+                const totalDuration = endTime - startTime;
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100));
+                document.getElementById('progress-bar').style.width = `${progress}%`;
+                
+                // Update time remaining
+                const remaining = endTime - currentTime;
+                if (remaining > 0) {
+                    const hours = Math.floor(remaining / 60);
+                    const minutes = remaining % 60;
+                    if (hours > 0) {
+                        document.getElementById('time-remaining').textContent = `${hours}h ${minutes}m left`;
+                    } else {
+                        document.getElementById('time-remaining').textContent = `${minutes}m left`;
+                    }
+                } else {
+                    document.getElementById('time-remaining').textContent = 'Ending soon';
+                }
+            } else {
+                document.getElementById('current-activity-name').textContent = "No current activity";
+                document.getElementById('current-activity-time').textContent = "";
+                document.getElementById('progress-bar').style.width = '0%';
+                document.getElementById('time-remaining').textContent = '';
+            }
+            
+            // Update next activity display
+            if (nextActivity) {
+                const nextTime = parseTime(nextActivity.time);
+                document.getElementById('next-activity').textContent = `${nextActivity.activity} at ${nextTime.startStr}`;
+            } else {
+                document.getElementById('next-activity').textContent = "No upcoming activities";
+            }
+            
+            // Highlight current activity and play transition sound if changed
+            highlightCurrentActivity(currentIndex);
+            
+            if (currentIndex !== -1 && currentIndex !== lastActivityIndex) {
+                playTransitionSound();
+                
+                // Play Budokan sound if starting Budokan activity
+                if (currentActivity && currentActivity.activity.activity.includes("Budokan")) {
+                    setTimeout(() => playBudokanSound(), 500);
+                }
+                
+                lastActivityIndex = currentIndex;
+            }
+        }
+
+        function showStudentAssignments(type) {
+            const today = getCurrentDay();
+            const dayName = getDayName(today);
+            const assignments = studentAssignments[today]?.[type] || [];
+            
+            document.getElementById('popup-title').textContent = `${type} Assignments - ${dayName}`;
+            document.getElementById('popup-subtitle').textContent = `${allStudents.length} Students`;
+            
+            // Update summary
+            const uniqueActivities = [...new Set(assignments.map(a => a.activity))];
+            const uniqueLocations = [...new Set(assignments.map(a => a.location))];
+            
+            document.getElementById('total-students').textContent = assignments.length;
+            document.getElementById('total-activities').textContent = uniqueActivities.length;
+            document.getElementById('total-locations').textContent = uniqueLocations.length;
+            
+            // Create filters
+            const filtersContainer = document.getElementById('activity-filters');
+            filtersContainer.innerHTML = '';
+            
+            // Add "All" filter
+            const allFilter = document.createElement('button');
+            allFilter.className = 'filter-btn active';
+            allFilter.textContent = 'All';
+            allFilter.onclick = () => filterAssignments('all');
+            filtersContainer.appendChild(allFilter);
+            
+            // Add activity filters
+            uniqueActivities.forEach(activity => {
+                const filter = document.createElement('button');
+                filter.className = 'filter-btn';
+                filter.textContent = activity;
+                filter.onclick = () => filterAssignments(activity);
+                filtersContainer.appendChild(filter);
+            });
+            
+            // Display all assignments initially
+            displayAssignments(assignments);
+            
+            document.getElementById('assignments-popup').style.display = 'flex';
+        }
+
+        function displayAssignments(assignments) {
+            const grid = document.getElementById('assignments-grid');
+            grid.innerHTML = '';
+            
+            if (assignments.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #7f8c8d;">No assignments available</div>';
+                return;
+            }
+            
+            assignments.forEach(assignment => {
+                const card = document.createElement('div');
+                card.className = 'student-card';
+                card.innerHTML = `
+                    <div class="student-name">${assignment.name}</div>
+                    <div class="student-activity">${assignment.activity}</div>
+                    <div class="student-location">📍 ${assignment.location}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterAssignments(filter) {
+            const today = getCurrentDay();
+            const currentType = document.getElementById('popup-title').textContent.includes('Budokan') ? 'Budokan' : 'Clubs';
+            const assignments = studentAssignments[today]?.[currentType] || [];
+            
+            // Update filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Filter assignments
+            const filtered = filter === 'all' 
+                ? assignments 
+                : assignments.filter(a => a.activity === filter);
+            
+            displayAssignments(filtered);
+            
+            // Update summary for filtered results
+            const uniqueActivities = [...new Set(filtered.map(a => a.activity))];
+            const uniqueLocations = [...new Set(filtered.map(a => a.location))];
+            
+            document.getElementById('total-students').textContent = filtered.length;
+            document.getElementById('total-activities').textContent = uniqueActivities.length;
+            document.getElementById('total-locations').textContent = uniqueLocations.length;
+        }
+
+        function parseTime(timeStr) {
+            const timeMatch = timeStr.match(/(\d{2}:\d{2})\s*-\s*(\d{2}:\d{2})/);
+            if (timeMatch) {
+                return {
+                    startStr: timeMatch[1],
+                    endStr: timeMatch[2]
+                };
+            }
+            return null;
+        }
+
+        function timeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function getCurrentTimeInMinutes() {
+            const now = new Date();
+            return now.getHours() * 60 + now.getMinutes();
+        }
+
+        function highlightCurrentActivity(currentIndex) {
+            const rows = document.querySelectorAll('#schedule-body tr');
+            rows.forEach(row => row.classList.remove('current-period'));
+            
+            if (currentIndex >= 0 && currentIndex < rows.length) {
+                rows[currentIndex].classList.add('current-period');
+            }
+        }
+
+        function playTransitionSound() {
+            const sound = document.getElementById('transition-sound');
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log('Audio play failed:', e));
+        }
+        
+        function playBudokanSound() {
+            const sound = document.getElementById('budokan-sound');
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log('Budokan audio play failed:', e));
+        }
+    </script>
+</body>
+</html>
