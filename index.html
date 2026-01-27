@@ -2,126 +2,428 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>2C Classroom</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2C</title>
 <style>
-/* Base Layout */
-body { 
-    display: flex; 
-    height: 100vh; 
-    margin: 0; 
-    font-family: 'Century Gothic', AppleGothic, sans-serif; 
-    overflow: hidden; 
-    background-color: #f4f7f6;
+/* Base Variables - Light and Child-Friendly */
+:root {
+    --primary-color: #4a6fa5;      /* Softer blue */
+    --secondary-color: #6c8dc3;    /* Lighter blue */
+    --accent-primary: #ff9d00;     /* Bright orange */
+    --accent-secondary: #00a8a8;   /* Teal */
+    --menu-bg: #ffffff;            /* White menu background */
+    --surface-light: #f8f9fa;      /* Very light gray */
+    --surface-white: #ffffff;
+    --text-dark: #2c3e50;          /* Dark blue-gray for text */
+    --text-light: #5d6d7e;         /* Lighter text */
+    --shadow: rgba(0, 0, 0, 0.05);
+    --shadow-dark: rgba(0, 0, 0, 0.1);
+    --radius-sm: 12px;
+    --radius-md: 16px;
+    --transition-smooth: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
 }
 
-/* SIDEBAR */
+/* Reset & Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body { 
+    display: flex; 
+    min-height: 100vh;
+    margin: 0; 
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif; 
+    background: linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%);
+    overflow: hidden;
+}
+
+/* SIDEBAR - Light Background */
 #menu {
-    width: 260px;
-    background-color: #263238; 
+    width: 280px;
+    background: var(--menu-bg);
     display: flex;
     flex-direction: column;
-    padding: 15px; /* Slightly reduced padding */
-    gap: 10px; /* Reduced gap to fit more items */
-    border-right: 6px solid #FBC02D; 
-    transition: width 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+    padding: 25px 18px;
+    gap: 10px;
+    box-shadow: 5px 0 25px var(--shadow-dark);
+    transition: width var(--transition-smooth);
     flex-shrink: 0;
-    box-sizing: border-box;
+    position: relative;
+    z-index: 100;
+    overflow-y: auto;
+    border-right: 4px solid var(--accent-primary);
 }
 
 #menu.contracted {
     width: 85px;
-    padding: 15px 10px;
+    padding: 25px 10px;
 }
 
-/* IMPROVED TOGGLE BUTTON */
+/* Header with Logo */
+.menu-header {
+    display: flex;
+    align-items: center;
+    padding: 0 8px 20px;
+    margin-bottom: 10px;
+    border-bottom: 2px solid rgba(74, 111, 165, 0.1);
+    transition: all var(--transition-smooth);
+}
+
+.classroom-logo {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--accent-primary), #ffc400);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: white;
+    margin-right: 15px;
+    box-shadow: 0 4px 12px rgba(255, 157, 0, 0.3);
+    flex-shrink: 0;
+}
+
+.header-text {
+    flex: 1;
+    color: var(--text-dark);
+}
+
+.header-text h1 {
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: 0.5px;
+    color: var(--primary-color);
+}
+
+.header-text p {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 400;
+}
+
+#menu.contracted .header-text {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    margin: 0;
+}
+
+#menu.contracted .menu-header {
+    padding: 0;
+    justify-content: center;
+    border-bottom: none;
+    margin-bottom: 25px;
+}
+
+/* Burger Toggle Button */
 #toggle-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-    width: 100%;
+    margin-bottom: 5px;
+    padding: 0 5px;
 }
 
 #toggle-btn {
-    background: #37474f;
-    border: 2px solid #FBC02D;
-    color: #FBC02D;
-    border-radius: 12px;
-    width: 50px;
-    height: 50px;
+    background: rgba(255, 157, 0, 0.1);
+    border: 2px solid var(--accent-primary);
+    color: var(--accent-primary);
+    border-radius: 10px;
+    width: 52px;
+    height: 52px;
     cursor: pointer;
-    font-size: 24px;
+    font-size: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
 }
 
 #toggle-btn:hover {
-    background: #FBC02D;
-    color: #263238;
+    background: var(--accent-primary);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 157, 0, 0.4);
+}
+
+/* Menu Items Container */
+.menu-items-container {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 6px;
+    margin-top: 5px;
 }
 
 /* Menu Links */
 .menu-link {
-    height: 50px; /* Reduced height to fit 11 items */
-    color: white;
+    height: 58px;
+    color: var(--text-dark);
     text-decoration: none;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 0.95rem; /* Slightly smaller font */
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
     display: flex;
     align-items: center;
-    padding-left: 15px;
-    transition: all 0.3s ease;
+    padding: 0 16px;
+    margin-bottom: 8px;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
     white-space: nowrap;
+    border: 2px solid rgba(74, 111, 165, 0.1);
+    background: rgba(74, 111, 165, 0.03);
+}
+
+.menu-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 6px;
+    height: 100%;
+    background: currentColor;
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+    border-radius: 3px 0 0 3px;
+}
+
+.menu-link:hover::after {
+    transform: scaleY(1);
 }
 
 .menu-link span:first-child {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
+    min-width: 40px;
+    text-align: center;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
 }
 
 .menu-link:hover { 
-    transform: translateX(6px); 
-    filter: brightness(1.1);
+    transform: translateX(6px);
+    background: rgba(74, 111, 165, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-color: rgba(74, 111, 165, 0.2);
 }
 
-/* Contracted behavior */
-#menu.contracted .menu-link {
-    padding-left: 0;
-    justify-content: center;
+.menu-link:hover span:first-child {
+    transform: scale(1.1);
 }
 
+.menu-link.active {
+    background: rgba(74, 111, 165, 0.12);
+    border-color: rgba(74, 111, 165, 0.3);
+    box-shadow: 0 4px 15px rgba(74, 111, 165, 0.15);
+}
+
+/* Link Text */
 .link-text {
     opacity: 1;
-    transition: opacity 0.2s ease;
-    margin-left: 12px;
+    transition: opacity var(--transition-smooth), margin var(--transition-smooth);
+    margin-left: 16px;
+    letter-spacing: 0.3px;
+    font-size: 1rem;
+    color: var(--text-dark);
+    font-weight: 600;
 }
 
 #menu.contracted .link-text {
     opacity: 0;
-    display: none;
+    width: 0;
+    margin-left: 0;
 }
 
-/* COLORS */
-.btn-schedule { background-color: #7CB342; }
-.btn-keyboard { background-color: #42A5F5; }
-.btn-phonics  { background-color: #26A69A; }
-.btn-vocab    { background-color: #F57C00; }
-.btn-math     { background-color: #8E24AA; }
-.btn-trans    { background-color: #3949AB; }
-.btn-words    { background-color: #C0CA33; }
-.btn-grammar  { background-color: #EF5350; }
-.btn-goal     { background-color: #FF7043; } /* Weekly Goal color */
-.btn-new1     { background-color: #546E7A; } /* Placeholder color 1 */
-.btn-new2     { background-color: #D81B60; } /* Placeholder color 2 */
+/* Tooltip for Contracted State */
+.menu-link::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 12px);
+    top: 50%;
+    transform: translateY(-50%) translateX(-10px);
+    background: white;
+    color: var(--text-dark);
+    padding: 10px 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 20px var(--shadow-dark);
+    border: 2px solid var(--accent-primary);
+    font-weight: 600;
+}
 
-/* Content frame */
+#menu.contracted .menu-link:hover::before {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(-50%) translateX(0);
+}
+
+/* Color Scheme - Bright and Child-Friendly */
+.btn-schedule { color: #2ecc71; }      /* Bright Green */
+.btn-keyboard { color: #3498db; }      /* Sky Blue */
+.btn-plants  { color: #27ae60; }       /* Forest Green */
+.btn-vocab    { color: #e67e22; }      /* Orange */
+.btn-math     { color: #9b59b6; }      /* Purple */
+.btn-trans    { color: #34495e; }      /* Dark Blue */
+.btn-words    { color: #16a085; }      /* Turquoise */
+.btn-grammar  { color: #e74c3c; }      /* Red */
+.btn-goal     { color: #f39c12; }      /* Yellow-Orange */
+.btn-puzzle   { color: #1abc9c; }      /* Teal */
+.btn-games    { color: #e84393; }      /* Pink */
+
+/* Content Frame - Always Scroll to Top */
 #content-frame {
     flex-grow: 1;
     border: none;
-    background-color: white;
+    background: var(--surface-white);
+    border-radius: var(--radius-md) 0 0 var(--radius-md);
+    box-shadow: inset 8px 0 20px var(--shadow);
+    transition: all var(--transition-smooth);
+}
+
+/* Force iframe content to top */
+#content-frame {
+    scroll-behavior: smooth;
+}
+
+/* Scrollbar Styling */
+.menu-items-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.menu-items-container::-webkit-scrollbar-track {
+    background: rgba(74, 111, 165, 0.05);
+    border-radius: 10px;
+}
+
+.menu-items-container::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 10px;
+}
+
+.menu-items-container::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+}
+
+/* Animation for menu items on load */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.menu-link {
+    animation: slideIn 0.4s ease forwards;
+}
+
+/* Stagger animation for each item */
+.menu-link:nth-child(1) { animation-delay: 0.05s; }
+.menu-link:nth-child(2) { animation-delay: 0.1s; }
+.menu-link:nth-child(3) { animation-delay: 0.15s; }
+.menu-link:nth-child(4) { animation-delay: 0.2s; }
+.menu-link:nth-child(5) { animation-delay: 0.25s; }
+.menu-link:nth-child(6) { animation-delay: 0.3s; }
+.menu-link:nth-child(7) { animation-delay: 0.35s; }
+.menu-link:nth-child(8) { animation-delay: 0.4s; }
+.menu-link:nth-child(9) { animation-delay: 0.45s; }
+.menu-link:nth-child(10) { animation-delay: 0.5s; }
+.menu-link:nth-child(11) { animation-delay: 0.55s; }
+
+/* Responsive Design */
+@media (max-height: 800px) {
+    .menu-link {
+        height: 52px;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+    }
+    
+    .menu-link span:first-child {
+        font-size: 1.3rem;
+        min-width: 32px;
+    }
+    
+    .menu-header {
+        padding-bottom: 15px;
+        margin-bottom: 10px;
+    }
+}
+
+/* Expand indicator hint */
+.expand-hint {
+    position: absolute;
+    right: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 40px;
+    background: var(--accent-primary);
+    border-radius: 0 8px 8px 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+#menu.contracted .expand-hint {
+    opacity: 0.7;
+}
+
+.expand-hint:hover {
+    opacity: 1;
+    width: 18px;
+}
+
+/* Enhanced visual feedback for active menu items */
+.menu-link.active::before {
+    content: '';
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+}
+
+#menu.contracted .menu-link.active::before {
+    right: 6px;
+}
+
+/* Decorative elements for child-friendliness */
+#menu::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        #ff9d00, #ffc400, #2ecc71, #3498db, #9b59b6);
+    z-index: 101;
+}
+
+/* Fun pattern in background */
+#menu {
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(255, 157, 0, 0.03) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.03) 0%, transparent 20%);
+    background-size: 200px 200px;
 }
 </style>
 </head>
@@ -129,61 +431,206 @@ body {
 <body>
 
 <nav id="menu">
+    <div class="menu-header">
+        <div class="classroom-logo">2</div>
+        <div class="header-text">
+
+        </div>
+    </div>
+    
     <div id="toggle-container">
-        <button id="toggle-btn" onclick="toggleMenu()">☰</button>
+        <button id="toggle-btn" onclick="toggleMenu()" aria-label="Toggle menu">
+            ☰
+        </button>
     </div>
 
-    <a href="schedule.html" target="content-view" class="menu-link btn-schedule">
-        <span>📅</span><span class="link-text">Schedule</span>
-    </a>
+    <div class="expand-hint" onclick="toggleMenu()"></div>
 
-    <a href="keyboard.html" target="content-view" class="menu-link btn-keyboard">
-        <span>💻</span><span class="link-text">Keyboard</span>
-    </a>
+    <div class="menu-items-container">
+        <a href="schedule.html" target="content-view" class="menu-link btn-schedule active" data-tooltip="Daily Schedule">
+            <span>📅</span><span class="link-text">Schedule</span>
+        </a>
 
-    <a href="plants.html" target="content-view" class="menu-link btn-phonics">
-        <span>🗣️</span><span class="link-text">Plants</span>
-    </a>
+        <a href="keyboard.html" target="content-view" class="menu-link btn-keyboard" data-tooltip="Keyboard Practice">
+            <span>⌨️</span><span class="link-text">Keyboard</span>
+        </a>
 
-    <a href="vocabulary.html" target="content-view" class="menu-link btn-vocab">
-        <span>📚</span><span class="link-text">Vocabulary</span>
-    </a>
+        <a href="plants.html" target="content-view" class="menu-link btn-plants" data-tooltip="Plants Science">
+            <span>🌱</span><span class="link-text">Plants</span>
+        </a>
 
-    <a href="place.html" target="content-view" class="menu-link btn-math">
-        <span>➖</span><span class="link-text">Subtraction</span>
-    </a>
+        <a href="build.html" target="content-view" class="menu-link btn-vocab" data-tooltip="Vocabulary">
+            <span>📚</span><span class="link-text">Vocabulary</span>
+        </a>
 
-    <a href="translator.html" target="content-view" class="menu-link btn-trans">
-        <span>🌍</span><span class="link-text">Translator</span>
-    </a>
+        <a href="place.html" target="content-view" class="menu-link btn-math" data-tooltip="Math: Subtraction">
+            <span>➖</span><span class="link-text">Subtraction</span>
+        </a>
 
-    <a href="words2.html" target="content-view" class="menu-link btn-words">
-        <span>🗂️</span><span class="link-text">Word Bank</span>
-    </a>
+        <a href="translator.html" target="content-view" class="menu-link btn-trans" data-tooltip="Translator">
+            <span>🌍</span><span class="link-text">Translator</span>
+        </a>
 
-    <a href="grammar.html" target="content-view" class="menu-link btn-grammar">
-        <span>✔️</span><span class="link-text">Checker</span>
-    </a>
+        <a href="words2.html" target="content-view" class="menu-link btn-words" data-tooltip="Word Bank">
+            <span>🗂️</span><span class="link-text">Word Bank</span>
+        </a>
 
-    <a href="goal.html" target="content-view" class="menu-link btn-goal">
-        <span>🌟</span><span class="link-text">Weekly Goal</span>
-    </a>
+        <a href="grammar.html" target="content-view" class="menu-link btn-grammar" data-tooltip="Grammar Checker">
+            <span>✔️</span><span class="link-text">Checker</span>
+        </a>
 
-    <a href="#" target="content-view" class="menu-link btn-new1">
-        <span>❓</span><span class="link-text">Puzzle</span>
-    </a>
+        <a href="goal.html" target="content-view" class="menu-link btn-goal" data-tooltip="Weekly Goal">
+            <span>🎯</span><span class="link-text">Weekly Goal</span>
+        </a>
 
-    <a href="#" target="content-view" class="menu-link btn-new2">
-        <span>❓</span><span class="link-text">games</span>
-    </a>
+        <a href="puzzle.html" target="content-view" class="menu-link btn-puzzle" data-tooltip="Puzzle">
+            <span>🧩</span><span class="link-text">Puzzle</span>
+        </a>
+
+        <a href="games.html" target="content-view" class="menu-link btn-games" data-tooltip="Educational Games">
+            <span>🎮</span><span class="link-text">Games</span>
+        </a>
+    </div>
 </nav>
 
-<iframe name="content-view" id="content-frame" src="schedule.html"></iframe>
+<iframe name="content-view" id="content-frame" src="schedule.html" title="Classroom Content"></iframe>
 
 <script>
 function toggleMenu() {
-    document.getElementById('menu').classList.toggle('contracted');
+    const menu = document.getElementById('menu');
+    const toggleBtn = document.getElementById('toggle-btn');
+    
+    menu.classList.toggle('contracted');
+    
+    // Update aria label
+    if (menu.classList.contains('contracted')) {
+        toggleBtn.setAttribute('aria-label', 'Expand menu');
+    } else {
+        toggleBtn.setAttribute('aria-label', 'Collapse menu');
+    }
 }
+
+// Set active menu item and scroll iframe to top
+document.addEventListener('DOMContentLoaded', function() {
+    const menuLinks = document.querySelectorAll('.menu-link');
+    const contentFrame = document.getElementById('content-frame');
+    
+    // Scroll iframe to top when it loads
+    contentFrame.onload = function() {
+        try {
+            // Scroll the iframe's content to top
+            contentFrame.contentWindow.scrollTo(0, 0);
+        } catch (e) {
+            // If cross-origin, try different approach
+            console.log('Cannot scroll iframe due to security restrictions');
+        }
+    };
+    
+    // Highlight current page and scroll to top
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.href === '#') {
+                e.preventDefault();
+                return;
+            }
+            
+            // Remove active class from all links
+            menuLinks.forEach(l => l.classList.remove('active'));
+            // Add active class to clicked link
+            this.classList.add('active');
+            
+            // Force iframe to scroll to top immediately
+            try {
+                contentFrame.contentWindow.scrollTo({
+                    top: 0,
+                    left: 0,
+                    behavior: 'instant'
+                });
+            } catch (e) {
+                // Fallback for cross-origin
+                console.log('Cannot scroll iframe');
+            }
+            
+            // Set iframe source after a tiny delay to ensure scroll
+            setTimeout(() => {
+                // Force scroll again after load
+                contentFrame.onload = function() {
+                    try {
+                        contentFrame.contentWindow.scrollTo(0, 0);
+                    } catch (e) {
+                        console.log('Cannot scroll iframe');
+                    }
+                };
+            }, 50);
+        });
+    });
+    
+    // Auto-expand on hover for contracted menu (with delay)
+    const menu = document.getElementById('menu');
+    let expandTimeout;
+    
+    menu.addEventListener('mouseenter', function() {
+        if (menu.classList.contains('contracted')) {
+            expandTimeout = setTimeout(() => {
+                if (menu.classList.contains('contracted')) {
+                    toggleMenu();
+                }
+            }, 600);
+        }
+    });
+    
+    menu.addEventListener('mouseleave', function() {
+        clearTimeout(expandTimeout);
+    });
+    
+    // Update active link when iframe loads
+    contentFrame.addEventListener('load', function() {
+        const currentSrc = contentFrame.src.split('/').pop();
+        menuLinks.forEach(link => {
+            const linkSrc = link.href.split('/').pop();
+            if (linkSrc === currentSrc) {
+                menuLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+            }
+        });
+        
+        // Always scroll to top on load
+        try {
+            contentFrame.contentWindow.scrollTo(0, 0);
+        } catch (e) {
+            console.log('Cannot scroll iframe');
+        }
+    });
+    
+    // Force initial scroll to top
+    setTimeout(() => {
+        try {
+            contentFrame.contentWindow.scrollTo(0, 0);
+        } catch (e) {
+            console.log('Cannot scroll iframe initially');
+        }
+    }, 500);
+    
+    // Responsive behavior - auto-collapse on small screens
+    function checkScreenSize() {
+        if (window.innerWidth < 900) {
+            if (!menu.classList.contains('contracted')) {
+                toggleMenu();
+            }
+        }
+    }
+    
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+    
+    // Keyboard shortcut for toggling menu (Ctrl+M)
+    document.addEventListener('keydown', function(e) {
+        if (e.ctrlKey && e.key === 'm') {
+            e.preventDefault();
+            toggleMenu();
+        }
+    });
+});
 </script>
 
 </body>
