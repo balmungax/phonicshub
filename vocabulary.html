@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <title>Vocabulary Practice</title>
     <style>
-        /* 1. Base Setup */
+        /* 1. Base Setup - Changed to align at the top */
         body { 
             font-family: 'Century Gothic', AppleGothic, sans-serif; 
             background-color: #ecf0f1; 
             margin: 0; 
             display: flex; 
             justify-content: center; 
-            align-items: center; 
-            height: 100vh;
+            align-items: flex-start; /* Changed from 'center' to 'flex-start' */
+            min-height: 100vh; /* Changed from 'height' to 'min-height' */
+            padding-top: 20px; /* Added some padding from the very top */
         }
 
         /* 2. The Activity Card (The Frame) */
@@ -25,6 +26,24 @@
             border: 10px solid #3498db;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             text-align: center;
+            margin-top: 0; /* Ensures no top margin */
+        }
+
+        /* Back button styles */
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #2c3e50;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            transition: background 0.3s;
+        }
+
+        .back-button:hover {
+            background: #1a252f;
         }
 
         /* Image Display */
@@ -63,7 +82,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px; /* Slightly larger for clarity */
+            font-size: 24px;
             color: #2c3e50;
             font-weight: bold;
             letter-spacing: 5px;
@@ -114,11 +133,19 @@
             25% { transform: translateX(-10px); }
             75% { transform: translateX(10px); }
         }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 <body>
 
     <div class="activity-card">
+        <!-- Back button added here -->
+        <a href="build.html" class="back-button">← Back</a>
+        
         <div class="image-container">
             <button class="nav-btn" onclick="move(-1)">◀</button>
             <img id="target-image" src="" alt="Vocabulary Image">
@@ -183,7 +210,19 @@
         const feedback = document.getElementById('feedback-msg');
 
         function updateDisplay() {
-            box.innerText = typedText === "" ? "_ _ _ _" : typedText;
+            // Create underscores for each missing letter
+            const wordLength = list[current].word.length;
+            if (typedText === "") {
+                box.innerText = "_ ".repeat(wordLength).trim();
+            } else {
+                // Show typed letters followed by underscores for remaining letters
+                let display = typedText;
+                const remaining = wordLength - typedText.length;
+                if (remaining > 0) {
+                    display += " " + "_ ".repeat(remaining).trim();
+                }
+                box.innerText = display;
+            }
         }
 
         function load() {
@@ -195,8 +234,11 @@
         }
 
         function add(letter) {
-            typedText += letter;
-            updateDisplay();
+            const wordLength = list[current].word.length;
+            if (typedText.length < wordLength) {
+                typedText += letter;
+                updateDisplay();
+            }
         }
 
         function del() {
@@ -221,6 +263,10 @@
             if (typedText.toLowerCase() === answer) {
                 feedback.innerText = "EXCELLENT! 🌟";
                 feedback.className = "success-bounce";
+                // Move to next word after a delay
+                setTimeout(() => {
+                    move(1);
+                }, 1500);
             } else {
                 feedback.innerText = "TRY AGAIN ❌";
                 feedback.className = "error-shake";
