@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alatau Crocus: The Ice Breaker Flower</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Century+Gothic:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Century Gothic', Arial, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e6f7ff 0%, #f0f9ff 100%);
+            min-height: 100vh;
+            padding: 10px;
+            color: #333;
+        }
+        
+        /* Responsive Container */
+        .responsive-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 100, 200, 0.1);
+            overflow: hidden;
+            border: 6px solid #e3f2fd;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #4a90e2, #63b3ed);
+            color: white;
+            padding: 20px 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            font-weight: bold;
+            color: #ffeb3b;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Slides Container - Responsive Height */
+        .slides-container {
+            position: relative;
+            min-height: 500px;
+            height: auto;
+            overflow: hidden;
+        }
+        
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            pointer-events: none;
+        }
+        
+        .slide.active {
+            display: block;
+            opacity: 1;
+            position: relative;
+            pointer-events: all;
+        }
+        
+        /* Flexible Slide Content */
+        .slide-content {
+            display: flex;
+            flex-wrap: wrap;
+            height: 100%;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .image-section {
+            flex: 1 1 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+        
+        .flower-image {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border: 4px solid #e3f2fd;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        
+        .flower-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .image-caption {
+            background-color: #ffccbc;
+            color: #bf360c;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 5px;
+        }
+        
+        .text-section {
+            flex: 1 1 300px;
+            padding: 10px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+        
+        .slide-title {
+            color: #2c5aa0;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #e3f2fd;
+            padding-bottom: 8px;
+        }
+        
+        .slide-title i {
+            margin-right: 8px;
+            font-size: clamp(1.4rem, 3vw, 1.8rem);
+            color: #4a90e2;
+        }
+        
+        .info-text {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #2c5aa0;
+            border: 1px solid #ffeb3b;
+        }
+        
+        /* Clickable words - IMPROVED */
+        .clickable-word {
+            color: #2c5aa0;
+            font-weight: bold;
+            cursor: pointer;
+            border-bottom: 2px dotted #4a90e2;
+            position: relative;
+            display: inline-block;
+            padding: 1px 3px;
+            transition: all 0.2s ease;
+        }
+        
+        .clickable-word:hover {
+            background-color: #e3f2fd;
+            border-radius: 4px;
+        }
+        
+        /* Tooltip */
+        .clickable-word::after {
+            content: attr(data-ru);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2c5aa0;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+            min-width: 120px;
+            text-align: center;
+        }
+        
+        .clickable-word::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #2c5aa0;
+            z-index: 1001;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            margin-bottom: 4px;
+            pointer-events: none;
+        }
+        
+        .clickable-word.show-translation::after,
+        .clickable-word.show-translation::before {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .facts-box {
+            background-color: #e8f5e9;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            border-left: 4px solid #4caf50;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .facts-title {
+            color: #2e7d32;
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .facts-title i {
+            margin-right: 8px;
+        }
+        
+        /* Navigation - Always visible at bottom */
+        .slide-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background-color: #f5f9ff;
+            border-top: 2px dashed #4a90e2;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .nav-button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            min-width: 120px;
+            justify-content: center;
+        }
+        
+        .nav-button:hover:not(:disabled) {
+            background-color: #2c5aa0;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(44, 90, 160, 0.3);
+        }
+        
+        .nav-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.6;
+        }
+        
+        .nav-button i {
+            margin: 0 6px;
+        }
+        
+        .slide-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .indicator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cccccc;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .indicator-dot:hover {
+            transform: scale(1.2);
+            background-color: #4a90e2;
+        }
+        
+        .indicator-dot.active {
+            background-color: #4a90e2;
+            transform: scale(1.3);
+            border-color: #2c5aa0;
+        }
+        
+        /* QUIZ BUTTON */
+        .quiz-section-toggle {
+            text-align: center;
+            padding: 25px 20px;
+            background-color: #f5f9ff;
+            border-top: 2px dashed #ff9800;
+            display: block;
+        }
+        
+        .quiz-button {
+            background: linear-gradient(to right, #ff9800, #ffb74d);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+            min-width: 250px;
+            justify-content: center;
+        }
+        
+        .quiz-button:hover {
+            background: linear-gradient(to right, #e65100, #ff9800);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(255, 152, 0, 0.4);
+        }
+        
+        /* Quiz Section */
+        .quiz-section {
+            padding: 20px;
+            display: none;
+            background-color: white;
+        }
+        
+        .quiz-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .quiz-title {
+            color: #2c5aa0;
+            font-size: clamp(1.6rem, 3vw, 2rem);
+            margin-bottom: 25px;
+            text-align: center;
+            border-bottom: 3px solid #e3f2fd;
+            padding-bottom: 10px;
+        }
+        
+        .question-box {
+            background-color: #f8fdff;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+            border: 2px solid #e3f2fd;
+        }
+        
+        .question-text {
+            font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+            margin-bottom: 20px;
+            color: #333;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+        
+        .option-button {
+            background-color: #e3f2fd;
+            border: none;
+            padding: 15px;
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #333;
+            text-align: left;
+            border: 2px solid transparent;
+        }
+        
+        .option-button:hover:not(:disabled) {
+            background-color: #bbdefb;
+            border-color: #4a90e2;
+            transform: translateY(-2px);
+        }
+        
+        .option-button:disabled {
+            cursor: default;
+        }
+        
+        .option-button.correct {
+            background-color: #c8e6c9;
+            color: #2e7d32;
+            border-color: #4caf50;
+        }
+        
+        .option-button.incorrect {
+            background-color: #ffcdd2;
+            color: #c62828;
+            border-color: #f44336;
+        }
+        
+        .quiz-progress {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .progress-text {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #4a90e2, #63b3ed);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .quiz-result {
+            text-align: center;
+            padding: 30px;
+            background-color: #f8fdff;
+            border-radius: 15px;
+            margin-top: 20px;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e3f2fd;
+        }
+        
+        .result-title {
+            color: #2c5aa0;
+            font-size: clamp(1.6rem, 3vw, 2rem);
+            margin-bottom: 20px;
+        }
+        
+        .result-score {
+            font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+            margin-bottom: 25px;
+            color: #4a90e2;
+            font-weight: bold;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 10px;
+        }
+        
+        .restart-button {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            margin-top: 15px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .restart-button:hover {
+            background-color: #e65100;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .responsive-container {
+                border-radius: 15px;
+                border-width: 4px;
+            }
+            
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .slide {
+                padding: 15px;
+            }
+            
+            .slide-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .image-section, .text-section {
+                flex: 1 1 100%;
+                width: 100%;
+            }
+            
+            .text-section {
+                max-height: none;
+                overflow-y: visible;
+            }
+            
+            .flower-image {
+                max-width: 280px;
+            }
+            
+            .slide-nav {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px;
+            }
+            
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .clickable-word::after {
+                font-size: 0.85rem;
+                white-space: normal;
+                width: 140px;
+                left: 50%;
+            }
+            
+            .quiz-button {
+                min-width: 200px;
+                padding: 12px 25px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+            
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            
+            .subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .slide-title {
+                font-size: 1.3rem;
+            }
+            
+            .info-text {
+                font-size: 1.1rem;
+            }
+            
+            .flower-image {
+                max-width: 100%;
+            }
+            
+            .nav-button {
+                padding: 10px 15px;
+                font-size: 1rem;
+                min-width: 100px;
+            }
+            
+            .quiz-button {
+                padding: 12px 20px;
+                font-size: 1.2rem;
+                min-width: 180px;
+            }
+            
+            .clickable-word::after {
+                width: 120px;
+                font-size: 0.8rem;
+            }
+        }
+        
+        /* For very tall screens */
+        @media (min-height: 800px) {
+            .slides-container {
+                min-height: 600px;
+            }
+            
+            .text-section {
+                max-height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="responsive-container">
+        <div class="header">
+            <h1>The Amazing Alatau Crocus</h1>
+            <div class="subtitle">The Brave Flower That Grows Through Snow!</div>
+        </div>
+        
+        <div class="slides-container">
+            <!-- Slide 1: Introduction -->
+            <div class="slide active" id="slide1">
+                <div class="slide-content">
+                    <div class="image-section">
+                        <img src="https://inaturalist-open-data.s3.amazonaws.com/photos/58969418/original.jpeg" alt="Alatau Crocus Flower" class="flower-image">
+                        <div class="image-caption">The Alatau Crocus Flower</div>
+                    </div>
+                    <div class="text-section">
+                        <h2 class="slide-title"><i class="fas fa-seedling"></i> Meet the <span class="clickable-word" data-ru="храбрый">Brave</span> Alatau Crocus!</h2>
+                        <p class="info-text">This is one of the <span class="clickable-word" data-ru="самых храбрых">bravest</span> little plants in the world! It doesn't wait for summer. It wakes up while there is still ice and snow on the ground!</p>
+                        <p class="info-text">Its full name is <span class="highlight">Crocus alatavicus</span>. People call it the "Ice Breaker" flower because it's so <span class="clickable-word" data-ru="крепкий/выносливый">tough</span>!</p>
+                        
+                        <div class="facts-box">
+                            <h3 class="facts-title"><i class="fas fa-star"></i> Cool Fact</h3>
+                            <p class="info-text">In the Alatau mountains, people love these flowers so much that they are protected. You can look, but don't pick them!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 2: Mountain Explorer -->
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <div class="image-section">
+                        <img src="https://www.zakon.kz/pbi/WEBP/2025-02-24/file-15f72230-12e8-479f-9907-63158cc25902/800x450.orig.webp" alt="Alatau Crocus in snow" class="flower-image" onerror="this.src='https://via.placeholder.com/350x250/4a90e2/ffffff?text=Alatau+Crocus+in+Snow'">
+                        <div class="image-caption">Growing through snow!</div>
+                    </div>
+                    <div class="text-section">
+                        <h2 class="slide-title"><i class="fas fa-mountain"></i> The Mountain Explorer</h2>
+                        <p class="info-text">This crocus lives high up in the mountains of Central Asia. It grows in places like Kazakhstan and China.</p>
+                        <p class="info-text">Its home is called the <span class="highlight">Alatau Mountains</span>. That's how it got its name!</p>
+                        <p class="info-text">While other plants are still sleeping under a cold white blanket of snow, the Alatau Crocus is already stretching its petals.</p>
+                        
+                        <div class="facts-box">
+                            <h3 class="facts-title"><i class="fas fa-snowflake"></i> Snow Power</h3>
+                            <p class="info-text">It grows so fast that it often <span class="clickable-word" data-ru="протыкать/пробивать">pokes</span> its head right through the melting snow. It's like an alarm clock for spring!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 3: Secret Costume -->
+            <div class="slide" id="slide3">
+                <div class="slide-content">
+                    <div class="image-section">
+                        <img src="https://www.botsad.kz/storage/79/799ee06ecde34eaeaca01e387deb0cf1.jpg" alt="Inside of Alatau Crocus" class="flower-image" onerror="this.src='https://via.placeholder.com/350x250/4a90e2/ffffff?text=Flower+Inside+View'">
+                        <div class="image-caption">Look inside the flower!</div>
+                    </div>
+                    <div class="text-section">
+                        <h2 class="slide-title"><i class="fas fa-tshirt"></i> A Fancy "Secret" Outfit</h2>
+                        <p class="info-text">If you saw this flower from far away, you might think it's just a plain white cup. But look closer!</p>
+                        <p class="info-text"><span class="highlight">Inside:</span> The petals are bright, snowy white with a glowing yellow center. It looks like a little sunny-side-up egg!</p>
+                        <p class="info-text"><span class="highlight">Outside:</span> The back of the petals are covered in grey and purple spots. It's like the flower is wearing a polka-dot raincoat to stay warm.</p>
+                        
+                        <div class="facts-box">
+                            <h3 class="facts-title"><i class="fas fa-palette"></i> Color Secret</h3>
+                            <p class="info-text">The yellow center helps attract bees who come to visit the flower!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Slide 4: Why Special -->
+            <div class="slide" id="slide4">
+                <div class="slide-content">
+                    <div class="image-section">
+                        <img src="https://inaturalist-open-data.s3.amazonaws.com/photos/58969418/original.jpeg" alt="Alatau Crocus Flower" class="flower-image">
+                        <div class="image-caption">A special mountain treasure</div>
+                    </div>
+                    <div class="text-section">
+                        <h2 class="slide-title"><i class="fas fa-snowflake"></i> Why is it so Special?</h2>
+                        
+                        <p class="info-text"><span class="highlight">Snow-Melter:</span> It grows right through melting snow. It tells all the animals that spring is coming!</p>
+                        
+                        <p class="info-text"><span class="highlight">Bee Breakfast:</span> It's the first flower to bloom. It gives hungry bees their first meal after winter.</p>
+                        
+                        <p class="info-text"><span class="highlight">The "<span class="clickable-word" data-ru="клубнелуковица">Corm</span>" Power-Up:</span> Under the dirt, the plant has a little round ball called a <span class="clickable-word" data-ru="клубнелуковица">corm</span>. This is like a tiny battery pack filled with food energy. It helps the flower grow through frozen ground!</p>
+                        
+                        <div class="facts-box">
+                            <h3 class="facts-title"><i class="fas fa-battery-full"></i> Power Source</h3>
+                            <p class="info-text">The <span class="clickable-word" data-ru="клубнелуковица">corm</span> stores food from last year. This gives the flower energy to grow when it's still cold outside!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <div class="slide-nav">
+            <button class="nav-button" id="prevButton" onclick="prevSlide()" disabled>
+                <i class="fas fa-arrow-left"></i> Back
+            </button>
+            
+            <div class="slide-indicator">
+                <div class="indicator-dot active" data-slide="1"></div>
+                <div class="indicator-dot" data-slide="2"></div>
+                <div class="indicator-dot" data-slide="3"></div>
+                <div class="indicator-dot" data-slide="4"></div>
+            </div>
+            
+            <button class="nav-button" id="nextButton" onclick="nextSlide()">
+                Next <i class="fas fa-arrow-right"></i>
+            </button>
+        </div>
+        
+        <!-- QUIZ BUTTON -->
+        <div class="quiz-section-toggle" id="quizToggle">
+            <button class="quiz-button" onclick="startQuiz()">
+                <i class="fas fa-question-circle"></i> Take the Flower Quiz!
+            </button>
+        </div>
+        
+        <!-- Quiz Section (Hidden by default) -->
+        <div class="quiz-section" id="quizSection">
+            <h2 class="quiz-title">Flower Quiz Time!</h2>
+            
+            <div id="questionContainer">
+                <!-- Questions will be loaded here -->
+            </div>
+            
+            <div class="quiz-progress">
+                <div class="progress-text" id="progressText">Question 1 of 5</div>
+                <div class="progress-bar">
+                    <div class="progress" id="quizProgress"></div>
+                </div>
+                <button class="nav-button" id="nextQuestionButton" onclick="nextQuestion()" style="display: none;">
+                    Next Question <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+            
+            <div class="quiz-result" id="quizResult">
+                <h3 class="result-title">Quiz Complete!</h3>
+                <div class="result-score" id="scoreDisplay"></div>
+                <button class="restart-button" onclick="restartQuiz()">
+                    <i class="fas fa-redo"></i> Try Again
+                </button>
+                <button class="nav-button" onclick="backToSlides()" style="margin-top: 15px;">
+                    <i class="fas fa-arrow-left"></i> Back to Slides
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translation functionality - FIXED AND IMPROVED
+        function initTranslations() {
+            const clickableWords = document.querySelectorAll('.clickable-word');
+            
+            clickableWords.forEach(word => {
+                // Remove previous event listeners to avoid duplicates
+                word.removeEventListener('click', handleTranslationClick);
+                word.addEventListener('click', handleTranslationClick);
+            });
+            
+            // Hide all translations when clicking elsewhere
+            document.removeEventListener('click', hideAllTranslations);
+            document.addEventListener('click', hideAllTranslations);
+            
+            // Hide translations when scrolling
+            document.removeEventListener('scroll', hideAllTranslations);
+            document.addEventListener('scroll', hideAllTranslations, { passive: true });
+            
+            // Also hide translations when switching slides
+            document.removeEventListener('slideChanged', hideAllTranslations);
+            document.addEventListener('slideChanged', hideAllTranslations);
+        }
+        
+        function handleTranslationClick(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            // Get the clicked word
+            const clickedWord = this;
+            
+            // Check if translation is already showing
+            const isShowing = clickedWord.classList.contains('show-translation');
+            
+            // Hide all other translations first
+            document.querySelectorAll('.clickable-word').forEach(w => {
+                w.classList.remove('show-translation');
+            });
+            
+            // If it wasn't showing, show it
+            if (!isShowing) {
+                clickedWord.classList.add('show-translation');
+                
+                // Auto-hide after 3 seconds
+                setTimeout(() => {
+                    clickedWord.classList.remove('show-translation');
+                }, 3000);
+            }
+        }
+        
+        function hideAllTranslations() {
+            document.querySelectorAll('.clickable-word').forEach(word => {
+                word.classList.remove('show-translation');
+            });
+        }
+        
+        // Slideshow functionality
+        let currentSlideIndex = 1;
+        const totalSlides = 4;
+        let quizActive = false;
+        
+        function showSlide(slideNumber) {
+            // Validate slide number
+            slideNumber = Math.max(1, Math.min(slideNumber, totalSlides));
+            
+            // Hide all slides
+            document.querySelectorAll('.slide').forEach(slide => {
+                slide.classList.remove('active');
+            });
+            
+            // Show the selected slide
+            const slideToShow = document.getElementById(`slide${slideNumber}`);
+            if (slideToShow) {
+                slideToShow.classList.add('active');
+            }
+            
+            // Update indicator dots
+            document.querySelectorAll('.indicator-dot').forEach(dot => {
+                dot.classList.remove('active');
+                if (parseInt(dot.getAttribute('data-slide')) === slideNumber) {
+                    dot.classList.add('active');
+                }
+            });
+            
+            // Update button states
+            updateNavButtons(slideNumber);
+            
+            currentSlideIndex = slideNumber;
+            
+            // Dispatch event for slide change
+            document.dispatchEvent(new CustomEvent('slideChanged', { detail: { slideNumber } }));
+            
+            // Reinitialize translations with a small delay
+            setTimeout(initTranslations, 100);
+        }
+        
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides && !quizActive) {
+                showSlide(currentSlideIndex + 1);
+            }
+        }
+        
+        function prevSlide() {
+            if (currentSlideIndex > 1 && !quizActive) {
+                showSlide(currentSlideIndex - 1);
+            }
+        }
+        
+        function updateNavButtons(slideNumber) {
+            const prevButton = document.getElementById('prevButton');
+            const nextButton = document.getElementById('nextButton');
+            
+            if (prevButton) prevButton.disabled = slideNumber === 1 || quizActive;
+            if (nextButton) nextButton.disabled = slideNumber === totalSlides || quizActive;
+        }
+        
+        // Add click events to indicator dots
+        document.querySelectorAll('.indicator-dot').forEach(dot => {
+            dot.addEventListener('click', function() {
+                if (!quizActive) {
+                    const slideNumber = parseInt(this.getAttribute('data-slide'));
+                    showSlide(slideNumber);
+                }
+            });
+        });
+        
+        // Quiz functionality
+        const quizQuestions = [
+            {
+                question: "Where does the Alatau Crocus flower grow?",
+                options: ["In hot deserts", "High up in cold mountains", "In the deep ocean", "In rainforests"],
+                correct: 1
+            },
+            {
+                question: "What special thing can this flower do?",
+                options: ["Glow in the dark", "Grow through snow and ice", "Change colors", "Sing songs"],
+                correct: 1
+            },
+            {
+                question: "What does the inside of the flower look like?",
+                options: ["Red with black dots", "Blue with white stripes", "White with a yellow center", "Green all over"],
+                correct: 2
+            },
+            {
+                question: "What helpful thing does this flower do for bees?",
+                options: ["Gives them a home", "Gives them first breakfast after winter", "Teaches them to fly", "Makes honey for them"],
+                correct: 1
+            },
+            {
+                question: "What is the special part under the ground that helps the flower grow?",
+                options: ["A tiny battery pack called a corm", "A magic seed", "A water tank", "A heater"],
+                correct: 0
+            }
+        ];
+        
+        let currentQuestionIndex = 0;
+        let score = 0;
+        
+        function startQuiz() {
+            quizActive = true;
+            
+            // Hide slides and quiz toggle button
+            document.querySelector('.slides-container').style.display = 'none';
+            document.querySelector('.slide-nav').style.display = 'none';
+            document.getElementById('quizToggle').style.display = 'none';
+            document.getElementById('quizSection').classList.add('active');
+            
+            // Reset quiz state
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            showQuestion(currentQuestionIndex);
+            document.getElementById('nextQuestionButton').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'none';
+            document.getElementById('questionContainer').style.display = 'block';
+            
+            // Update navigation buttons
+            updateNavButtons(currentSlideIndex);
+        }
+        
+        function showQuestion(index) {
+            if (index < 0 || index >= quizQuestions.length) return;
+            
+            const question = quizQuestions[index];
+            
+            let questionHTML = `
+                <div class="question-box">
+                    <div class="question-text">${question.question}</div>
+                    <div class="options">
+            `;
+            
+            question.options.forEach((option, i) => {
+                questionHTML += `<button class="option-button" onclick="selectAnswer(${i})">${option}</button>`;
+            });
+            
+            questionHTML += `</div></div>`;
+            
+            document.getElementById('questionContainer').innerHTML = questionHTML;
+            updateProgressBar();
+        }
+        
+        function selectAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuestionIndex];
+            const optionButtons = document.querySelectorAll('.option-button');
+            
+            // Disable all buttons
+            optionButtons.forEach(button => {
+                button.disabled = true;
+                button.style.cursor = 'default';
+            });
+            
+            // Check if answer is correct
+            if (selectedIndex === question.correct) {
+                optionButtons[selectedIndex].classList.add('correct');
+                score++;
+            } else {
+                optionButtons[selectedIndex].classList.add('incorrect');
+                // Also show correct answer
+                optionButtons[question.correct].classList.add('correct');
+            }
+            
+            // Show next button
+            document.getElementById('nextQuestionButton').style.display = 'block';
+        }
+        
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < quizQuestions.length) {
+                showQuestion(currentQuestionIndex);
+                document.getElementById('nextQuestionButton').style.display = 'none';
+            } else {
+                showResults();
+            }
+        }
+        
+        function showResults() {
+            // Calculate score
+            const percentage = Math.round((score / quizQuestions.length) * 100);
+            
+            // Create result message based on score
+            let message = "";
+            let emoji = "";
+            
+            if (percentage === 100) {
+                message = "Perfect! 🎉 You got all 5 questions right! You're a flower expert!";
+                emoji = "🎉";
+            } else if (percentage >= 80) {
+                message = `Great job! 👍 You got ${score} out of 5 questions right!`;
+                emoji = "👍";
+            } else if (percentage >= 60) {
+                message = `Good work! 👏 You got ${score} out of 5 questions right!`;
+                emoji = "👏";
+            } else {
+                message = `Keep learning! 🌱 You got ${score} out of 5 questions right. Try again!`;
+                emoji = "🌱";
+            }
+            
+            document.getElementById('scoreDisplay').innerHTML = `${emoji} ${message}`;
+            document.getElementById('questionContainer').style.display = 'none';
+            document.getElementById('nextQuestionButton').style.display = 'none';
+            document.getElementById('quizResult').style.display = 'block';
+            
+            // Update progress bar to 100%
+            document.getElementById('quizProgress').style.width = '100%';
+            document.getElementById('progressText').textContent = "Quiz complete!";
+        }
+        
+        function updateProgressBar() {
+            const progressPercent = ((currentQuestionIndex + 1) / quizQuestions.length) * 100;
+            document.getElementById('quizProgress').style.width = `${progressPercent}%`;
+            document.getElementById('progressText').textContent = `Question ${currentQuestionIndex + 1} of ${quizQuestions.length}`;
+        }
+        
+        function restartQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            document.getElementById('questionContainer').style.display = 'block';
+            document.getElementById('quizResult').style.display = 'none';
+            showQuestion(currentQuestionIndex);
+            document.getElementById('nextQuestionButton').style.display = 'none';
+        }
+        
+        function backToSlides() {
+            quizActive = false;
+            
+            // Show slides and hide quiz
+            document.querySelector('.slides-container').style.display = 'block';
+            document.querySelector('.slide-nav').style.display = 'flex';
+            document.getElementById('quizToggle').style.display = 'block';
+            document.getElementById('quizSection').classList.remove('active');
+            
+            // Reset to first slide
+            showSlide(1);
+            
+            // Update navigation buttons
+            updateNavButtons(1);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            initTranslations();
+            showSlide(1);
+            
+            // Add error handling for images
+            document.querySelectorAll('img').forEach(img => {
+                img.addEventListener('error', function() {
+                    this.src = 'https://via.placeholder.com/350x250/4a90e2/ffffff?text=Flower+Image';
+                    this.alt = 'Image not available';
+                });
+            });
+            
+            // Add keyboard navigation
+            document.addEventListener('keydown', function(event) {
+                if (quizActive) return;
+                
+                if (event.key === 'ArrowRight' || event.key === ' ') {
+                    nextSlide();
+                    event.preventDefault();
+                } else if (event.key === 'ArrowLeft') {
+                    prevSlide();
+                    event.preventDefault();
+                } else if (event.key >= '1' && event.key <= '4') {
+                    showSlide(parseInt(event.key));
+                    event.preventDefault();
+                }
+            });
+            
+            // Handle window resize
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    // Trigger a reflow if needed
+                    const slidesContainer = document.querySelector('.slides-container');
+                    if (slidesContainer) {
+                        slidesContainer.style.height = 'auto';
+                        setTimeout(() => {
+                            slidesContainer.style.height = '';
+                        }, 10);
+                    }
+                }, 250);
+            });
+            
+            // Ensure translations work after any dynamic content changes
+            const observer = new MutationObserver(initTranslations);
+            observer.observe(document.body, { 
+                childList: true, 
+                subtree: true,
+                attributes: false,
+                characterData: false
+            });
+        });
+    </script>
+</body>
+</html>
