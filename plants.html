@@ -25,6 +25,7 @@ body{
 h1{
   text-align:center;
   margin-bottom:10px;
+  color:#2e7d32;
 }
 
 .subtitle{
@@ -40,52 +41,224 @@ h1{
 .section h2{
   color:#43a047;
   margin-bottom:10px;
+  font-size:22px;
 }
 
 .section p{
   font-size:18px;
   line-height:1.6;
   color:#333;
+  background:#f9fdf8;
+  padding:15px;
+  border-radius:12px;
+  border-left:4px solid #81c784;
 }
 
-/* Links */
-.links{
-  display:flex;
-  gap:20px;
-  justify-content:center;
-  margin-top:30px;
-  flex-wrap:wrap;
+/* Links Container */
+.links {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 
-.link-card{
-  background:#e3f2fd;
-  border-radius:16px;
-  padding:18px 24px;
-  font-size:18px;
-  font-weight:bold;
-  text-decoration:none;
-  color:#0d47a1;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  box-shadow:0 6px 14px rgba(0,0,0,0.1);
-  transition:0.3s;
+/* Link Cards */
+.link-card {
+  background: linear-gradient(135deg, #e3f2fd 0%, #f1f8e9 100%);
+  border-radius: 16px;
+  padding: 20px;
+  text-decoration: none;
+  color: #1a237e;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
 }
 
-.link-card:hover{
-  background:#bbdefb;
-  transform:translateY(-3px);
+.link-card:hover {
+  background: linear-gradient(135deg, #bbdefb 0%, #dcedc8 100%);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-color: #64b5f6;
 }
 
-.link-card span{
-  font-size:26px;
+.link-card:active {
+  transform: translateY(-2px);
 }
 
-/* Mobile */
-@media(max-width:700px){
+/* Emoji/Icon Container */
+.icon-container {
+  font-size: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: "Segoe UI Emoji", "Apple Color Emoji", "Noto Color Emoji", sans-serif;
+}
+
+.link-card:hover .icon-container {
+  transform: scale(1.1);
+}
+
+/* Text Content */
+.link-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.link-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 5px;
+  line-height: 1.3;
+  color: #1a237e;
+}
+
+.link-description {
+  font-size: 14px;
+  color: #5c6bc0;
+  font-weight: 500;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* Special Plant Badges */
+.link-badge {
+  background: linear-gradient(135deg, #ff9800 0%, #ffb74d 100%);
+  color: white;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+  display: inline-block;
+  white-space: nowrap;
+  animation: pulse 2s infinite;
+}
+
+.fast-badge {
+  background: linear-gradient(135deg, #4caf50 0%, #81c784 100%);
+}
+
+.rare-badge {
+  background: linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%);
+}
+
+.carnivorous-badge {
+  background: linear-gradient(135deg, #f44336 0%, #ef5350 100%);
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+/* Hover Ripple Effect */
+.link-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(100, 181, 246, 0.3);
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+  opacity: 0;
+}
+
+.link-card:hover::after {
+  animation: ripple 1s ease-out;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(30, 30);
+    opacity: 0;
+  }
+}
+
+/* Focus for Accessibility */
+.link-card:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.3);
+}
+
+/* Alternative text for emoji fallback */
+.emoji-fallback {
+  font-size: 24px;
+  display: none;
+}
+
+/* Mobile Responsive */
+@media (max-width: 700px) {
   .container{padding:20px;}
-  .links{gap:15px;}
-  .link-card{padding:15px 20px;}
+  .links {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .link-card {
+    padding: 18px;
+  }
+  
+  .icon-container {
+    font-size: 28px;
+    min-width: 55px;
+    height: 55px;
+    padding: 10px;
+  }
+  
+  .link-description {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .link-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+    padding: 20px 15px;
+  }
+  
+  .icon-container {
+    margin: 0 auto;
+  }
+  
+  .link-description {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .link-content {
+    align-items: center;
+  }
 }
 </style>
 </head>
@@ -95,6 +268,8 @@ h1{
 <div class="container">
 
   <h1>All About Plants</h1>
+  
+  <div class="subtitle">Discover the amazing world of plants and how they live</div>
 
   <!-- INTRO -->
   <div class="section">
@@ -133,15 +308,59 @@ h1{
   <!-- LINKS -->
   <div class="links">
     <a href="parts.html" class="link-card">
-      <span>🌿</span>Parts of the Plant
+      <div class="icon-container">🌿</div>
+      <div class="link-content">
+        <div class="link-title">Parts of the Plant</div>
+        <div class="link-description">Learn about roots, stems, leaves and flowers</div>
+      </div>
     </a>
 
     <a href="needs.html" class="link-card">
-      <span>💧</span>What Plants Need
+      <div class="icon-container">💧</div>
+      <div class="link-content">
+        <div class="link-title">What Plants Need</div>
+        <div class="link-description">Sunlight, water, air and nutrients</div>
+      </div>
     </a>
     
-   <a href="dispersal.html" class="link-card">
-      <span>🍃💨</span>dispersal
+    <a href="dispersal.html" class="link-card">
+      <div class="icon-container">🍃</div>
+      <div class="link-content">
+        <div class="link-title">Seed Dispersal</div>
+        <div class="link-description">How seeds travel to new places</div>
+      </div>
+    </a>
+
+    <a href="venus.html" class="link-card">
+      <div class="icon-container">🪰</div>
+      <div class="link-content">
+        <div class="link-title">Venus Flytrap</div>
+        <div class="link-description">Carnivorous plant that eats insects <span class="link-badge carnivorous-badge">CARNIVOROUS</span></div>
+      </div>
+    </a>
+
+    <a href="alatau-crocus.html" class="link-card">
+      <div class="icon-container">🌷</div>
+      <div class="link-content">
+        <div class="link-title">Alatau Crocus</div>
+        <div class="link-description">Rare mountain flower from Central Asia <span class="link-badge rare-badge">RARE</span></div>
+      </div>
+    </a>
+
+    <a href="bamboo.html" class="link-card">
+      <div class="icon-container">🎍</div>
+      <div class="link-content">
+        <div class="link-title">Bamboo</div>
+        <div class="link-description">Fast-growing woody grass <span class="link-badge fast-badge">FAST GROWING</span></div>
+      </div>
+    </a>
+
+    <a href="photosynthesis.html" class="link-card">
+      <div class="icon-container">☀️</div>
+      <div class="link-content">
+        <div class="link-title">Photosynthesis</div>
+        <div class="link-description">How plants make their own food</div>
+      </div>
     </a>
   </div>
 
