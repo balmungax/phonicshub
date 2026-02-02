@@ -21,6 +21,7 @@
             align-items: center;
             padding: 20px;
             color: #333;
+            text-transform: lowercase;
         }
 
         .container {
@@ -45,11 +46,7 @@
             letter-spacing: 1px;
             margin-bottom: 5px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
+            text-transform: lowercase;
         }
 
         .game-area {
@@ -66,6 +63,18 @@
             margin-bottom: 15px;
             text-align: center;
             font-weight: 700;
+            text-transform: lowercase;
+        }
+
+        .hint-container {
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+            color: #666;
+            font-size: 1.2rem;
+            min-height: 30px;
+            padding: 10px 20px;
+            line-height: 1.4;
         }
 
         .letters-container {
@@ -82,12 +91,12 @@
         }
 
         .letter {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
             font-weight: 700;
             border-radius: 12px;
             cursor: pointer;
@@ -95,8 +104,7 @@
             user-select: none;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border: 3px solid transparent;
-            position: relative;
-            overflow: hidden;
+            text-transform: lowercase;
         }
 
         .letter:hover {
@@ -168,6 +176,7 @@
             color: #5E35B1;
             margin-bottom: 8px;
             font-weight: 600;
+            text-transform: lowercase;
         }
 
         .score-value {
@@ -175,6 +184,7 @@
             font-weight: 700;
             color: #4A00E0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            text-transform: lowercase;
         }
 
         .controls {
@@ -199,6 +209,7 @@
             justify-content: center;
             gap: 10px;
             min-width: 200px;
+            text-transform: lowercase;
         }
 
         .check-btn {
@@ -235,6 +246,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-transform: lowercase;
         }
 
         .message.correct {
@@ -255,6 +267,7 @@
             font-size: 1.1rem;
             margin-top: 10px;
             font-weight: 600;
+            text-transform: lowercase;
         }
 
         @media (max-width: 768px) {
@@ -267,13 +280,14 @@
             }
             
             .letter {
-                width: 60px;
-                height: 60px;
-                font-size: 2rem;
+                width: 50px;
+                height: 50px;
+                font-size: 1.6rem;
             }
             
             .letters-container {
                 min-height: 85px;
+                gap: 8px;
             }
             
             .controls {
@@ -289,67 +303,91 @@
                 flex-direction: column;
                 gap: 20px;
             }
+            
+            .hint-container {
+                font-size: 1.1rem;
+                padding: 8px 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>Word Scramble</h1>
-            <p class="subtitle">Click letters to build the word</p>
+            <h1>scramble</h1>
         </div>
         
         <div class="game-area">
             <div class="scramble-container">
-                <h2 class="container-title">Scrambled Letters</h2>
+                <!-- Hint displays here by default -->
+                <div class="hint-container" id="hintArea">
+                    <!-- Hint will appear here -->
+                </div>
                 <div class="letters-container" id="scrambledLetters">
                     <!-- Scrambled letters will appear here -->
                 </div>
             </div>
             
             <div class="attempt-container">
-                <h2 class="container-title">Your Word</h2>
+                <h2 class="container-title">your word</h2>
                 <div class="letters-container" id="attemptArea">
                     <!-- User's attempt will appear here -->
-                    <div class="placeholder">Click letters above to build your word</div>
+                    <div class="placeholder">click letters to build word</div>
                 </div>
             </div>
             
             <div class="score-container">
                 <div class="score-box">
-                    <div class="score-title">Score</div>
+                    <div class="score-title">score</div>
                     <div class="score-value" id="score">0</div>
                 </div>
                 <div class="score-box">
-                    <div class="score-title">Solved</div>
+                    <div class="score-title">solved</div>
                     <div class="score-value" id="solved">0/10</div>
                 </div>
             </div>
             
             <div class="controls">
                 <button class="control-btn check-btn" id="checkBtn">
-                    <span>✓</span> Check Answer
+                    <span>✓</span> check answer
                 </button>
                 <button class="control-btn next-btn" id="nextBtn">
-                    <span>→</span> Next Word
+                    <span>→</span> next word
                 </button>
+                <!-- Hint button removed -->
             </div>
             
             <div class="message" id="message">
-                Click on a letter to add it to your word
+                click on a letter to add it to your word
             </div>
             
             <div class="word-progress" id="wordProgress">
-                Word 1 of 10
+                word 1 of 10
             </div>
         </div>
     </div>
 
     <script>
-        // Words for the game
+        // Words and hints for the game
         const wordList = [
-            "flower", "leaf", "fruit", "roots", "petal", 
-            "spore", "grow", "soil", "plant", "seed", "leaves", "dispersal"
+            { word: "seed", hint: "a small object that grows into a plant" },
+            { word: "spin", hint: "to turn around quickly" },
+            { word: "twirl", hint: "to spin around gracefully" },
+            { word: "tree", hint: "a tall plant with a trunk and branches" },
+            { word: "pollen", hint: "yellow powder from flowers" },
+            { word: "photosynthesis", hint: "how plants make food from sunlight" },
+            { word: "sunlight", hint: "light from the sun that helps plants grow" },
+            { word: "flower", hint: "the colorful part of a plant" },
+            { word: "leaf", hint: "green part of a plant" },
+            { word: "fruit", hint: "sweet food that grows on plants" },
+            { word: "roots", hint: "part of plant under the ground" },
+            { word: "petal", hint: "colorful part of a flower" },
+            { word: "spore", hint: "tiny plant cell for reproduction" },
+            { word: "grow", hint: "to get bigger" },
+            { word: "soil", hint: "dirt where plants grow" },
+            { word: "plant", hint: "living thing with leaves and roots" },
+            { word: "leaves", hint: "many green parts on a plant" },
+            { word: "dispersal", hint: "how seeds spread around" }
         ];
 
         // Game state
@@ -359,6 +397,7 @@
         let scrambledLetters = [];
         let attemptLetters = [];
         let isGameActive = true;
+        let randomizedWordList = [];
 
         // Speech synthesis setup
         let voices = [];
@@ -367,12 +406,29 @@
         // DOM elements
         const scrambledLettersElement = document.getElementById('scrambledLetters');
         const attemptAreaElement = document.getElementById('attemptArea');
+        const hintAreaElement = document.getElementById('hintArea');
         const checkBtn = document.getElementById('checkBtn');
         const nextBtn = document.getElementById('nextBtn');
         const scoreElement = document.getElementById('score');
         const solvedElement = document.getElementById('solved');
         const messageElement = document.getElementById('message');
         const wordProgressElement = document.getElementById('wordProgress');
+
+        // Function to shuffle array (Fisher-Yates algorithm)
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Randomize word list when game starts
+        function randomizeWordList() {
+            randomizedWordList = shuffleArray(wordList);
+            console.log("Randomized word order:", randomizedWordList.map(w => w.word));
+        }
 
         // Initialize speech synthesis voices
         function loadVoices() {
@@ -404,7 +460,13 @@
 
         // Initialize the game
         function initGame() {
-            const word = wordList[currentWordIndex];
+            // Make sure we have a randomized word list
+            if (randomizedWordList.length === 0) {
+                randomizeWordList();
+            }
+            
+            const wordObj = randomizedWordList[currentWordIndex];
+            const word = wordObj.word;
             
             // Create scrambled version of the word
             scrambledLetters = scrambleWord(word);
@@ -418,11 +480,14 @@
             // Clear attempt area
             displayAttemptArea();
             
+            // Display the hint by default
+            displayHint();
+            
             // Update progress
-            wordProgressElement.textContent = `Word ${currentWordIndex + 1} of ${wordList.length}`;
+            wordProgressElement.textContent = `word ${currentWordIndex + 1} of ${randomizedWordList.length}`;
             
             // Update message
-            messageElement.textContent = "Click on a letter to add it to your word";
+            messageElement.textContent = "click on a letter to add it to your word";
             messageElement.className = "message";
             
             // Hide next button
@@ -465,6 +530,15 @@
             });
         }
 
+        // Display hint (shows by default)
+        function displayHint() {
+            const hint = randomizedWordList[currentWordIndex].hint;
+            hintAreaElement.textContent = hint;
+            hintAreaElement.style.color = "#666";
+            hintAreaElement.style.fontStyle = "italic";
+            hintAreaElement.style.fontWeight = "400";
+        }
+
         // Display attempt area
         function displayAttemptArea() {
             attemptAreaElement.innerHTML = '';
@@ -472,16 +546,22 @@
             if (attemptLetters.length === 0) {
                 const placeholder = document.createElement('div');
                 placeholder.className = 'placeholder';
-                placeholder.textContent = 'Click letters above to build your word';
+                placeholder.textContent = 'click letters to build word';
                 placeholder.style.cssText = 'color: #888; font-style: italic; width: 100%; text-align: center; padding: 20px;';
                 attemptAreaElement.appendChild(placeholder);
                 return;
             }
             
+            // Create a single container for the attempt word
+            const wordContainer = document.createElement('div');
+            wordContainer.style.cssText = 'display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 8px; width: 100%; min-height: 70px; overflow-x: auto;';
+            
             attemptLetters.forEach((letter, index) => {
                 const letterElement = createLetterElement(letter, 'attempt', index);
-                attemptAreaElement.appendChild(letterElement);
+                wordContainer.appendChild(letterElement);
             });
+            
+            attemptAreaElement.appendChild(wordContainer);
         }
 
         // Create a letter element
@@ -501,10 +581,10 @@
                 letterElement.classList.add('in-attempt');
             }
             
-            letterElement.textContent = letter.toUpperCase();
+            letterElement.textContent = letter.toLowerCase();
             letterElement.dataset.index = index;
             letterElement.dataset.type = type;
-            letterElement.dataset.letter = letter;
+            letterElement.dataset.letter = letter.toLowerCase();
             
             // Add click event
             letterElement.addEventListener('click', () => handleLetterClick(letter, type, index));
@@ -534,86 +614,69 @@
                 // Cancel any ongoing speech
                 speechSynthesis.cancel();
                 
-                const utterance = new SpeechSynthesisUtterance(letter);
-                utterance.rate = 0.8; // Natural speaking rate
-                utterance.pitch = 1.1; // Slightly higher pitch for clarity
+                const utterance = new SpeechSynthesisUtterance(letter.toLowerCase());
+                utterance.rate = 0.8;
+                utterance.pitch = 1.1;
                 utterance.volume = 1;
                 utterance.voice = selectedVoice;
                 
-                // Speak the letter
                 speechSynthesis.speak(utterance);
             }
         }
 
         // Move a letter from scrambled to attempt
         function moveLetterToAttempt(index) {
-            // Get the letter from the correct index in scrambled array
             const letter = scrambledLetters[index];
             
-            // Remove the letter from scrambled array
             scrambledLetters.splice(index, 1);
-            
-            // Add to attempt array
             attemptLetters.push(letter);
             
-            // Update both displays
             displayScrambledLetters();
             displayAttemptArea();
             
-            // Update message
-            messageElement.textContent = `Added "${letter.toUpperCase()}" to your word`;
+            messageElement.textContent = `added "${letter}" to your word`;
         }
 
         // Move a letter from attempt back to scrambled
         function moveLetterToScrambled(index) {
-            // Get the letter from the correct index in attempt array
             const letter = attemptLetters[index];
             
-            // Remove the letter from attempt array
             attemptLetters.splice(index, 1);
-            
-            // Add back to scrambled array at a random position
             const randomIndex = Math.floor(Math.random() * (scrambledLetters.length + 1));
             scrambledLetters.splice(randomIndex, 0, letter);
             
-            // Update both displays
             displayScrambledLetters();
             displayAttemptArea();
             
-            // Update message
-            messageElement.textContent = `Returned "${letter.toUpperCase()}" to scrambled letters`;
+            messageElement.textContent = `returned "${letter}" to scrambled letters`;
         }
 
         // Check the attempt against the word
         function checkAnswer() {
             if (!isGameActive) return;
             
-            const word = wordList[currentWordIndex];
+            const word = randomizedWordList[currentWordIndex].word;
             const attempt = attemptLetters.join('').toLowerCase();
             
             if (attempt === word) {
-                // Correct answer
-                messageElement.textContent = `Correct! The word is "${word}".`;
+                messageElement.textContent = `correct! the word is "${word}".`;
                 messageElement.className = "message correct";
                 
-                // Update score
+                // Award points
                 score += 10;
                 solvedWords++;
                 
-                // Update score display
                 updateScoreDisplay();
                 
-                // Show next button
                 nextBtn.style.display = 'flex';
                 checkBtn.style.display = 'none';
                 
                 isGameActive = false;
                 
-                // Speak the complete word
                 setTimeout(() => {
                     if ('speechSynthesis' in window && selectedVoice) {
                         const utterance = new SpeechSynthesisUtterance(word);
-                        utterance.rate = 0.7; // Slower for word pronunciation
+                        utterance.rate = 0.7;
                         utterance.pitch = 1.1;
                         utterance.volume = 1;
                         utterance.voice = selectedVoice;
@@ -622,18 +685,16 @@
                 }, 500);
                 
             } else {
-                // Incorrect answer
-                messageElement.textContent = "Not quite right. Try again!";
+                messageElement.textContent = "not quite right. try again!";
                 messageElement.className = "message incorrect";
                 
-                // Provide a hint after a delay
                 setTimeout(() => {
                     if (attempt.length < word.length) {
-                        messageElement.textContent = `Hint: The word has ${word.length} letters.`;
+                        messageElement.textContent = `hint: the word has ${word.length} letters.`;
                     } else if (attempt.length > word.length) {
-                        messageElement.textContent = `Hint: The word has ${word.length} letters.`;
+                        messageElement.textContent = `hint: the word has ${word.length} letters.`;
                     } else {
-                        messageElement.textContent = "Keep trying! Click letters to rearrange them.";
+                        messageElement.textContent = "keep trying! click letters to rearrange them.";
                     }
                 }, 1500);
             }
@@ -641,7 +702,7 @@
 
         // Move to the next word
         function nextWord() {
-            if (currentWordIndex < wordList.length - 1) {
+            if (currentWordIndex < randomizedWordList.length - 1) {
                 currentWordIndex++;
                 initGame();
             } else {
@@ -651,21 +712,19 @@
 
         // End the game
         function endGame() {
-            messageElement.textContent = `Game Complete! Final Score: ${score} points.`;
+            messageElement.textContent = `game complete! final score: ${score} points.`;
             messageElement.className = "message correct";
             
-            // Clear letter areas
-            scrambledLettersElement.innerHTML = '<div style="text-align:center; padding:20px; color:#666; font-size:1.2rem; font-weight:bold;">🎉 Game Completed! 🎉</div>';
-            attemptAreaElement.innerHTML = '<div style="text-align:center; padding:20px; color:#666; font-size:1.2rem;">Well Done!</div>';
+            scrambledLettersElement.innerHTML = '<div style="text-align:center; padding:20px; color:#666; font-size:1.2rem; font-weight:bold;">🎉 game completed! 🎉</div>';
+            attemptAreaElement.innerHTML = '<div style="text-align:center; padding:20px; color:#666; font-size:1.2rem;">well done!</div>';
+            hintAreaElement.textContent = "";
             
-            // Hide buttons
             checkBtn.style.display = 'none';
             nextBtn.style.display = 'none';
             
-            // Create restart button
             const restartBtn = document.createElement('button');
             restartBtn.className = 'control-btn check-btn';
-            restartBtn.innerHTML = '<span>↻</span> Play Again';
+            restartBtn.innerHTML = '<span>↻</span> play again';
             restartBtn.style.margin = '0 auto';
             restartBtn.style.display = 'flex';
             restartBtn.onclick = restartGame;
@@ -679,13 +738,14 @@
             score = 0;
             solvedWords = 0;
             
-            // Remove restart button if exists
+            // Re-randomize the word list for a fresh game
+            randomizeWordList();
+            
             const restartBtn = document.querySelector('.controls .check-btn[onclick="restartGame()"]');
             if (restartBtn) {
                 restartBtn.remove();
             }
             
-            // Show check button again
             checkBtn.style.display = 'flex';
             
             initGame();
@@ -694,28 +754,24 @@
         // Update score display
         function updateScoreDisplay() {
             scoreElement.textContent = score;
-            solvedElement.textContent = `${solvedWords}/${wordList.length}`;
+            solvedElement.textContent = `${solvedWords}/${randomizedWordList.length}`;
         }
 
-        // Event listeners for game buttons
+        // Event listeners
         checkBtn.addEventListener('click', checkAnswer);
         nextBtn.addEventListener('click', nextWord);
 
-        // Initialize speech synthesis when voices are loaded
         speechSynthesis.onvoiceschanged = loadVoices;
 
-        // Initialize the game
         window.addEventListener('DOMContentLoaded', () => {
-            // Load voices first
             loadVoices();
-            
-            // Initialize game
+            // Randomize word list before initializing game
+            randomizeWordList();
             initGame();
             
-            // Speak welcome message
             setTimeout(() => {
                 if ('speechSynthesis' in window && selectedVoice) {
-                    const welcome = new SpeechSynthesisUtterance("Scramble");
+                    const welcome = new SpeechSynthesisUtterance("scramble");
                     welcome.voice = selectedVoice;
                     welcome.rate = 0.9;
                     speechSynthesis.speak(welcome);
