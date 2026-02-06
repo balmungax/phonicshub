@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seed Dispersal Vocabulary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4efe9 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: linear-gradient(to right, #2d5a27, #4a7c59);
+            border-radius: 15px;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        h1 i {
+            font-size: 2.5rem;
+        }
+        
+        .word-bank-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            padding: 18px 20px;
+            color: white;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .characteristics .card-header {
+            background: linear-gradient(to right, #4a7c59, #6ba84f);
+        }
+        
+        .methods .card-header {
+            background: linear-gradient(to right, #3a6b7e, #5a9aa8);
+        }
+        
+        .objects .card-header {
+            background: linear-gradient(to right, #8a6b3a, #c19a6b);
+        }
+        
+        .word-list {
+            padding: 20px;
+        }
+        
+        .word-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 15px 0;
+            border-bottom: 1px dashed #eaeaea;
+        }
+        
+        .word-item:last-child {
+            border-bottom: none;
+        }
+        
+        .english {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .russian {
+            font-style: italic;
+            color: #555;
+            font-size: 1.05rem;
+        }
+        
+        .transcription {
+            color: #777;
+            font-size: 0.95rem;
+            margin-top: 3px;
+        }
+        
+        .meaning {
+            color: #666;
+            font-size: 0.95rem;
+            max-width: 60%;
+            text-align: right;
+        }
+        
+        .visualization {
+            background-color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .visualization h2 {
+            color: #2d5a27;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .seed-types {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .seed-type {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 150px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .seed-type:hover {
+            background-color: #f0f7f0;
+            transform: scale(1.05);
+        }
+        
+        .seed-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            height: 70px;
+            width: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: white;
+        }
+        
+        .fuzzy .seed-icon {
+            background-color: #ffb347;
+        }
+        
+        .spiky .seed-icon {
+            background-color: #e74c3c;
+        }
+        
+        .smooth .seed-icon {
+            background-color: #3498db;
+        }
+        
+        .seed-name {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 700px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: slideUp 0.4s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            padding: 20px 25px;
+            background: linear-gradient(to right, #4a7c59, #6ba84f);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .modal-image-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-image {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin: 0 auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-image:hover {
+            transform: scale(1.02);
+        }
+        
+        .modal-image-caption {
+            color: #666;
+            font-style: italic;
+            margin-top: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .modal-details {
+            margin-bottom: 20px;
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        
+        .modal-details p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+        
+        .modal-details strong {
+            color: #2d5a27;
+        }
+        
+        .modal-examples {
+            background-color: #f0f7f0;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4a7c59;
+        }
+        
+        .modal-examples h4 {
+            color: #2d5a27;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .modal-examples ul {
+            padding-left: 20px;
+        }
+        
+        .modal-examples li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .modal-examples li:before {
+            content: "🌱";
+            position: absolute;
+            left: -20px;
+        }
+        
+        .modal-footer {
+            padding: 15px 25px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+        }
+        
+        .modal-btn {
+            background: linear-gradient(to right, #4a7c59, #6ba84f);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(76, 175, 80, 0.2);
+        }
+        
+        .image-loading {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 10px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .word-bank-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .seed-types {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .seed-type {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-seedling"></i> Seed Dispersal Vocabulary</h1>
+        </header>
+        
+        <div class="word-bank-container">
+            <div class="category-card characteristics">
+                <div class="card-header">
+                    <i class="fas fa-shapes"></i>
+                    <h2>Seed Characteristics</h2>
+                </div>
+                <div class="word-list">
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Seed</div>
+                            <div class="russian">Семечко</div>
+                            <div class="transcription">(Semečko)</div>
+                        </div>
+                        <div class="meaning">The part of a plant that grows into a new plant</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Shape</div>
+                            <div class="russian">Форма</div>
+                            <div class="transcription">(Forma)</div>
+                        </div>
+                        <div class="meaning">Seeds have many different shapes, like round or spiky</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Structure</div>
+                            <div class="russian">Структура / Строение</div>
+                            <div class="transcription">(Struktura)</div>
+                        </div>
+                        <div class="meaning">The special parts of a plant that help it do something</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Fuzzy</div>
+                            <div class="russian">Пушистый</div>
+                            <div class="transcription">(Pušistyj)</div>
+                        </div>
+                        <div class="meaning">Having soft, tiny hairs (like a dandelion or Seed A)</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Spiky</div>
+                            <div class="russian">Колючий</div>
+                            <div class="transcription">(Koljučij)</div>
+                        </div>
+                        <div class="meaning">Having sharp points that stick out</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Smooth</div>
+                            <div class="russian">Гладкий</div>
+                            <div class="transcription">(Gladkij)</div>
+                        </div>
+                        <div class="meaning">Having a flat, even surface; not bumpy or spiky</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card methods">
+                <div class="card-header">
+                    <i class="fas fa-wind"></i>
+                    <h2>Seed Travel Methods</h2>
+                </div>
+                <div class="word-list">
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Explode</div>
+                            <div class="russian">Взрываться</div>
+                            <div class="transcription">(Vzryvat'sja)</div>
+                        </div>
+                        <div class="meaning">When a seed pod pops open very fast and throws seeds</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Drift</div>
+                            <div class="russian">Плыть по воздуху</div>
+                            <div class="transcription">(Plyt' po vozduxu)</div>
+                        </div>
+                        <div class="meaning">To move slowly through the air, like a parachute</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Float</div>
+                            <div class="russian">Держаться на воде</div>
+                            <div class="transcription">(Deržat'sja na vode)</div>
+                        </div>
+                        <div class="meaning">To stay on top of the water without sinking</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Grip / Stick</div>
+                            <div class="russian">Прилипать / Хвататься</div>
+                            <div class="transcription">(Prilipat')</div>
+                        </div>
+                        <div class="meaning">To hold onto something tightly, like fur or clothes</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Disperse</div>
+                            <div class="russian">Рассеиваться</div>
+                            <div class="transcription">(Rasseivat'sja)</div>
+                        </div>
+                        <div class="meaning">When seeds spread out away from the mother plant</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Tangled</div>
+                            <div class="russian">Запутавшийся</div>
+                            <div class="transcription">(Zaputavšijsja)</div>
+                        </div>
+                        <div class="meaning">Getting caught in hair or fur</div>
+                    </div>
+                    
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Travel / Ride</div>
+                            <div class="russian">Путешествовать / Ехать</div>
+                            <div class="transcription">(Putešestvovat' / Exat')</div>
+                        </div>
+                        <div class="meaning">Moving from one place to another</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="category-card objects">
+                <div class="card-header">
+                    <i class="fas fa-paw"></i>
+                    <h2>Related Objects</h2>
+                </div>
+                <div class="word-list">
+                    <div class="word-item">
+                        <div class="word-details">
+                            <div class="english">Fur</div>
+                            <div class="russian">Мех / Шерсть</div>
+                            <div class="transcription">(Mex / Šerst')</div>
+                        </div>
+                        <div class="meaning">The thick hair that covers animals like bison or foxes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <h2><i class="fas fa-eye"></i> Seed Type Examples</h2>
+            <div class="seed-types">
+                <div class="seed-type fuzzy" data-type="fuzzy">
+                    <div class="seed-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="seed-name">Fuzzy Seeds</div>
+                </div>
+                
+                <div class="seed-type spiky" data-type="spiky">
+                    <div class="seed-icon">
+                        <i class="fas fa-thumbtack"></i>
+                    </div>
+                    <div class="seed-name">Spiky Seeds</div>
+                </div>
+                
+                <div class="seed-type smooth" data-type="smooth">
+                    <div class="seed-icon">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="seed-name">Smooth Seeds</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Popup -->
+    <div id="seedModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-seedling"></i> <span id="modal-title">Seed Information</span></h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <div class="image-loading" id="image-loading">
+                        <i class="fas fa-spinner fa-spin fa-2x" style="color: #4a7c59;"></i>
+                    </div>
+                    <img id="modal-image" class="modal-image" style="display: none;" alt="Seed Example">
+                    <div id="modal-image-caption" class="modal-image-caption"></div>
+                </div>
+                
+                <div class="modal-details">
+                    <p><strong>Description:</strong> <span id="modal-description"></span></p>
+                    <p><strong>Dispersal Methods:</strong> <span id="modal-methods"></span></p>
+                    <p><strong>Russian Translation:</strong> <span id="modal-russian"></span></p>
+                </div>
+                
+                <div class="modal-examples">
+                    <h4><i class="fas fa-leaf"></i> Examples</h4>
+                    <ul id="modal-examples">
+                        <!-- Examples will be inserted here -->
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn close-modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Seed data for the modal
+        const seedData = {
+            fuzzy: {
+                title: "Fuzzy Seeds",
+                icon: "fas fa-cloud",
+                description: "Seeds with soft, tiny hairs that help them catch the wind and drift through the air.",
+                methods: "Wind dispersal (anemochory)",
+                russian: "Пушистые семена (Pušistyje semena)",
+                examples: [
+                    "Dandelion seeds with parachute-like structures",
+                    "Thistle seeds with feathery appendages",
+                    "Milkweed seeds with silky hairs",
+                    "Cottonwood seeds with cotton-like fibers"
+                ],
+                imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgmi9dcBYsh_HbbjxAwaKD0294yU22trmjjg&s",
+                imageCaption: "Dandelion seeds use fuzzy structures to catch the wind"
+            },
+            spiky: {
+                title: "Spiky Seeds",
+                icon: "fas fa-thumbtack",
+                description: "Seeds with sharp points or hooks that attach to animals' fur, feathers, or clothing.",
+                methods: "Animal dispersal (epizoochory)",
+                russian: "Колючие семена (Koljučije semena)",
+                examples: [
+                    "Burrs that stick to animal fur",
+                    "Cocklebur with hooked spines",
+                    "Beggar's ticks with barbed awns",
+                    "Sandbur with spiky coverings"
+                ],
+                imageUrl: "https://media.istockphoto.com/id/493163094/photo/lesser-burdock-burrs-hooked-together-lead-to-velcro.jpg?s=612x612&w=0&k=20&c=W2QPUdFK0tNlsiqNwsOO3Tdc9HP2wixehmGHs7sUumY=",
+                imageCaption: "Burrs use hooks to attach to animals for dispersal"
+            },
+            smooth: {
+                title: "Smooth Seeds",
+                icon: "fas fa-circle",
+                description: "Seeds with flat, even surfaces that help them move through water, air, or by gravity.",
+                methods: "Water dispersal (hydrochory), wind, or gravity",
+                russian: "Гладкие семена (Gladkije semena)",
+                examples: [
+                    "Maple seeds with wing-like structures",
+                    "Coconut that floats on water",
+                    "Acorns that fall from oak trees",
+                    "Elm seeds with papery wings"
+                ],
+                imageUrl: "https://images.theconversation.com/files/651491/original/file-20250225-32-rcd89r.jpg?ixlib=rb-4.1.0&rect=0%2C605%2C7360%2C3680&q=45&auto=format&w=1356&h=668&fit=crop",
+                imageCaption: "Maple seeds have smooth, wing-like structures to glide through air"
+            }
+        };
+
+        // Get modal elements
+        const modal = document.getElementById('seedModal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        const seedTypes = document.querySelectorAll('.seed-type');
+        const modalImage = document.getElementById('modal-image');
+        const imageLoading = document.getElementById('image-loading');
+        const modalImageCaption = document.getElementById('modal-image-caption');
+
+        // Function to open modal with seed information
+        function openSeedModal(seedType) {
+            const data = seedData[seedType];
+            
+            // Populate modal with data
+            document.getElementById('modal-title').textContent = data.title;
+            document.getElementById('modal-description').textContent = data.description;
+            document.getElementById('modal-methods').textContent = data.methods;
+            document.getElementById('modal-russian').textContent = data.russian;
+            
+            // Populate examples list
+            const examplesList = document.getElementById('modal-examples');
+            examplesList.innerHTML = '';
+            data.examples.forEach(example => {
+                const li = document.createElement('li');
+                li.textContent = example;
+                examplesList.appendChild(li);
+            });
+            
+            // Show loading animation
+            imageLoading.style.display = 'flex';
+            modalImage.style.display = 'none';
+            modalImageCaption.textContent = '';
+            
+            // Set image source and handle loading
+            modalImage.onload = function() {
+                imageLoading.style.display = 'none';
+                modalImage.style.display = 'block';
+                modalImageCaption.textContent = data.imageCaption;
+            };
+            
+            modalImage.onerror = function() {
+                // If image fails to load, show a placeholder
+                imageLoading.style.display = 'none';
+                modalImage.style.display = 'block';
+                modalImage.src = `https://via.placeholder.com/400x250/4a7c59/ffffff?text=${data.title}`;
+                modalImageCaption.textContent = "Example image (placeholder)";
+            };
+            
+            modalImage.src = data.imageUrl;
+            
+            // Show modal with animation
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        // Add click events to seed types
+        seedTypes.forEach(seedType => {
+            seedType.addEventListener('click', () => {
+                const seedTypeName = seedType.getAttribute('data-type');
+                openSeedModal(seedTypeName);
+            });
+        });
+
+        // Close modal when clicking close buttons
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto'; // Re-enable scrolling
+            });
+        });
+
+        // Close modal when clicking outside the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Add interactive animations to word items
+        document.querySelectorAll('.word-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.backgroundColor = '#f8fdf8';
+                this.style.transition = 'background-color 0.3s ease';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.backgroundColor = '';
+            });
+        });
+
+        // Preload images for better user experience
+        function preloadImages() {
+            Object.values(seedData).forEach(seed => {
+                const img = new Image();
+                img.src = seed.imageUrl;
+            });
+        }
+
+        // Start preloading images when page loads
+        window.addEventListener('load', preloadImages);
+    </script>
+</body>
+</html>
