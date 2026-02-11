@@ -50,7 +50,6 @@
             from { opacity: 0; transform: scale(0.5); }
             to { opacity: 1; transform: scale(1); }
         }
-        /* Match Game Styles */
         .match-card {
             transition: all 0.3s ease;
         }
@@ -64,7 +63,92 @@
             background-color: #dcfce7;
             border-color: #22c55e;
         }
-        /* Custom Scrollbar */
+        .photo-container {
+            position: relative;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+        .photo-container::after {
+            content: "🔍 Click to see bigger";
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .photo-container:hover::after {
+            opacity: 1;
+        }
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        .lightbox img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+        .lightbox-caption {
+            color: white;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 18px;
+            max-width: 800px;
+        }
+        /* Reduce Activity Styles */
+        .scenario-card {
+            transition: all 0.3s ease;
+        }
+        .scenario-card:hover {
+            transform: translateY(-3px);
+        }
+        .answer-btn {
+            transition: all 0.2s;
+        }
+        .answer-btn:hover {
+            transform: scale(1.05);
+        }
+        .answer-btn.correct {
+            background-color: #22c55e;
+            color: white;
+        }
+        .answer-btn.wrong {
+            background-color: #ef4444;
+            color: white;
+        }
         ::-webkit-scrollbar {
             width: 10px;
         }
@@ -79,9 +163,17 @@
             background: #555; 
         }
     </style>
-<base target="_blank">
 </head>
 <body class="text-slate-800">
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <div class="lightbox-content" onclick="event.stopPropagation()">
+            <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+            <img id="lightbox-img" src="" alt="">
+            <p id="lightbox-caption" class="lightbox-caption fun-font"></p>
+        </div>
+    </div>
 
     <!-- Navigation -->
     <nav class="bg-green-500 text-white p-4 sticky top-0 z-50 shadow-lg">
@@ -90,9 +182,10 @@
                 <span>🌍</span> Earth Heroes
             </div>
             <div class="flex gap-2 md:gap-4 overflow-x-auto">
-                <button onclick="showSection('story')" class="px-3 py-2 rounded-full hover:bg-green-600 transition font-bold text-sm md:text-base">📖 Story</button>
+                <button onclick="showSection('story')" class="px-3 py-2 rounded-full hover:bg-green-600 transition font-bold text-sm md:text-base">📖 Facts</button>
                 <button onclick="showSection('words')" class="px-3 py-2 rounded-full hover:bg-green-600 transition font-bold text-sm md:text-base">📝 Words</button>
                 <button onclick="showSection('match')" class="px-3 py-2 rounded-full bg-purple-500 hover:bg-purple-400 transition font-bold text-sm md:text-base shadow-md">🧩 Match</button>
+                <button onclick="showSection('reduce')" class="px-3 py-2 rounded-full bg-red-500 hover:bg-red-400 transition font-bold text-sm md:text-base shadow-md">⬇️ Reduce</button>
                 <button onclick="showSection('game')" class="px-3 py-2 rounded-full bg-yellow-400 text-yellow-900 hover:bg-yellow-300 transition font-bold text-sm md:text-base shadow-md">🎮 Sort</button>
             </div>
         </div>
@@ -108,12 +201,18 @@
                 <p class="text-xl md:text-3xl text-slate-600 mb-8 max-w-2xl mx-auto">
                     Hello, little hero! 🌟<br>Learn how to help the Earth, learn new words, and play fun games!
                 </p>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-lg mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                     <button onclick="showSection('story')" class="bg-blue-500 text-white text-lg px-6 py-4 rounded-2xl shadow-lg hover:bg-blue-600 transform hover:scale-105 transition flex items-center justify-center gap-2">
-                        <span>📖</span> Read Story
+                        <span>📖</span> Plastic Facts
                     </button>
-                    <button onclick="showSection('match')" class="bg-purple-500 text-white text-lg px-6 py-4 rounded-2xl shadow-lg hover:bg-purple-600 transform hover:scale-105 transition flex items-center justify-center gap-2">
+                    <button onclick="showSection('words')" class="bg-purple-500 text-white text-lg px-6 py-4 rounded-2xl shadow-lg hover:bg-purple-600 transform hover:scale-105 transition flex items-center justify-center gap-2">
+                        <span>📝</span> Vocabulary
+                    </button>
+                    <button onclick="showSection('match')" class="bg-indigo-500 text-white text-lg px-6 py-4 rounded-2xl shadow-lg hover:bg-indigo-600 transform hover:scale-105 transition flex items-center justify-center gap-2">
                         <span>🧩</span> Match Game
+                    </button>
+                    <button onclick="showSection('reduce')" class="bg-red-500 text-white text-lg px-6 py-4 rounded-2xl shadow-lg hover:bg-red-600 transform hover:scale-105 transition flex items-center justify-center gap-2">
+                        <span>⬇️</span> Reduce Activity
                     </button>
                     <button onclick="showSection('game')" class="bg-yellow-400 text-yellow-900 text-lg px-6 py-4 rounded-2xl shadow-lg hover:bg-yellow-300 transform hover:scale-105 transition flex items-center justify-center gap-2 md:col-span-2">
                         <span>🎮</span> Sorting Game
@@ -125,44 +224,199 @@
             </div>
         </section>
 
-        <!-- STORY SECTION -->
+        <!-- FACTS SECTION -->
         <section id="story" class="section-view hidden py-8">
-            <h2 class="text-4xl font-bold text-center text-blue-600 mb-8 fun-font">The Story of Plastic</h2>
+            <h2 class="text-4xl font-bold text-center text-blue-600 mb-8 fun-font">Facts about Plastic</h2>
             
-            <div class="grid gap-8 max-w-4xl mx-auto">
-                <!-- Fact 1 -->
+            <!-- Basic Facts -->
+            <div class="grid gap-8 max-w-4xl mx-auto mb-12">
                 <div class="bg-white p-6 rounded-3xl shadow-md flex flex-col md:flex-row items-center gap-6 card-hover">
-                    <div class="text-6xl bg-blue-100 p-6 rounded-full">🌍</div>
+                    <div class="text-6xl bg-blue-100 p-6 rounded-full">⚖️</div>
                     <div>
-                        <h3 class="text-2xl font-bold text-blue-800 mb-2">Fact 1: Plastic is Everywhere</h3>
-                        <p class="text-lg text-slate-600">Since the 1950s, humans have made <strong>8.3 billion tons</strong> of plastic. That is very heavy! Most of it is used only once and then thrown away.</p>
+                        <h3 class="text-2xl font-bold text-blue-800 mb-2">How much plastic?</h3>
+                        <p class="text-lg text-slate-600">
+                            Since the 1950s, we have made <strong>8.3 billion tons</strong> of plastic. 
+                            That is as heavy as <strong>1 billion elephants</strong>! 
+                            Or imagine a line of school buses going around the Earth 400 times!
+                        </p>
                     </div>
                 </div>
 
-                <!-- Fact 2 -->
                 <div class="bg-white p-6 rounded-3xl shadow-md flex flex-col md:flex-row-reverse items-center gap-6 card-hover">
                     <div class="text-6xl bg-red-100 p-6 rounded-full">⏳</div>
                     <div>
-                        <h3 class="text-2xl font-bold text-red-800 mb-2">Fact 2: Plastic Lives Long</h3>
-                        <p class="text-lg text-slate-600">Plastic takes <strong>400 years</strong> to go away. If a T-Rex used a plastic cup, it would still be here today!</p>
+                        <h3 class="text-2xl font-bold text-red-800 mb-2">Plastic Lives Long</h3>
+                        <p class="text-lg text-slate-600">
+                            A plastic bottle can take <strong>450 years</strong> to disappear. 
+                            That means if a pirate threw a bottle in the ocean in the year 1600, it would still be there today!
+                        </p>
                     </div>
                 </div>
 
-                <!-- Fact 3 -->
+                <!-- NEW: Styrofoam Fact -->
                 <div class="bg-white p-6 rounded-3xl shadow-md flex flex-col md:flex-row items-center gap-6 card-hover">
-                    <div class="text-6xl bg-green-100 p-6 rounded-full">🌊</div>
-                    <div>
-                        <h3 class="text-2xl font-bold text-green-800 mb-2">Fact 3: The Ocean is Sick</h3>
-                        <p class="text-lg text-slate-600">Every year, <strong>8 million tons</strong> of plastic go into the ocean. This hurts fish, turtles, and birds. They might eat the plastic by mistake.</p>
+                    <div class="md:w-1/3 photo-container rounded-2xl" onclick="openLightbox(this)">
+                        <img src="https://toxicfreefuture.org/wp-content/uploads/2022/06/191259946_2af67f29a3_z.jpg" 
+                             alt="Styrofoam waste and pollution" 
+                             class="w-full h-48 object-cover rounded-2xl hover:scale-110 transition duration-500"
+                             data-caption="Styrofoam is hard to recycle and breaks into microplastics">
+                    </div>
+                    <div class="md:w-2/3">
+                        <h3 class="text-2xl font-bold text-orange-800 mb-2">⚠️ The Styrofoam Problem</h3>
+                        <p class="text-lg text-slate-600">
+                            Styrofoam is a kind of plastic. Most countries do not recycle Styrofoam in regular recycling bins. 
+                            It is hard to recycle and breaks into very small pieces. These tiny pieces are called <strong>microplastics</strong>. 
+                            It costs a lot of money to collect and clean!
+                        </p>
                     </div>
                 </div>
 
-                <!-- Fact 4 -->
                 <div class="bg-white p-6 rounded-3xl shadow-md flex flex-col md:flex-row-reverse items-center gap-6 card-hover">
                     <div class="text-6xl bg-yellow-100 p-6 rounded-full">♻️</div>
                     <div>
-                        <h3 class="text-2xl font-bold text-yellow-800 mb-2">Fact 4: We Can Fix It!</h3>
-                        <p class="text-lg text-slate-600">Only 9% of plastic is recycled. We need to <strong>Reduce, Reuse, and Recycle</strong> more to keep our Earth clean and happy!</p>
+                        <h3 class="text-2xl font-bold text-yellow-800 mb-2">We Can Fix It!</h3>
+                        <p class="text-lg text-slate-600">
+                            If we all use less plastic and recycle more, we can keep our Earth clean and happy. 
+                            Remember the 3 R's: <strong>Reduce, Reuse, Recycle!</strong>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Photo Gallery Section -->
+            <div class="max-w-5xl mx-auto">
+                <div class="bg-gradient-to-r from-blue-500 to-green-500 p-1 rounded-3xl mb-8">
+                    <div class="bg-white rounded-3xl p-6 md:p-8">
+                        <h2 class="text-3xl md:text-4xl font-bold text-center text-slate-800 mb-2 fun-font">🌍 See the Real Problem! 🌍</h2>
+                        <p class="text-center text-slate-600 mb-8 text-lg">Click any picture to see it bigger!</p>
+                        
+                        <div class="grid gap-8">
+                            <!-- Photo 1: The Sad River -->
+                            <div class="photo-card bg-slate-50 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200">
+                                <div class="md:flex">
+                                    <div class="md:w-1/2 photo-container" onclick="openLightbox(this)">
+                                        <img src="https://img2.rtve.es/i/?w=1200&i=https://img.rtve.es/imagenes/locales-limpian-rio-citarum-con-barcas-madera-batujajar/01718355369987.jpg" 
+                                             alt="Citarum River pollution - people cleaning the very dirty river with boats" 
+                                             class="w-full h-64 md:h-full object-cover hover:scale-110 transition duration-500"
+                                             data-caption="Citarum River, Indonesia - The most polluted river in the world">
+                                    </div>
+                                    <div class="md:w-1/2 p-6">
+                                        <h3 class="text-2xl font-bold text-blue-700 mb-2 fun-font">😢 The Sad River</h3>
+                                        <p class="text-sm text-slate-500 mb-4 font-bold uppercase tracking-wide">Citarum River, Indonesia</p>
+                                        <ul class="space-y-2 text-slate-700">
+                                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span><span>This river has more trash than water!</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span><span>35 million people live near this dirty river</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span><span>Fish and animals cannot live here anymore</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span><span>People get sick from the dirty water</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-red-500 font-bold">•</span><span>It would take years and years to clean it</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Photo 2: Microplastics -->
+                            <div class="photo-card bg-slate-50 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200">
+                                <div class="md:flex flex-row-reverse">
+                                    <div class="md:w-1/2 photo-container" onclick="openLightbox(this)">
+                                        <img src="https://hsph.harvard.edu/wp-content/uploads/2025/01/microplastics.jpg" 
+                                             alt="Microplastics under microscope - tiny plastic pieces" 
+                                             class="w-full h-64 md:h-full object-cover hover:scale-110 transition duration-500"
+                                             data-caption="Microplastics - Smaller than a grain of rice!">
+                                    </div>
+                                    <div class="md:w-1/2 p-6">
+                                        <h3 class="text-2xl font-bold text-purple-700 mb-2 fun-font">🔬 Tiny Plastic Everywhere</h3>
+                                        <p class="text-sm text-slate-500 mb-4 font-bold uppercase tracking-wide">Microplastics - Smaller than rice!</p>
+                                        <ul class="space-y-2 text-slate-700">
+                                            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">•</span><span>Too small to see without a microscope</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">•</span><span>They come from broken bottles and bags</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">•</span><span>They are in our oceans, rivers, and drinking water</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">•</span><span>Fish eat them by mistake</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-purple-500 font-bold">•</span><span>They never disappear - just get smaller!</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Photo 3: Turtle -->
+                            <div class="photo-card bg-slate-50 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200">
+                                <div class="md:flex">
+                                    <div class="md:w-1/2 photo-container" onclick="openLightbox(this)">
+                                        <img src="https://earth.org/wp-content/uploads/2022/06/Untitled-1024-%C3%97-683px-17-1200x900.jpg" 
+                                             alt="Sea turtle swimming near plastic pollution in ocean" 
+                                             class="w-full h-64 md:h-full object-cover hover:scale-110 transition duration-500"
+                                             data-caption="Sea turtle living in plastic-filled ocean">
+                                    </div>
+                                    <div class="md:w-1/2 p-6">
+                                        <h3 class="text-2xl font-bold text-green-700 mb-2 fun-font">🐢 Turtle in Trouble</h3>
+                                        <p class="text-sm text-slate-500 mb-4 font-bold uppercase tracking-wide">Sea turtle in plastic ocean</p>
+                                        <ul class="space-y-2 text-slate-700">
+                                            <li class="flex items-start gap-2"><span class="text-green-600 font-bold">•</span><span>1 out of 2 sea turtles eats plastic</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-green-600 font-bold">•</span><span>They think plastic bags are jellyfish (their food)</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-green-600 font-bold">•</span><span>Plastic makes them feel full, but they starve</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-green-600 font-bold">•</span><span>They can get tangled and drown</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-green-600 font-bold">•</span><span>Baby turtles are in the most danger</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Photo 4: Fish -->
+                            <div class="photo-card bg-slate-50 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200">
+                                <div class="md:flex flex-row-reverse">
+                                    <div class="md:w-1/2 photo-container" onclick="openLightbox(this)">
+                                        <img src="https://academy.pittmanseafoods.com/wp-content/uploads/2020/09/Plastic-pollution-fish.jpg" 
+                                             alt="Fish surrounded by plastic pollution in water" 
+                                             class="w-full h-64 md:h-full object-cover hover:scale-110 transition duration-500"
+                                             data-caption="Fish living in plastic pollution">
+                                    </div>
+                                    <div class="md:w-1/2 p-6">
+                                        <h3 class="text-2xl font-bold text-blue-700 mb-2 fun-font">🐟 Fish in Plastic Soup</h3>
+                                        <p class="text-sm text-slate-500 mb-4 font-bold uppercase tracking-wide">Fish surrounded by plastic</p>
+                                        <ul class="space-y-2 text-slate-700">
+                                            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span><span>Fish live in water like "plastic soup"</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span><span>They eat tiny plastic thinking it's food</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span><span>Plastic blocks their stomachs - no room for real food</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span><span>When we eat fish, we might eat plastic too</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-blue-500 font-bold">•</span><span>Plastic has chemicals that make fish sick</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Photo 5: Bird - UPDATED CAPTION -->
+                            <div class="photo-card bg-slate-50 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-200">
+                                <div class="md:flex">
+                                    <div class="md:w-1/2 photo-container" onclick="openLightbox(this)">
+                                        <img src="https://i0.wp.com/theweeklywarbler.com/wp-content/uploads/2022/11/gull-with-plastic.jpg?resize=1024%2C756&ssl=1" 
+                                             alt="Bird eating a plastic bag/package" 
+                                             class="w-full h-64 md:h-full object-cover hover:scale-110 transition duration-500"
+                                             data-caption="Bird eating a plastic bag/package">
+                                    </div>
+                                    <div class="md:w-1/2 p-6">
+                                        <h3 class="text-2xl font-bold text-orange-700 mb-2 fun-font">🐦 Bird eating plastic</h3>
+                                        <p class="text-sm text-slate-500 mb-4 font-bold uppercase tracking-wide">Bird eating a plastic bag/package</p>
+                                        <ul class="space-y-2 text-slate-700">
+                                            <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span><span>Birds get tangled in plastic rings and bags</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span><span>They can't fly when their wings are trapped</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span><span>They can't find food or go home to nests</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span><span>Baby birds wait for food that never comes</span></li>
+                                            <li class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span><span>1 million birds die from plastic every year</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Call to Action -->
+                        <div class="mt-10 text-center bg-green-50 p-6 rounded-2xl border-2 border-green-300">
+                            <h3 class="text-2xl font-bold text-green-700 mb-3 fun-font">💪 You Can Help!</h3>
+                            <p class="text-lg text-slate-700 mb-4">Now you see the problem. Here's how to be a hero:</p>
+                            <div class="flex flex-wrap justify-center gap-4">
+                                <div class="bg-white px-4 py-2 rounded-full shadow text-green-700 font-bold">♻️ Recycle</div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow text-blue-700 font-bold">🔄 Reuse bags</div>
+                                <div class="bg-white px-4 py-2 rounded-full shadow text-purple-700 font-bold">⬇️ Use less plastic</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -200,23 +454,35 @@
 
                 <div class="bg-white rounded-3xl shadow-xl p-6 md:p-10 min-h-[400px] flex flex-col justify-center">
                     <div id="match-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <!-- Left Column: Words -->
-                        <div id="match-words" class="flex flex-col gap-4">
-                            <!-- Words injected here -->
-                        </div>
-                        <!-- Right Column: Definitions -->
-                        <div id="match-defs" class="flex flex-col gap-4">
-                            <!-- Definitions injected here -->
-                        </div>
+                        <div id="match-words" class="flex flex-col gap-4"></div>
+                        <div id="match-defs" class="flex flex-col gap-4"></div>
                     </div>
                     
-                    <!-- Game Over Message -->
                     <div id="match-message" class="hidden text-center py-10">
                         <div class="text-6xl mb-4">🏆</div>
                         <h3 class="text-3xl font-bold text-purple-600 mb-2">Amazing!</h3>
                         <p class="text-xl text-slate-600 mb-6">You matched all the words!</p>
                         <button onclick="initMatchGame()" class="bg-purple-500 text-white px-8 py-3 rounded-full font-bold hover:bg-purple-600 transition shadow-lg">Play Again</button>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- REDUCE ACTIVITY SECTION - NEW -->
+        <section id="reduce" class="section-view hidden py-8">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-4xl font-bold text-center text-red-600 mb-2 fun-font">⬇️ How Can YOU Reduce?</h2>
+                <p class="text-center text-slate-600 mb-8 text-lg">Look at each situation. What can you do to make LESS trash?</p>
+                
+                <div id="reduce-scenarios" class="space-y-6">
+                    <!-- Scenarios injected via JS -->
+                </div>
+
+                <div id="reduce-complete" class="hidden text-center mt-10 bg-green-50 p-8 rounded-3xl border-2 border-green-300">
+                    <div class="text-6xl mb-4">🌟</div>
+                    <h3 class="text-3xl font-bold text-green-700 mb-3 fun-font">You're a Reduction Expert!</h3>
+                    <p class="text-lg text-slate-700 mb-6">Great thinking! You found ways to make less trash.</p>
+                    <button onclick="initReduceActivity()" class="bg-red-500 text-white px-8 py-3 rounded-full font-bold hover:bg-red-600 transition shadow-lg">Try Again</button>
                 </div>
             </div>
         </section>
@@ -235,26 +501,18 @@
                     </div>
                 </div>
 
-                <!-- Game Area -->
                 <div class="w-full max-w-4xl bg-white rounded-3xl shadow-xl p-6 min-h-[500px] flex flex-col">
-                    
-                    <!-- Bins -->
                     <div class="grid grid-cols-3 gap-4 mb-8">
-                        <!-- Recycle Bin -->
                         <div class="drop-zone bg-blue-50 border-4 border-blue-400 rounded-2xl p-4 flex flex-col items-center justify-center h-48 relative" data-type="recycle">
                             <div class="text-5xl mb-2">♻️</div>
                             <h3 class="text-xl font-bold text-blue-700">Recycle</h3>
                             <p class="text-xs text-center text-blue-500">Paper, Plastic, Metal</p>
                         </div>
-
-                        <!-- Trash Bin -->
                         <div class="drop-zone bg-gray-100 border-4 border-gray-400 rounded-2xl p-4 flex flex-col items-center justify-center h-48 relative" data-type="trash">
                             <div class="text-5xl mb-2">🗑️</div>
                             <h3 class="text-xl font-bold text-gray-700">Trash</h3>
                             <p class="text-xs text-center text-gray-500">Dirty things</p>
                         </div>
-
-                        <!-- Compost Bin -->
                         <div class="drop-zone bg-green-50 border-4 border-green-500 rounded-2xl p-4 flex flex-col items-center justify-center h-48 relative" data-type="compost">
                             <div class="text-5xl mb-2">🍎</div>
                             <h3 class="text-xl font-bold text-green-700">Compost</h3>
@@ -262,11 +520,8 @@
                         </div>
                     </div>
 
-                    <!-- Items Conveyor -->
                     <div class="bg-slate-50 rounded-2xl p-6 border-2 border-dashed border-slate-300 flex-grow flex items-center justify-center relative overflow-hidden">
-                        <div id="items-container" class="flex flex-wrap justify-center gap-4 w-full">
-                            <!-- Draggable items injected here -->
-                        </div>
+                        <div id="items-container" class="flex flex-wrap justify-center gap-4 w-full"></div>
                         <div id="game-message" class="absolute inset-0 flex items-center justify-center bg-white/90 z-10 hidden">
                             <div class="text-center">
                                 <div class="text-6xl mb-4">🎉</div>
@@ -283,11 +538,35 @@
     </main>
 
     <script>
-        // --- DATA (UPDATED DEFINITIONS) ---
+        // Lightbox Functions
+        function openLightbox(element) {
+            const img = element.querySelector('img');
+            const caption = img.getAttribute('data-caption');
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            const lightboxCaption = document.getElementById('lightbox-caption');
+            
+            lightboxImg.src = img.src;
+            lightboxCaption.textContent = caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            const lightbox = document.getElementById('lightbox');
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeLightbox();
+        });
+
+        // UPDATED VOCABULARY with new definitions and Microplastic
         const vocabList = [
             { word: "Recycle", def: "To clean old things and make them into something new.", icon: "♻️" },
             { word: "Reuse", def: "To use something again instead of throwing it away.", icon: "🔄" },
-            { word: "Reduce", def: "To use less of something to make less trash.", icon: "⬇️" },
+            { word: "Reduce", def: "Make smaller or less in amount, degree, or size. For example, make less trash.", icon: "⬇️" },
             { word: "Waste", def: "Things that people throw away.", icon: "🗑️" },
             { word: "Trash", def: "Things that are dirty and cannot be used again.", icon: "🚯" },
             { word: "Bin", def: "A big box where we put trash or recycling.", icon: "🗑️" },
@@ -304,8 +583,68 @@
             { word: "Contamination", def: "When dirt or poison makes water or land bad.", icon: "☠️" },
             { word: "Animal", def: "A living thing like a fish, bird, or dog.", icon: "🐢" },
             { word: "Help", def: "To do something good for someone else.", icon: "🤝" },
-            { word: "Save", def: "To keep something safe.", icon: "💾" },
-            { word: "Protect", def: "To keep something safe from danger.", icon: "🛡️" }
+            { word: "Save", def: "To keep something safe from harm or danger.", icon: "💾" },
+            { word: "Protect", def: "Keep safe from harm or injury.", icon: "🛡️" },
+            { word: "Microplastic", def: "Very, very tiny pieces of plastic that come from broken plastic things and make the land and water dirty.", icon: "🔬" }
+        ];
+
+        // Reduce Activity Scenarios
+        const reduceScenarios = [
+            {
+                id: 1,
+                situation: "Your mom is packing your lunch. She puts your sandwich in a plastic bag.",
+                question: "What can you say to REDUCE plastic?",
+                answers: [
+                    { text: "Use a plastic bag", correct: false },
+                    { text: "Use a reusable container", correct: true },
+                    { text: "Throw the sandwich away", correct: false }
+                ],
+                icon: "🥪"
+            },
+            {
+                id: 2,
+                situation: "You're going to the store to buy one apple. The cashier puts it in a plastic bag.",
+                question: "What can you do to REDUCE trash?",
+                answers: [
+                    { text: "Take the plastic bag", correct: false },
+                    { text: "Put apple in your pocket", correct: false },
+                    { text: "Say 'No bag please, I can carry it'", correct: true }
+                ],
+                icon: "🍎"
+            },
+            {
+                id: 3,
+                situation: "You're thirsty and want water. There are plastic water bottles at the store.",
+                question: "How can you REDUCE plastic bottles?",
+                answers: [
+                    { text: "Buy a new bottle every day", correct: false },
+                    { text: "Use a reusable water bottle", correct: true },
+                    { text: "Drink from the sink at home", correct: true }
+                ],
+                icon: "💧"
+            },
+            {
+                id: 4,
+                situation: "Your birthday is coming. You want to give invitations to friends.",
+                question: "How can you REDUCE paper?",
+                answers: [
+                    { text: "Send invitations by phone/email", correct: true },
+                    { text: "Print 50 paper invitations", correct: false },
+                    { text: "Tell friends in person", correct: true }
+                ],
+                icon: "🎂"
+            },
+            {
+                id: 5,
+                situation: "You're drawing a picture. One side of the paper is full.",
+                question: "How can you REDUCE paper waste?",
+                answers: [
+                    { text: "Use a new paper", correct: false },
+                    { text: "Draw on the back side too", correct: true },
+                    { text: "Use both sides before getting new paper", correct: true }
+                ],
+                icon: "🎨"
+            }
         ];
 
         const sortItems = [
@@ -323,30 +662,25 @@
             { id: 12, name: "Fish Bones", type: "compost", icon: "🐟" }
         ];
 
-        // --- STATE ---
         let sortScore = 0;
         let currentSortItems = [];
-        
         let matchScore = 0;
-        let matchTotal = 0;
-        let selectedCard = null; // For match game
-        let remainingMatches = []; // Pool of words for match game
+        let selectedCard = null;
+        let remainingMatches = [];
+        let reduceCompleted = 0;
 
-        // --- NAVIGATION ---
         function showSection(sectionId) {
             document.querySelectorAll('.section-view').forEach(el => el.classList.add('hidden'));
             const target = document.getElementById(sectionId);
             target.classList.remove('hidden');
             target.classList.add('pop-in');
-            
             if (sectionId === 'words') renderVocab();
             if (sectionId === 'game') initSortGame();
             if (sectionId === 'match') initMatchGame();
-            
+            if (sectionId === 'reduce') initReduceActivity();
             window.scrollTo(0, 0);
         }
 
-        // --- VOCABULARY LOGIC ---
         function renderVocab() {
             const container = document.getElementById('vocab-grid');
             container.innerHTML = '';
@@ -374,18 +708,85 @@
             }
         }
 
-        // --- MATCH GAME LOGIC ---
+        // REDUCE ACTIVITY
+        function initReduceActivity() {
+            reduceCompleted = 0;
+            document.getElementById('reduce-complete').classList.add('hidden');
+            const container = document.getElementById('reduce-scenarios');
+            container.innerHTML = '';
+            
+            reduceScenarios.forEach((scenario, index) => {
+                const card = document.createElement('div');
+                card.className = 'scenario-card bg-white p-6 rounded-2xl shadow-lg border-2 border-red-100';
+                card.innerHTML = `
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="text-5xl bg-red-50 p-3 rounded-full">${scenario.icon}</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-bold text-slate-800 mb-2">Situation ${index + 1}</h3>
+                            <p class="text-lg text-slate-600 mb-2">${scenario.situation}</p>
+                            <p class="text-red-600 font-bold">${scenario.question}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3" id="scenario-${scenario.id}">
+                        ${scenario.answers.map((ans, i) => `
+                            <button onclick="checkReduceAnswer(${scenario.id}, ${i}, ${ans.correct}, this)" 
+                                    class="answer-btn bg-red-50 hover:bg-red-100 border-2 border-red-200 p-4 rounded-xl text-slate-700 font-bold transition">
+                                ${ans.text}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${scenario.id}" class="mt-4 hidden p-4 rounded-xl font-bold text-center"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function checkReduceAnswer(scenarioId, answerIndex, isCorrect, btn) {
+            const scenario = reduceScenarios.find(s => s.id === scenarioId);
+            const feedbackDiv = document.getElementById(`feedback-${scenarioId}`);
+            const allBtns = document.querySelectorAll(`#scenario-${scenarioId} button`);
+            
+            allBtns.forEach(b => b.disabled = true);
+            
+            if (isCorrect) {
+                btn.classList.add('correct');
+                feedbackDiv.className = 'mt-4 p-4 rounded-xl font-bold text-center bg-green-100 text-green-700';
+                feedbackDiv.innerHTML = '✅ Excellent! That reduces waste!';
+                reduceCompleted++;
+                speak("Great job! That reduces waste!");
+            } else {
+                btn.classList.add('wrong');
+                feedbackDiv.className = 'mt-4 p-4 rounded-xl font-bold text-center bg-red-100 text-red-700';
+                feedbackDiv.innerHTML = '❌ Think again! That makes more trash.';
+                speak("Try again! Think about making less trash.");
+                
+                // Re-enable buttons after delay
+                setTimeout(() => {
+                    allBtns.forEach(b => {
+                        b.disabled = false;
+                        b.classList.remove('wrong');
+                    });
+                }, 1500);
+            }
+            
+            feedbackDiv.classList.remove('hidden');
+            
+            if (reduceCompleted === reduceScenarios.length) {
+                setTimeout(() => {
+                    document.getElementById('reduce-complete').classList.remove('hidden');
+                    document.getElementById('reduce-scenarios').classList.add('hidden');
+                }, 1000);
+            }
+        }
+
         function initMatchGame() {
             matchScore = 0;
             document.getElementById('match-score').innerText = "0";
             document.getElementById('match-total').innerText = vocabList.length;
             document.getElementById('match-message').classList.add('hidden');
             document.getElementById('match-container').classList.remove('hidden');
-            
-            // Reset pool
             remainingMatches = [...vocabList];
             selectedCard = null;
-            
             renderMatchRound();
         }
 
@@ -394,18 +795,13 @@
             const defsContainer = document.getElementById('match-defs');
             wordsContainer.innerHTML = '';
             defsContainer.innerHTML = '';
-
             if (remainingMatches.length === 0) {
                 document.getElementById('match-container').classList.add('hidden');
                 document.getElementById('match-message').classList.remove('hidden');
                 speak("Great job! You finished the game!");
                 return;
             }
-
-            // Take 4 items (or remaining)
             const roundItems = remainingMatches.slice(0, 4);
-            
-            // Create Word Cards (Left)
             roundItems.forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'match-card bg-blue-100 p-4 rounded-xl border-2 border-blue-300 cursor-pointer hover:bg-blue-200 flex items-center gap-3';
@@ -415,8 +811,6 @@
                 card.onclick = () => handleMatchClick(card, item);
                 wordsContainer.appendChild(card);
             });
-
-            // Create Def Cards (Right) - Shuffled
             const shuffledDefs = [...roundItems].sort(() => Math.random() - 0.5);
             shuffledDefs.forEach(item => {
                 const card = document.createElement('div');
@@ -431,54 +825,35 @@
 
         function handleMatchClick(card, item) {
             if (card.classList.contains('matched')) return;
-
-            // If nothing selected yet
             if (!selectedCard) {
                 selectedCard = card;
                 card.classList.add('selected');
-                speak(item.word); // Speak the word
+                speak(item.word);
                 return;
             }
-
-            // If clicking same card, deselect
             if (selectedCard === card) {
                 card.classList.remove('selected');
                 selectedCard = null;
                 return;
             }
-
-            // If clicking another card
             const prevCard = selectedCard;
             const currentCard = card;
-
-            // Check match
             if (prevCard.dataset.word === currentCard.dataset.word) {
-                // Match!
                 prevCard.classList.remove('selected');
                 prevCard.classList.add('matched');
                 currentCard.classList.add('matched');
-                
-                // Visual success
                 prevCard.style.backgroundColor = "#dcfce7";
                 currentCard.style.backgroundColor = "#dcfce7";
-                
                 matchScore++;
                 document.getElementById('match-score').innerText = matchScore;
                 speak("Correct!");
-                
-                // Remove from remaining pool
                 remainingMatches = remainingMatches.filter(i => i.word !== item.word);
-                
                 selectedCard = null;
-
-                // Delay then next round
                 setTimeout(renderMatchRound, 1000);
             } else {
-                // No Match
                 currentCard.classList.add('shake');
                 prevCard.classList.add('shake');
                 speak("Try again");
-                
                 setTimeout(() => {
                     currentCard.classList.remove('shake');
                     prevCard.classList.remove('shake');
@@ -488,7 +863,6 @@
             }
         }
 
-        // --- SORTING GAME LOGIC (RENAMED FUNCTIONS TO AVOID CONFLICT) ---
         function initSortGame() {
             sortScore = 0;
             document.getElementById('score-display').innerText = sortScore;
@@ -546,7 +920,6 @@
             });
         });
 
-        // Touch for Sort
         function handleSortTouchStart(e) {
             e.preventDefault();
             touchSortItem = this;
@@ -578,7 +951,6 @@
             touchSortItem.style.left = '';
             touchSortItem.style.top = '';
             touchSortItem.style.opacity = '1';
-            
             if (elem) {
                 let zone = elem.closest('.drop-zone');
                 if (zone) checkSortMatch(touchSortItem, zone);
@@ -608,7 +980,6 @@
             }
         }
 
-        // Start
         showSection('home');
     </script>
 </body>
