@@ -47,71 +47,104 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 15px;
             margin: 40px 0;
-            min-height: 80px;
+            min-height: 90px;
+            align-items: center;
         }
 
         .letter-btn {
-            width: 70px;
-            height: 70px;
+            width: 75px;
+            height: 75px;
             font-size: 2em;
             font-family: 'Century Gothic', sans-serif;
             font-weight: 700;
             color: #1e3c72;
-            background: linear-gradient(145deg, #e6e6e6, #ffffff);
-            border: none;
-            border-radius: 15px;
+            background: linear-gradient(145deg, #ffffff, #e6e6e6);
+            border: 4px solid #1e3c72;
+            border-radius: 12px;
             cursor: pointer;
-            box-shadow: 5px 5px 15px rgba(0,0,0,0.2), -5px -5px 15px rgba(255,255,255,0.8);
-            transition: all 0.2s ease;
+            box-shadow: 0 6px 0 #1e3c72, 0 8px 15px rgba(0,0,0,0.3);
+            transition: all 0.15s ease;
             text-transform: lowercase;
+            position: relative;
+            top: 0;
         }
 
         .letter-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 8px 8px 20px rgba(0,0,0,0.25), -5px -5px 15px rgba(255,255,255,0.8);
-            background: linear-gradient(145deg, #f0f0f0, #ffffff);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #1e3c72, 0 10px 20px rgba(0,0,0,0.35);
         }
 
         .letter-btn:active {
-            transform: translateY(2px);
-            box-shadow: 2px 2px 8px rgba(0,0,0,0.2), -2px -2px 8px rgba(255,255,255,0.8);
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1e3c72, 0 4px 8px rgba(0,0,0,0.2);
+            top: 4px;
         }
 
         .letter-btn.used {
-            background: #1e3c72;
-            color: white;
-            box-shadow: inset 3px 3px 8px rgba(0,0,0,0.3);
-            transform: scale(0.95);
-        }
-
-        .letter-btn.used:hover {
-            transform: scale(0.95);
-            cursor: not-allowed;
+            visibility: hidden;
+            pointer-events: none;
         }
 
         .answer-display {
-            background: linear-gradient(145deg, #f0f0f0, #e6e6e6);
-            border-radius: 20px;
-            padding: 25px;
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border: 4px solid #1e3c72;
+            border-radius: 15px;
+            padding: 20px;
             margin: 30px 0;
-            min-height: 80px;
+            min-height: 90px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5em;
-            color: #1e3c72;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .answer-letter {
+            width: 60px;
+            height: 60px;
+            font-size: 1.8em;
+            font-family: 'Century Gothic', sans-serif;
             font-weight: 700;
-            letter-spacing: 8px;
-            box-shadow: inset 5px 5px 15px rgba(0,0,0,0.1), inset -5px -5px 15px rgba(255,255,255,0.8);
+            color: white;
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
+            border: 3px solid #1e5f2a;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #1e5f2a, 0 6px 10px rgba(0,0,0,0.2);
+            transition: all 0.15s ease;
             text-transform: lowercase;
+            position: relative;
+            top: 0;
+        }
+
+        .answer-letter:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #1e5f2a, 0 8px 15px rgba(0,0,0,0.25);
+            background: linear-gradient(145deg, #e74c3c, #c0392b);
+            border-color: #962d22;
+        }
+
+        .answer-letter:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #962d22, 0 3px 6px rgba(0,0,0,0.2);
+            top: 4px;
         }
 
         .answer-display.empty {
-            color: #aaa;
-            font-size: 1.2em;
-            letter-spacing: 2px;
+            color: #999;
+            font-size: 1.3em;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .answer-display.empty .answer-letter {
+            display: none;
         }
 
         .controls {
@@ -126,55 +159,74 @@
             font-size: 1.3em;
             font-family: 'Century Gothic', sans-serif;
             font-weight: 700;
-            border: none;
-            border-radius: 15px;
+            border: 4px solid;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.15s ease;
             text-transform: lowercase;
             letter-spacing: 1px;
+            position: relative;
+            top: 0;
         }
 
         .btn-check {
-            background: linear-gradient(145deg, #27ae60, #2ecc71);
+            background: linear-gradient(145deg, #2ecc71, #27ae60);
             color: white;
-            box-shadow: 0 8px 20px rgba(46, 204, 113, 0.4);
+            border-color: #1e5f2a;
+            box-shadow: 0 6px 0 #1e5f2a, 0 8px 20px rgba(46, 204, 113, 0.4);
         }
 
         .btn-check:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(46, 204, 113, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #1e5f2a, 0 10px 25px rgba(46, 204, 113, 0.5);
         }
 
         .btn-check:active {
-            transform: translateY(0);
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1e5f2a, 0 4px 10px rgba(46, 204, 113, 0.3);
+            top: 4px;
         }
 
         .btn-next {
             background: linear-gradient(145deg, #3498db, #2980b9);
             color: white;
-            box-shadow: 0 8px 20px rgba(52, 152, 219, 0.4);
+            border-color: #1a5276;
+            box-shadow: 0 6px 0 #1a5276, 0 8px 20px rgba(52, 152, 219, 0.4);
         }
 
         .btn-next:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(52, 152, 219, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #1a5276, 0 10px 25px rgba(52, 152, 219, 0.5);
+        }
+
+        .btn-next:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1a5276, 0 4px 10px rgba(52, 152, 219, 0.3);
+            top: 4px;
         }
 
         .btn-clear {
             background: linear-gradient(145deg, #e74c3c, #c0392b);
             color: white;
-            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.4);
-            padding: 18px 30px;
+            border-color: #962d22;
+            box-shadow: 0 6px 0 #962d22, 0 8px 20px rgba(231, 76, 60, 0.4);
+            padding: 18px 35px;
         }
 
         .btn-clear:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 25px rgba(231, 76, 60, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #962d22, 0 10px 25px rgba(231, 76, 60, 0.5);
+        }
+
+        .btn-clear:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #962d22, 0 4px 10px rgba(231, 76, 60, 0.3);
+            top: 4px;
         }
 
         .message {
             margin-top: 30px;
-            font-size: 1.4em;
+            font-size: 1.6em;
             font-weight: 700;
             min-height: 40px;
             opacity: 0;
@@ -197,16 +249,18 @@
             position: absolute;
             top: 30px;
             right: 40px;
-            font-size: 1.1em;
-            color: #666;
-            font-weight: 600;
+            font-size: 1.2em;
+            color: #1e3c72;
+            font-weight: 700;
+            background: rgba(30, 60, 114, 0.1);
+            padding: 10px 20px;
+            border-radius: 20px;
         }
 
         .confetti {
             position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #f0f;
+            width: 12px;
+            height: 12px;
             position: absolute;
             animation: fall linear forwards;
         }
@@ -216,10 +270,6 @@
                 transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
             }
-        }
-
-        .hidden-words {
-            display: none;
         }
     </style>
 <base target="_blank">
@@ -231,7 +281,9 @@
 
         <div class="letter-container" id="letterContainer"></div>
 
-        <div class="answer-display empty" id="answerDisplay">click letters to build word</div>
+        <div class="answer-display" id="answerDisplay">
+            <span class="placeholder-text">click letters to build word</span>
+        </div>
 
         <div class="controls">
             <button class="btn btn-clear" onclick="clearAnswer()">clear</button>
@@ -243,11 +295,10 @@
     </div>
 
     <script>
-        // word list - hidden from students
         const words = [
             "recycle", "reuse", "reduce", "plastic", "paper", 
             "waste", "trash", "ocean", "planet", "clean", 
-            "oxygen", "air", "pollution"
+            "oxygen", "air", "pollution", "landfill"
         ];
 
         let currentWord = "";
@@ -314,7 +365,7 @@
         }
 
         function selectLetter(index) {
-            const btn = document.querySelector(`button[data-index="${index}"]`);
+            const btn = document.querySelector(`.letter-btn[data-index="${index}"]`);
             if (btn.classList.contains('used')) return;
 
             btn.classList.add('used');
@@ -323,6 +374,14 @@
                 originalIndex: index
             });
             updateAnswerDisplay();
+        }
+
+        function removeLetter(answerIndex) {
+            const removed = userAnswer.splice(answerIndex, 1)[0];
+            const btn = document.querySelector(`.letter-btn[data-index="${removed.originalIndex}"]`);
+            btn.classList.remove('used');
+            updateAnswerDisplay();
+            hideMessage();
         }
 
         function clearAnswer() {
@@ -334,12 +393,21 @@
 
         function updateAnswerDisplay() {
             const display = document.getElementById('answerDisplay');
+
             if (userAnswer.length === 0) {
-                display.textContent = 'click letters to build word';
+                display.innerHTML = '<span class="placeholder-text">click letters to build word</span>';
                 display.classList.add('empty');
             } else {
-                display.textContent = userAnswer.map(u => u.letter).join('');
+                display.innerHTML = '';
                 display.classList.remove('empty');
+
+                userAnswer.forEach((item, index) => {
+                    const letterDiv = document.createElement('div');
+                    letterDiv.className = 'answer-letter';
+                    letterDiv.textContent = item.letter;
+                    letterDiv.onclick = () => removeLetter(index);
+                    display.appendChild(letterDiv);
+                });
             }
         }
 
@@ -400,7 +468,6 @@
             }
         }
 
-        // start game
         newWord();
     </script>
 </body>
