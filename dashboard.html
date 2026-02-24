@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Poll - Data Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 0.875rem;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            background: var(--bg);
+            padding: 6px;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+        }
+
+        .nav-tab {
+            padding: 10px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-light);
+            font-weight: 500;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+
+        .nav-tab:hover {
+            color: var(--text);
+            background: rgba(255,255,255,0.5);
+        }
+
+        .nav-tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--shadow);
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .stat-change {
+            font-size: 0.875rem;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.positive { color: var(--primary); }
+        .stat-change.negative { color: var(--danger); }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Data Table */
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .table-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        th {
+            background: var(--bg);
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background: var(--bg);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-paper { background: #fef3c7; color: #92400e; }
+        .badge-recycling { background: #dbeafe; color: #1e40af; }
+        .badge-plastic { background: #fce7f3; color: #9d174d; }
+        .badge-prep { background: #e0e7ff; color: #3730a3; }
+        .badge-habits { background: #d1fae5; color: #065f46; }
+
+        .text-truncate {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .answer-yes { color: var(--primary); font-weight: 600; }
+        .answer-no { color: var(--danger); font-weight: 600; }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 32px;
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 20px;
+        }
+
+        .chart-title {
+            font-weight: 600;
+            margin-bottom: 16px;
+            font-size: 1rem;
+        }
+
+        .bar-chart {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .bar-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bar-label {
+            min-width: 100px;
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 24px;
+            background: var(--bg);
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: var(--primary);
+            border-radius: 12px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .bar-value {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        /* Settings Section */
+        .settings-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            padding: 24px;
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .help-text {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 6px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-light);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .modal-close:hover {
+            background: var(--bg);
+        }
+
+        .modal-body {
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        .detail-row {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 1rem;
+            color: var(--text);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            table {
+                font-size: 0.75rem;
+            }
+            
+            td, th {
+                padding: 12px 8px;
+            }
+            
+            .text-truncate {
+                max-width: 120px;
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--primary);
+            z-index: 2000;
+            display: none;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+        }
+
+        .notification.show {
+            display: block;
+        }
+
+        .notification.error {
+            border-left-color: var(--danger);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <div>
+                    <h1>Poll Data Dashboard</h1>
+                    <div class="subtitle">View and manage interview responses</div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px;">
+                <button class="btn btn-secondary" onclick="refreshData()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    Refresh
+                </button>
+                <button class="btn btn-primary" onclick="exportToCSV()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+                    Export CSV
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="switchTab('overview')">Overview</button>
+            <button class="nav-tab" onclick="switchTab('responses')">All Responses</button>
+            <button class="nav-tab" onclick="switchTab('analytics')">Analytics</button>
+            <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
+        </div>
+
+        <!-- Overview Tab -->
+        <div id="overview" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Responses</div>
+                    <div class="stat-value" id="totalResponses">0</div>
+                    <div class="stat-change positive">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/></svg>
+                        <span id="responseTrend">Local data</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Categories Used</div>
+                    <div class="stat-value" id="activeCategories">0</div>
+                    <div class="stat-change positive">of 5 total</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Today's Entries</div>
+                    <div class="stat-value" id="todayEntries">0</div>
+                    <div class="stat-change" id="todayTrend">Updated now</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Storage Mode</div>
+                    <div class="stat-value" style="font-size: 1.25rem;" id="storageMode">Local</div>
+                    <div class="stat-change" id="storageStatus">Browser storage</div>
+                </div>
+            </div>
+
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">Recent Activity</div>
+                    <button class="btn btn-secondary" onclick="switchTab('responses')">View All</button>
+                </div>
+                <div id="recentTable">
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <h3>No data yet</h3>
+                        <p>Start conducting interviews to see data here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Responses Tab -->
+        <div id="responses" class="content-section">
+            <div class="table-container">
+                <div class="table-header">
+                    <div class="table-title">All Interview Responses</div>
+                    <div class="table-actions">
+                        <input type="text" id="searchInput" placeholder="Search..." style="padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 0.875rem;" onkeyup="searchTable()">
+                        <button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button>
+                    </div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table id="responsesTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Category</th>
+                                <th>Interviewee</th>
+                                <th>Question</th>
+                                <th>Answer</th>
+                                <th>Details</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <tr>
+                                <td colspan="7" class="empty-state" style="padding: 40px;">
+                                    <div class="empty-icon">📋</div>
+                                    <p>No responses recorded yet</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics Tab -->
+        <div id="analytics" class="content-section">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-title">Responses by Category</div>
+                    <div class="bar-chart" id="categoryChart">
+                        <div class="empty-state" style="padding: 20px;">
+                            <p>No data available</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-title">Yes vs No Responses</div>
+                    <div class="bar-chart" id="yesNoChart">
+                        <div class="empty-state" style="padding: 20px;">
+                            <p>No data available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-title">Activity Timeline (Last 7 Days)</div>
+                <div id="timelineChart" style="height: 200px; display: flex; align-items: center; justify-content: center; color: var(--text-light);">
+                    No timeline data available
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings" class="content-section">
+            <div class="settings-card">
+                <h3 style="margin-bottom: 20px;">Data Configuration</h3>
+                
+                <div class="form-group">
+                    <label class="form-label">Google Sheets Web App URL</label>
+                    <input type="url" class="form-input" id="sheetsUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                    <div class="help-text">Enter your Google Apps Script web app URL to sync data to Google Sheets</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Data Storage</label>
+                    <div style="display: flex; gap: 12px; margin-top: 8px;">
+                        <button class="btn btn-secondary" onclick="loadLocalData()">Load Local Data</button>
+                        <button class="btn btn-primary" onclick="syncFromSheets()">Sync from Sheets</button>
+                    </div>
+                    <div class="help-text">Load data stored in browser or fetch from Google Sheets</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Export Options</label>
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 8px;">
+                        <button class="btn btn-secondary" onclick="exportToCSV()">Export as CSV</button>
+                        <button class="btn btn-secondary" onclick="exportToJSON()">Export as JSON</button>
+                        <button class="btn btn-secondary" onclick="printReport()">Print Report</button>
+                    </div>
+                </div>
+
+                <div class="form-group" style="border-top: 1px solid var(--border); padding-top: 20px; margin-top: 20px;">
+                    <label class="form-label" style="color: var(--danger);">Danger Zone</label>
+                    <button class="btn btn-danger" onclick="clearAllData()">Delete All Local Data</button>
+                    <div class="help-text">This will permanently delete all locally stored responses</div>
+                </div>
+            </div>
+
+            <div class="settings-card" style="margin-top: 20px;">
+                <h3 style="margin-bottom: 16px;">How to Access Your Data</h3>
+                <div style="font-size: 0.875rem; line-height: 1.6; color: var(--text-light);">
+                    <p style="margin-bottom: 12px;"><strong>Option 1: Google Sheets (Recommended)</strong><br>
+                    Data is automatically sent to your Google Sheet in real-time. Check your spreadsheet for the latest responses.</p>
+                    
+                    <p style="margin-bottom: 12px;"><strong>Option 2: Local Storage</strong><br>
+                    If not using Google Sheets, data is stored in this browser. Use the Export buttons above to download your data.</p>
+                    
+                    <p><strong>Option 3: Direct Access</strong><br>
+                    Open browser DevTools (F12) → Application → Local Storage to view raw data.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal-overlay" id="detailModal" onclick="closeModal(event)">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title">Response Details</div>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // Data management
+        let pollData = [];
+        let filteredData = [];
+
+        // Initialize
+        function init() {
+            loadLocalData();
+            updateStats();
+            renderRecent();
+            renderTable();
+            renderAnalytics();
+            
+            // Load saved URL
+            const savedUrl = localStorage.getItem('sheetsUrl');
+            if (savedUrl) {
+                document.getElementById('sheetsUrl').value = savedUrl;
+            }
+        }
+
+        // Load data from localStorage
+        function loadLocalData() {
+            try {
+                const data = localStorage.getItem('pollData');
+                if (data) {
+                    pollData = JSON.parse(data);
+                    // Flatten data for table view
+                    flattenedData = flattenData(pollData);
+                    showNotification('Data loaded successfully', 'success');
+                } else {
+                    pollData = [];
+                    flattenedData = [];
+                }
+                updateStats();
+                renderRecent();
+                renderTable();
+                renderAnalytics();
+            } catch (e) {
+                console.error('Error loading data:', e);
+                showNotification('Error loading data', 'error');
+            }
+        }
+
+        // Flatten nested data structure
+        let flattenedData = [];
+        
+        function flattenData(data) {
+            const flat = [];
+            data.forEach(entry => {
+                if (entry.answers && Array.isArray(entry.answers)) {
+                    entry.answers.forEach((ans, idx) => {
+                        flat.push({
+                            id: entry.timestamp + '_' + idx,
+                            timestamp: entry.timestamp,
+                            category: entry.category,
+                            interviewee: entry.interviewee,
+                            question: ans.question,
+                            answer: ans.answer,
+                            details: ans.details || '',
+                            fullEntry: entry
+                        });
+                    });
+                }
+            });
+            // Sort by timestamp descending
+            return flat.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('totalResponses').textContent = flattenedData.length;
+            
+            // Unique categories
+            const categories = [...new Set(flattenedData.map(d => d.category))];
+            document.getElementById('activeCategories').textContent = categories.length;
+            
+            // Today's entries
+            const today = new Date().toDateString();
+            const todayCount = flattenedData.filter(d => new Date(d.timestamp).toDateString() === today).length;
+            document.getElementById('todayEntries').textContent = todayCount;
+            
+            // Storage mode
+            const hasUrl = localStorage.getItem('sheetsUrl');
+            document.getElementById('storageMode').textContent = hasUrl ? 'Hybrid' : 'Local';
+            document.getElementById('storageStatus').textContent = hasUrl ? 'Sheets + Local' : 'Browser only';
+        }
+
+        // Render recent activity (last 5)
+        function renderRecent() {
+            const container = document.getElementById('recentTable');
+            if (flattenedData.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">📊</div>
+                        <h3>No data yet</h3>
+                        <p>Start conducting interviews to see data here</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const recent = flattenedData.slice(0, 5);
+            let html = '<table><thead><tr><th>Time</th><th>Category</th><th>Name</th><th>Question</th><th>Answer</th></tr></thead><tbody>';
+            
+            recent.forEach(row => {
+                const time = new Date(row.timestamp).toLocaleString();
+                const badgeClass = 'badge-' + row.category;
+                const shortQ = row.question.length > 30 ? row.question.substring(0, 30) + '...' : row.question;
+                const ansClass = row.answer === 'yes' ? 'answer-yes' : (row.answer === 'no' ? 'answer-no' : '');
+                
+                html += `
+                    <tr>
+                        <td>${time}</td>
+                        <td><span class="badge ${badgeClass}">${row.category}</span></td>
+                        <td>${row.interviewee}</td>
+                        <td title="${row.question}">${shortQ}</td>
+                        <td class="${ansClass}">${row.answer}</td>
+                    </tr>
+                `;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        // Render full table
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            const dataToShow = filteredData.length > 0 ? filteredData : flattenedData;
+            
+            if (dataToShow.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state" style="padding: 40px;">
+                            <div class="empty-icon">📋</div>
+                            <p>No responses recorded yet</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            let html = '';
+            dataToShow.forEach(row => {
+                const date = new Date(row.timestamp).toLocaleString();
+                const badgeClass = 'badge-' + row.category;
+                const shortQ = row.question.length > 40 ? row.question.substring(0, 40) + '...' : row.question;
+                const shortA = row.answer.length > 30 ? row.answer.substring(0, 30) + '...' : row.answer;
+                const ansClass = row.answer === 'yes' ? 'answer-yes' : (row.answer === 'no' ? 'answer-no' : '');
+                
+                html += `
+                    <tr>
+                        <td>${date}</td>
+                        <td><span class="badge ${badgeClass}">${row.category}</span></td>
+                        <td>${row.interviewee}</td>
+                        <td title="${row.question}">${shortQ}</td>
+                        <td class="${ansClass}" title="${row.answer}">${shortA}</td>
+                        <td class="text-truncate" title="${row.details}">${row.details || '-'}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.75rem;" onclick="viewDetails('${row.id}')">View</button>
+                        </td>
+                    </tr>
+                `;
+            });
+            
+            tbody.innerHTML = html;
+        }
+
+        // Render analytics
+        function renderAnalytics() {
+            if (flattenedData.length === 0) return;
+            
+            // Category chart
+            const categories = {};
+            flattenedData.forEach(d => {
+                categories[d.category] = (categories[d.category] || 0) + 1;
+            });
+            
+            const total = flattenedData.length;
+            let catHtml = '';
+            Object.entries(categories).forEach(([cat, count]) => {
+                const percentage = Math.round((count / total) * 100);
+                const badgeClass = 'badge-' + cat;
+                catHtml += `
+                    <div class="bar-item">
+                        <div class="bar-label"><span class="badge ${badgeClass}">${cat}</span></div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: ${percentage}%">${percentage}%</div>
+                        </div>
+                        <div class="bar-value">${count}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('categoryChart').innerHTML = catHtml;
+            
+            // Yes/No chart
+            const yesNo = { yes: 0, no: 0, other: 0 };
+            flattenedData.forEach(d => {
+                if (d.answer === 'yes') yesNo.yes++;
+                else if (d.answer === 'no') yesNo.no++;
+                else yesNo.other++;
+            });
+            
+            let yesNoHtml = '';
+            ['yes', 'no', 'other'].forEach(type => {
+                const count = yesNo[type];
+                const percentage = Math.round((count / total) * 100);
+                const color = type === 'yes' ? 'var(--primary)' : (type === 'no' ? 'var(--danger)' : 'var(--warning)');
+                yesNoHtml += `
+                    <div class="bar-item">
+                        <div class="bar-label" style="text-transform: capitalize;">${type}</div>
+                        <div class="bar-track">
+                            <div class="bar-fill" style="width: ${percentage}%; background: ${color}">${percentage}%</div>
+                        </div>
+                        <div class="bar-value">${count}</div>
+                    </div>
+                `;
+            });
+            document.getElementById('yesNoChart').innerHTML = yesNoHtml;
+            
+            // Timeline
+            const last7Days = {};
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date();
+                d.setDate(d.getDate() - i);
+                const dateStr = d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                last7Days[dateStr] = 0;
+            }
+            
+            flattenedData.forEach(d => {
+                const date = new Date(d.timestamp);
+                const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+                if (last7Days.hasOwnProperty(dateStr)) {
+                    last7Days[dateStr]++;
+                }
+            });
+            
+            let timelineHtml = '<div style="display: flex; align-items: flex-end; gap: 8px; height: 150px; padding: 20px;">';
+            const maxVal = Math.max(...Object.values(last7Days)) || 1;
+            Object.entries(last7Days).forEach(([date, count]) => {
+                const height = (count / maxVal) * 100;
+                timelineHtml += `
+                    <div style="flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                        <div style="width: 100%; background: var(--primary); border-radius: 4px; height: ${height}%; min-height: 4px; transition: height 0.3s;"></div>
+                        <div style="font-size: 0.75rem; color: var(--text-light); text-align: center;">${date}</div>
+                        <div style="font-size: 0.75rem; font-weight: 600;">${count}</div>
+                    </div>
+                `;
+            });
+            timelineHtml += '</div>';
+            document.getElementById('timelineChart').innerHTML = timelineHtml;
+        }
+
+        // View details modal
+        function viewDetails(id) {
+            const row = flattenedData.find(d => d.id === id);
+            if (!row) return;
+            
+            const modalBody = document.getElementById('modalBody');
+            modalBody.innerHTML = `
+                <div class="detail-row">
+                    <div class="detail-label">Timestamp</div>
+                    <div class="detail-value">${new Date(row.timestamp).toLocaleString()}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Category</div>
+                    <div class="detail-value"><span class="badge badge-${row.category}">${row.category}</span></div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Interviewee</div>
+                    <div class="detail-value">${row.interviewee}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Question</div>
+                    <div class="detail-value">${row.question}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Answer</div>
+                    <div class="detail-value" style="color: ${row.answer === 'yes' ? 'var(--primary)' : (row.answer === 'no' ? 'var(--danger)' : 'inherit')}; font-weight: 600;">${row.answer}</div>
+                </div>
+                ${row.details ? `
+                <div class="detail-row">
+                    <div class="detail-label">Additional Details</div>
+                    <div class="detail-value">${row.details}</div>
+                </div>
+                ` : ''}
+                <div class="detail-row">
+                    <div class="detail-label">Full Interview Data</div>
+                    <div class="detail-value" style="background: var(--bg); padding: 12px; border-radius: 8px; font-family: monospace; font-size: 0.75rem; overflow-x: auto;">
+                        ${JSON.stringify(row.fullEntry, null, 2)}
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('detailModal').classList.add('active');
+        }
+
+        function closeModal(event) {
+            if (!event || event.target.id === 'detailModal') {
+                document.getElementById('detailModal').classList.remove('active');
+            }
+        }
+
+        // Search functionality
+        function searchTable() {
+            const term = document.getElementById('searchInput').value.toLowerCase();
+            if (!term) {
+                filteredData = [];
+                renderTable();
+                return;
+            }
+            
+            filteredData = flattenedData.filter(d => 
+                d.interviewee.toLowerCase().includes(term) ||
+                d.category.toLowerCase().includes(term) ||
+                d.question.toLowerCase().includes(term) ||
+                d.answer.toLowerCase().includes(term) ||
+                (d.details && d.details.toLowerCase().includes(term))
+            );
+            renderTable();
+        }
+
+        // Export functions
+        function exportToCSV() {
+            if (flattenedData.length === 0) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+            
+            const headers = ['Timestamp', 'Category', 'Interviewee', 'Question', 'Answer', 'Details'];
+            const rows = flattenedData.map(d => [
+                d.timestamp,
+                d.category,
+                d.interviewee,
+                `"${d.question.replace(/"/g, '""')}"`,
+                `"${d.answer.replace(/"/g, '""')}"`,
+                `"${(d.details || '').replace(/"/g, '""')}"`
+            ]);
+            
+            const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+            downloadFile(csv, 'poll-data.csv', 'text/csv');
+            showNotification('CSV exported successfully');
+        }
+
+        function exportToJSON() {
+            if (pollData.length === 0) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+            
+            const json = JSON.stringify(pollData, null, 2);
+            downloadFile(json, 'poll-data.json', 'application/json');
+            showNotification('JSON exported successfully');
+        }
+
+        function downloadFile(content, filename, type) {
+            const blob = new Blob([content], { type });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function printReport() {
+            window.print();
+        }
+
+        // Clear data
+        function clearAllData() {
+            if (!confirm('Are you sure you want to delete all local data? This cannot be undone.')) return;
+            
+            localStorage.removeItem('pollData');
+            pollData = [];
+            flattenedData = [];
+            updateStats();
+            renderRecent();
+            renderTable();
+            renderAnalytics();
+            showNotification('All local data cleared');
+        }
+
+        // Tab switching
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tab).classList.add('active');
+            
+            if (tab === 'analytics') {
+                renderAnalytics();
+            }
+        }
+
+        // Refresh data
+        function refreshData() {
+            loadLocalData();
+            showNotification('Data refreshed');
+        }
+
+        // Sync from sheets (placeholder - would need backend)
+        function syncFromSheets() {
+            showNotification('To sync from Sheets, please check your Google Sheet directly or use the CSV export/import feature', 'error');
+        }
+
+        // Notification
+        function showNotification(message, type = 'success') {
+            const notif = document.getElementById('notification');
+            notif.textContent = message;
+            notif.className = 'notification show' + (type === 'error' ? ' error' : '');
+            
+            setTimeout(() => {
+                notif.classList.remove('show');
+            }, 3000);
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
