@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poll Diagnostics & Data Recovery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-box {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        .status-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .status-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .data-preview {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 16px;
+        }
+
+        .step-list {
+            list-style: none;
+            counter-reset: step;
+        }
+
+        .step-list li {
+            position: relative;
+            padding-left: 40px;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .step-list li:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-list li::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .step-list li.error::before {
+            background: var(--danger);
+        }
+
+        .step-list li.warning::before {
+            background: var(--warning);
+        }
+
+        .step-list li.success::before {
+            background: var(--primary);
+        }
+
+        .fix-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 16px;
+            margin-top: 12px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .fix-box.error {
+            border-left-color: var(--danger);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+            margin-top: 16px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .troubleshoot-section {
+            display: none;
+        }
+
+        .troubleshoot-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .code-block {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.875rem;
+            margin: 8px 0;
+            overflow-x: auto;
+        }
+
+        .highlight {
+            background: #fef3c7;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Poll Diagnostics Tool</h1>
+            <p>Let's find out why you can't see your answers</p>
+        </div>
+
+        <!-- Quick Status Check -->
+        <div class="card">
+            <div class="card-title">📊 Current Status Check</div>
+            <div id="statusContainer">
+                <div class="status-box status-info">
+                    <span class="icon">⏳</span>
+                    <div>
+                        <strong>Checking your system...</strong><br>
+                        <span style="font-size: 0.875rem;">Please wait while we diagnose the issue</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px;">
+                <button class="btn btn-primary" onclick="runDiagnostics()">🔍 Run Full Diagnostics</button>
+                <button class="btn btn-secondary" onclick="checkLocalStorage()">💾 Check LocalStorage</button>
+                <button class="btn btn-secondary" onclick="findData()">🔎 Find My Data</button>
+            </div>
+
+            <div id="diagnosticResults" class="data-preview hidden"></div>
+        </div>
+
+        <!-- Common Issues -->
+        <div class="card">
+            <div class="card-title">⚠️ Common Issues & Solutions</div>
+            
+            <ul class="step-list" id="issueList">
+                <li class="warning" id="issue1">
+                    <strong>Issue 1: Test Mode vs Google Sheets</strong>
+                    <p>If you clicked "Skip (Test Mode)" during setup, data saves only to this browser. If you open the dashboard on a different device or browser, the data won't appear there.</p>
+                    <div class="fix-box">
+                        <strong>Fix:</strong> Check if you're using the same browser on the same device. Look for data in browser DevTools (F12 → Application → Local Storage).
+                    </div>
+                </li>
+                
+                <li class="warning" id="issue2">
+                    <strong>Issue 2: Wrong Page Opened</strong>
+                    <p>You might be looking at the poll interface instead of the dashboard, or vice versa.</p>
+                    <div class="fix-box">
+                        <strong>Fix:</strong> Make sure you're viewing the dashboard file (dashboard.html), not the poll file (index.html).
+                    </div>
+                </li>
+
+                <li class="error" id="issue3">
+                    <strong>Issue 3: GitHub Pages Not Updated</strong>
+                    <p>If you just uploaded the files to GitHub, GitHub Pages might take a few minutes to deploy.</p>
+                    <div class="fix-box">
+                        <strong>Fix:</strong> Wait 2-3 minutes and refresh. Check that both files (index.html and dashboard.html) are in your repository.
+                    </div>
+                </li>
+
+                <li class="error" id="issue4">
+                    <strong>Issue 4: Browser Private/Incognito Mode</strong>
+                    <p>If you took the poll in private/incognito mode, the data was deleted when you closed the tab.</p>
+                    <div class="fix-box">
+                        <strong>Fix:</strong> Always use regular browser mode for testing so localStorage persists.
+                    </div>
+                </li>
+
+                <li class="warning" id="issue5">
+                    <strong>Issue 5: Different URLs</strong>
+                    <p>If your poll is at <code>username.github.io/poll/</code> but dashboard is at <code>username.github.io/poll/dashboard</code>, they might not share the same localStorage if paths differ.</p>
+                    <div class="fix-box">
+                        <strong>Fix:</strong> Ensure both files are in the same directory/repository.
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Step by Step Fix -->
+        <div class="card">
+            <div class="card-title">🔧 Step-by-Step Recovery</div>
+            
+            <div class="troubleshoot-section active" id="step1">
+                <h3>Step 1: Verify Data Exists</h3>
+                <p>First, let's check if your data is actually saved in the browser:</p>
+                <button class="btn btn-primary" onclick="checkLocalStorage()">Check Browser Storage</button>
+                <div id="storageCheckResult"></div>
+            </div>
+
+            <div class="troubleshoot-section" id="step2">
+                <h3>Step 2: Check URL Paths</h3>
+                <p>Current page URL: <span class="code-block" id="currentUrl"></span></p>
+                <p>Expected poll URL: <span class="code-block" id="expectedPollUrl"></span></p>
+                <p>If these don't match the same base path (before the filename), data won't sync.</p>
+                <button class="btn btn-secondary" onclick="nextStep(3)">Next Step →</button>
+            </div>
+
+            <div class="troubleshoot-section" id="step3">
+                <h3>Step 3: Manual Data Recovery</h3>
+                <p>If data exists in localStorage but isn't showing, you can manually extract it:</p>
+                <button class="btn btn-primary" onclick="extractData()">Extract & Display Data</button>
+                <div id="extractedData" class="data-preview hidden"></div>
+                <br>
+                <button class="btn btn-secondary" onclick="nextStep(4)">Next Step →</button>
+            </div>
+
+            <div class="troubleshoot-section" id="step4">
+                <h3>Step 4: Fix the Dashboard</h3>
+                <p>If the data exists but dashboard shows nothing, there might be a JavaScript error.</p>
+                <button class="btn btn-primary" onclick="testDashboard()">Test Dashboard Loading</button>
+                <div id="dashboardTestResult"></div>
+            </div>
+        </div>
+
+        <!-- Quick Solutions -->
+        <div class="card">
+            <div class="card-title">🚀 Quick Solutions</div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Problem</th>
+                        <th>Solution</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>"No data yet" message</td>
+                        <td><button class="btn btn-primary" onclick="injectTestData()">Inject Test Data</button> to verify dashboard works</td>
+                    </tr>
+                    <tr>
+                        <td>Data not persisting</td>
+                        <td><button class="btn btn-secondary" onclick="showStorageHelp()">Show Storage Help</button></td>
+                    </tr>
+                    <tr>
+                        <td>Want to start fresh</td>
+                        <td><button class="btn btn-danger" onclick="clearAllData()">Clear All Data</button></td>
+                    </tr>
+                    <tr>
+                        <td>Check Google Sheets</td>
+                        <td>Open your Google Sheet directly in a new tab to verify data arrived there</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Data Viewer -->
+        <div class="card" id="dataViewer" style="display: none;">
+            <div class="card-title">👁️ Raw Data Viewer</div>
+            <div class="data-preview" id="rawDataDisplay"></div>
+        </div>
+    </div>
+
+    <script>
+        // Run initial check
+        window.onload = function() {
+            setTimeout(runDiagnostics, 500);
+        };
+
+        function runDiagnostics() {
+            const results = [];
+            const statusDiv = document.getElementById('statusContainer');
+            
+            // Check 1: LocalStorage availability
+            let lsAvailable = false;
+            try {
+                localStorage.setItem('test', 'test');
+                localStorage.removeItem('test');
+                lsAvailable = true;
+                results.push('✅ LocalStorage is available');
+            } catch (e) {
+                results.push('❌ LocalStorage is blocked or unavailable');
+            }
+
+            // Check 2: Data exists
+            const pollData = localStorage.getItem('pollData');
+            const hasData = pollData && pollData !== '[]';
+            if (hasData) {
+                const parsed = JSON.parse(pollData);
+                results.push(`✅ Found ${parsed.length} interview(s) in localStorage`);
+            } else {
+                results.push('⚠️ No poll data found in localStorage');
+            }
+
+            // Check 3: Check for errors in data format
+            if (hasData) {
+                try {
+                    const parsed = JSON.parse(pollData);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        const first = parsed[0];
+                        if (first.answers && Array.isArray(first.answers)) {
+                            results.push(`✅ Data format looks correct (${first.answers.length} answers in first entry)`);
+                        } else {
+                            results.push('⚠️ Data format might be incorrect - missing answers array');
+                        }
+                    }
+                } catch (e) {
+                    results.push('❌ Error parsing data: ' + e.message);
+                }
+            }
+
+            // Check 4: URL check
+            const currentUrl = window.location.href;
+            results.push(`ℹ️ Current URL: ${currentUrl}`);
+
+            // Display results
+            const allGood = results.every(r => r.startsWith('✅'));
+            const hasErrors = results.some(r => r.startsWith('❌'));
+            
+            statusDiv.innerHTML = `
+                <div class="status-box ${hasErrors ? 'status-error' : (allGood ? 'status-success' : 'status-warning')}">
+                    <span class="icon">${hasErrors ? '❌' : (allGood ? '✅' : '⚠️')}</span>
+                    <div>
+                        <strong>${hasErrors ? 'Problems Found' : (allGood ? 'All Checks Passed' : 'Warnings Found')}</strong><br>
+                        <span style="font-size: 0.875rem;">See details below</span>
+                    </div>
+                </div>
+            `;
+
+            const resultsDiv = document.getElementById('diagnosticResults');
+            resultsDiv.textContent = results.join('\n');
+            resultsDiv.classList.remove('hidden');
+
+            // Auto-populate step 2
+            document.getElementById('currentUrl').textContent = currentUrl;
+            document.getElementById('expectedPollUrl').textContent = currentUrl.replace('dashboard', 'index').replace('.html', '') + '/index.html';
+        }
+
+        function checkLocalStorage() {
+            const resultDiv = document.getElementById('storageCheckResult');
+            const rawData = localStorage.getItem('pollData');
+            
+            if (!rawData || rawData === '[]') {
+                resultDiv.innerHTML = `
+                    <div class="status-box status-error" style="margin-top: 16px;">
+                        <span class="icon">❌</span>
+                        <div>
+                            <strong>No data found in localStorage</strong><br>
+                            <span style="font-size: 0.875rem;">Key "pollData" is empty or missing</span>
+                        </div>
+                    </div>
+                    <div class="fix-box error" style="margin-top: 12px;">
+                        <strong>This means:</strong><br>
+                        1. You might have taken the poll in a different browser<br>
+                        2. You might have taken it in Incognito/Private mode<br>
+                        3. The poll app might not be saving correctly<br>
+                        4. Data was cleared<br><br>
+                        <strong>Try:</strong> Go back to the poll, submit another response, then return here immediately (same browser, same window).
+                    </div>
+                `;
+                return;
+            }
+
+            try {
+                const data = JSON.parse(rawData);
+                resultDiv.innerHTML = `
+                    <div class="status-box status-success" style="margin-top: 16px;">
+                        <span class="icon">✅</span>
+                        <div>
+                            <strong>Data found!</strong><br>
+                            <span style="font-size: 0.875rem;">${data.length} interview(s) stored</span>
+                        </div>
+                    </div>
+                    <div class="data-preview" style="margin-top: 12px;">${JSON.stringify(data, null, 2)}</div>
+                `;
+                
+                // Show data viewer
+                document.getElementById('dataViewer').style.display = 'block';
+                document.getElementById('rawDataDisplay').textContent = JSON.stringify(data, null, 2);
+                
+            } catch (e) {
+                resultDiv.innerHTML = `
+                    <div class="status-box status-error" style="margin-top: 16px;">
+                        <span class="icon">❌</span>
+                        <div>
+                            <strong>Corrupted data found</strong><br>
+                            <span style="font-size: 0.875rem;">${e.message}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function findData() {
+            // Check all localStorage keys
+            const keys = Object.keys(localStorage);
+            let found = [];
+            
+            keys.forEach(key => {
+                try {
+                    const value = localStorage.getItem(key);
+                    if (value && value.includes('interviewee')) {
+                        found.push({key: key, preview: value.substring(0, 100)});
+                    }
+                } catch (e) {}
+            });
+
+            alert(`Found ${found.length} potential data keys:\n${found.map(f => f.key).join('\n')}\n\nCheck console for details (F12)`);
+            console.log('Potential data keys:', found);
+        }
+
+        function nextStep(stepNum) {
+            document.querySelectorAll('.troubleshoot-section').forEach(s => s.classList.remove('active'));
+            document.getElementById('step' + stepNum).classList.add('active');
+        }
+
+        function extractData() {
+            const data = localStorage.getItem('pollData');
+            const display = document.getElementById('extractedData');
+            
+            if (data) {
+                display.textContent = data;
+                display.classList.remove('hidden');
+                
+                // Also create a downloadable version
+                const blob = new Blob([data], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'recovered-poll-data.json';
+                a.textContent = 'Download this data';
+                a.style.display = 'block';
+                a.style.marginTop = '10px';
+                display.appendChild(document.createElement('br'));
+                display.appendChild(a);
+            } else {
+                display.textContent = 'No data to extract';
+                display.classList.remove('hidden');
+            }
+        }
+
+        function testDashboard() {
+            const resultDiv = document.getElementById('dashboardTestResult');
+            
+            try {
+                // Simulate what dashboard does
+                const pollData = JSON.parse(localStorage.getItem('pollData') || '[]');
+                const flattened = [];
+                
+                pollData.forEach(entry => {
+                    if (entry.answers && Array.isArray(entry.answers)) {
+                        entry.answers.forEach((ans, idx) => {
+                            flattened.push({
+                                id: entry.timestamp + '_' + idx,
+                                timestamp: entry.timestamp,
+                                category: entry.category,
+                                interviewee: entry.interviewee,
+                                question: ans.question,
+                                answer: ans.answer,
+                                details: ans.details || ''
+                            });
+                        });
+                    }
+                });
+
+                resultDiv.innerHTML = `
+                    <div class="status-box status-success" style="margin-top: 16px;">
+                        <span class="icon">✅</span>
+                        <div>
+                            <strong>Dashboard logic works!</strong><br>
+                            <span style="font-size: 0.875rem;">Flattened ${flattened.length} answer rows from ${pollData.length} interviews</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 12px;">If the dashboard shows "No data" but this test shows results, there might be a JavaScript error in the dashboard file. Check browser console (F12) for red error messages.</p>
+                `;
+                
+            } catch (e) {
+                resultDiv.innerHTML = `
+                    <div class="status-box status-error" style="margin-top: 16px;">
+                        <span class="icon">❌</span>
+                        <div>
+                            <strong>Error in dashboard logic:</strong><br>
+                            <span style="font-size: 0.875rem;">${e.message}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function injectTestData() {
+            const testData = [{
+                timestamp: new Date().toISOString(),
+                category: "paper",
+                interviewee: "Test User",
+                answers: [
+                    { question: "Do you recycle at home?", answer: "yes", details: "" },
+                    { question: "Do you know how to sort waste?", answer: "yes", details: "" },
+                    { question: "What kind of paper can be recycled?", answer: "Newspapers and cardboard", details: "" }
+                ]
+            }];
+            
+            localStorage.setItem('pollData', JSON.stringify(testData));
+            alert('Test data injected! Refresh the dashboard to see it.');
+            location.reload();
+        }
+
+        function showStorageHelp() {
+            alert(`To check storage manually:
+1. Press F12 to open DevTools
+2. Click "Application" tab (Chrome) or "Storage" tab (Firefox)
+3. Click "Local Storage" in the left menu
+4. Click your website URL
+5. Look for key "pollData"
+6. Click it to see the value
+
+If it's empty there, data was never saved.`);
+        }
+
+        function clearAllData() {
+            if (confirm('Delete all poll data?')) {
+                localStorage.removeItem('pollData');
+                alert('Data cleared. Refresh to see empty state.');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
