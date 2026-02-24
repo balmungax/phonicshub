@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Interview Poll</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #3b82f6;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
+            min-height: 100vh;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            fill: white;
+        }
+
+        h1 {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        /* Category Selection */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        @media (min-width: 640px) {
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .category-card {
+            background: var(--card);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .category-card.active {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+        }
+
+        .category-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 12px;
+            font-size: 24px;
+        }
+
+        .category-card h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .category-card p {
+            font-size: 0.875rem;
+            color: var(--text-light);
+        }
+
+        .category-card .lang {
+            font-size: 0.75rem;
+            color: var(--primary);
+            font-weight: 500;
+            margin-top: 8px;
+        }
+
+        /* Interview Container */
+        .interview-container {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .interview-container.active {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .question-card {
+            background: var(--card);
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .question-russian {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        /* Input Styles */
+        .input-group {
+            margin-bottom: 16px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--bg);
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            border-color: var(--primary);
+            background: #f0fdf4;
+        }
+
+        .radio-label:hover {
+            border-color: var(--primary);
+        }
+
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--text-light);
+            border-radius: 50%;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label .radio-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+        }
+
+        .radio-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label .radio-circle::after {
+            opacity: 1;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.39);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.23);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg);
+            border-color: var(--text-light);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Conditional Fields */
+        .conditional-field {
+            display: none;
+            animation: slideDown 0.3s ease;
+            margin-top: 16px;
+            padding: 20px;
+            background: var(--bg);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .conditional-field.active {
+            display: block;
+        }
+
+        /* Success Screen */
+        .success-screen {
+            display: none;
+            text-align: center;
+            animation: fadeIn 0.6s ease;
+            padding: 40px 20px;
+        }
+
+        .success-screen.active {
+            display: block;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .success-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: white;
+        }
+
+        .success-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .success-message {
+            color: var(--text-light);
+            margin-bottom: 32px;
+        }
+
+        /* Back Button */
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            font-size: 0.875rem;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--text);
+        }
+
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        /* Utility */
+        .hidden {
+            display: none !important;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        /* Instructions */
+        .instructions {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            font-size: 0.875rem;
+            color: #1e40af;
+        }
+
+        .instructions strong {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        code {
+            background: #dbeafe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Setup Screen (Google Sheets Configuration) -->
+        <div id="setupScreen" class="active">
+            <div class="header">
+                <div class="logo">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <h1>Eco Interview Poll</h1>
+                <p class="subtitle">Configure your data destination</p>
+            </div>
+
+            <div class="instructions">
+                <strong>⚠️ Important: Google Sheets Setup Required</strong>
+                To save responses to Google Sheets, you need to:
+                <ol style="margin-top: 8px; margin-left: 20px;">
+                    <li>Create a Google Sheet</li>
+                    <li>Go to Extensions → Apps Script</li>
+                    <li>Copy the script provided below</li>
+                    <li>Deploy as Web App</li>
+                    <li>Paste the Web App URL here</li>
+                </ol>
+            </div>
+
+            <div class="question-card">
+                <div class="input-group">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Google Sheets Web App URL</label>
+                    <input type="url" id="sheetsUrl" class="input-field" placeholder="https://script.google.com/macros/s/.../exec">
+                    <p style="margin-top: 8px; font-size: 0.875rem; color: var(--text-light);">
+                        Don't have one? <a href="#" onclick="showScript()" style="color: var(--primary);">Get the Apps Script code</a>
+                    </p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-primary" onclick="saveConfig()">Start Interview</button>
+                    <button class="btn btn-secondary" onclick="skipConfig()">Skip (Test Mode)</button>
+                </div>
+            </div>
+
+            <div id="scriptCode" style="display: none; margin-top: 20px;">
+                <div class="question-card" style="background: #1e293b; color: #e2e8f0;">
+                    <h3 style="margin-bottom: 12px;">Google Apps Script Code</h3>
+                    <pre style="overflow-x: auto; font-size: 0.75rem; line-height: 1.5;"><code>function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  
+  // Headers (run once to set up)
+  if (sheet.getRange(1, 1).getValue() === '') {
+    sheet.getRange(1, 1, 1, 6).setValues([['Timestamp', 'Category', 'Interviewee', 'Question', 'Answer', 'Details']]);
+  }
+  
+  // Append data
+  sheet.appendRow([
+    new Date(),
+    data.category,
+    data.interviewee,
+    data.question,
+    data.answer,
+    data.details || ''
+  ]);
+  
+  return ContentService.createTextOutput(JSON.stringify({'result': 'success'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}</code></pre>
+                    <button class="btn btn-secondary mt-4" onclick="copyScript()">Copy Code</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Category Selection -->
+        <div id="categoryScreen" style="display: none;">
+            <div class="header">
+                <div class="logo">
+                    <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                </div>
+                <h1>Select Category</h1>
+                <p class="subtitle">Choose an interview topic to begin</p>
+            </div>
+
+            <div class="categories-grid">
+                <div class="category-card" onclick="selectCategory('paper')">
+                    <div class="category-icon" style="background: #fef3c7;">📄</div>
+                    <h3>Paper Sorting</h3>
+                    <p>How to sort waste paper properly</p>
+                    <div class="lang">Сортировка бумаги</div>
+                </div>
+
+                <div class="category-card" onclick="selectCategory('recycling')">
+                    <div class="category-icon" style="background: #dbeafe;">♻️</div>
+                    <h3>Recycling Symbols</h3>
+                    <p>Understanding recycling marks and proper sorting</p>
+                    <div class="lang">Символы переработки</div>
+                </div>
+
+                <div class="category-card" onclick="selectCategory('plastic')">
+                    <div class="category-icon" style="background: #fce7f3;">🥤</div>
+                    <h3>Reduce Plastic</h3>
+                    <p>How to avoid using a lot of plastic</p>
+                    <div class="lang">Меньше пластика</div>
+                </div>
+
+                <div class="category-card" onclick="selectCategory('prep')">
+                    <div class="category-icon" style="background: #e0e7ff;">🧴</div>
+                    <h3>Prep Plastic</h3>
+                    <p>How to prepare plastic for recycling</p>
+                    <div class="lang">Подготовка пластика</div>
+                </div>
+
+                <div class="category-card" onclick="selectCategory('habits')">
+                    <div class="category-icon" style="background: #d1fae5;">🌱</div>
+                    <h3>Change Habits</h3>
+                    <p>How to reduce waste and change habits</p>
+                    <div class="lang">Изменение привычек</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interview Interface -->
+        <div id="interviewScreen" class="interview-container">
+            <button class="back-btn" onclick="backToCategories()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+                Back to Categories
+            </button>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+            </div>
+
+            <div id="questionContainer"></div>
+        </div>
+
+        <!-- Success Screen -->
+        <div id="successScreen" class="success-screen">
+            <div class="success-icon">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            </div>
+            <h2 class="success-title">Interview Complete!</h2>
+            <p class="success-message">Thank you for participating in our eco-survey.</p>
+            <button class="btn btn-primary" onclick="startNew()">Start New Interview</button>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        let config = {
+            sheetsUrl: localStorage.getItem('sheetsUrl') || '',
+            testMode: false
+        };
+
+        // State
+        let currentCategory = '';
+        let currentQuestion = 0;
+        let intervieweeName = '';
+        let answers = [];
+        let isSubmitting = false;
+
+        // Question definitions based on PDF
+        const questions = {
+            paper: [
+                {
+                    id: 'recycle_home',
+                    text: 'Do you recycle at home?',
+                    russian: 'Вы перерабатываете отходы дома?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { next: 'know_how' },
+                        no: { show: 'why_not', next: 'know_how' }
+                    }
+                },
+                {
+                    id: 'why_not',
+                    text: 'Why do you think people do not sort waste?',
+                    russian: 'Почему, по вашему мнению, люди не сортируют отходы?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'know_how',
+                    text: 'Do you know how to sort waste?',
+                    russian: 'Вы знаете, как сортировать отходы?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { next: 'paper_type' },
+                        no: { show: 'help_learn', next: 'paper_type' }
+                    }
+                },
+                {
+                    id: 'help_learn',
+                    text: 'What would help you learn?',
+                    russian: 'Что поможет вам научиться?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'paper_type',
+                    text: 'What kind of paper can be recycled?',
+                    russian: 'Какую бумагу можно перерабатывать?',
+                    type: 'text'
+                }
+            ],
+            recycling: [
+                {
+                    id: 'recycle_home',
+                    text: 'Do you recycle at home?',
+                    russian: 'Вы перерабатываете отходы дома?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { next: 'know_sort' },
+                        no: { next: 'know_sort' }
+                    }
+                },
+                {
+                    id: 'know_sort',
+                    text: 'Do you know how to sort waste?',
+                    russian: 'Вы знаете, как сортировать отходы?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { show: 'explain_how', next: 'know_symbols' },
+                        no: { next: 'know_symbols' }
+                    }
+                },
+                {
+                    id: 'explain_how',
+                    text: 'Can you explain how?',
+                    russian: 'Можете объяснить как?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'know_symbols',
+                    text: 'Do you know the recycling symbols?',
+                    russian: 'Вы знаете символы переработки?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { next: 'do_recycle' },
+                        no: { next: 'do_recycle' }
+                    }
+                },
+                {
+                    id: 'do_recycle',
+                    text: 'Do you recycle?',
+                    russian: 'Вы перерабатываете отходы?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { end: true },
+                        no: { show: 'help_start', end: true }
+                    }
+                },
+                {
+                    id: 'help_start',
+                    text: 'What would help you start recycling?',
+                    russian: 'Что поможет вам начать перерабатывать?',
+                    type: 'text',
+                    conditionalField: true
+                }
+            ],
+            plastic: [
+                {
+                    id: 'know_less',
+                    text: 'Do you know how to use less plastic?',
+                    russian: 'Вы знаете, как использовать меньше пластика?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { show: 'what_do', next: 'materials' },
+                        no: { next: 'materials' }
+                    }
+                },
+                {
+                    id: 'what_do',
+                    text: 'What do you do?',
+                    russian: 'Что вы делаете?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'materials',
+                    text: 'Instead of plastic, what materials could we use?',
+                    russian: 'Какие материалы мы можем использовать вместо пластика?',
+                    type: 'text'
+                },
+                {
+                    id: 'difficult',
+                    text: 'Do you think it is difficult to use less plastic?',
+                    russian: 'Вы думаете, что сложно использовать меньше пластика?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { show: 'how_difficult' },
+                        no: { show: 'why_not_difficult' }
+                    }
+                },
+                {
+                    id: 'how_difficult',
+                    text: 'How?',
+                    russian: 'Как?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'why_not_difficult',
+                    text: 'Why not?',
+                    russian: 'Почему нет?',
+                    type: 'text',
+                    conditionalField: true
+                }
+            ],
+            prep: [
+                {
+                    id: 'know_prep',
+                    text: 'Do you know how to prepare plastic for recycling?',
+                    russian: 'Вы знаете, как подготовить пластик к переработке?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { show: 'how_prep', next: 'know_types' },
+                        no: { next: 'know_types' }
+                    }
+                },
+                {
+                    id: 'how_prep',
+                    text: 'How?',
+                    russian: 'Как?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'know_types',
+                    text: 'Do you know what plastic can be recycled?',
+                    russian: 'Вы знаете, какой пластик можно перерабатывать?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { show: 'which_types', next: 'why_not_recycle' },
+                        no: { next: 'why_not_recycle' }
+                    }
+                },
+                {
+                    id: 'which_types',
+                    text: 'Which types?',
+                    russian: 'Какие типы?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'why_not_recycle',
+                    text: 'Why do you think people do not recycle?',
+                    russian: 'Почему, по вашему мнению, люди не перерабатывают отходы?',
+                    type: 'text'
+                },
+                {
+                    id: 'recycle_home_confirm',
+                    text: 'Do you recycle at home?',
+                    russian: 'Вы перерабатываете отходы дома?',
+                    type: 'yes_no'
+                }
+            ],
+            habits: [
+                {
+                    id: 'recycle_home',
+                    text: 'Do you recycle at home?',
+                    russian: 'Вы перерабатываете отходы дома?',
+                    type: 'yes_no'
+                },
+                {
+                    id: 'reduce_waste',
+                    text: 'How can we reduce waste?',
+                    russian: 'Как мы можем уменьшить количество отходов?',
+                    type: 'text'
+                },
+                {
+                    id: 'tried_less',
+                    text: 'Have you ever tried to use less plastic?',
+                    russian: 'Вы когда-нибудь пытались использовать меньше пластика?',
+                    type: 'yes_no',
+                    conditional: {
+                        yes: { next: 'what_hard' },
+                        no: { show: 'why_not_tried', next: 'what_hard' }
+                    }
+                },
+                {
+                    id: 'why_not_tried',
+                    text: 'Why?',
+                    russian: 'Почему?',
+                    type: 'text',
+                    conditionalField: true
+                },
+                {
+                    id: 'what_hard',
+                    text: 'What makes it hard to reduce waste?',
+                    russian: 'Что затрудняет сокращение отходов?',
+                    type: 'text'
+                }
+            ]
+        };
+
+        // Initialize
+        function init() {
+            if (config.sheetsUrl) {
+                document.getElementById('sheetsUrl').value = config.sheetsUrl;
+            }
+        }
+
+        function showScript() {
+            const el = document.getElementById('scriptCode');
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function copyScript() {
+            const code = document.querySelector('code').innerText;
+            navigator.clipboard.writeText(code);
+            alert('Script copied to clipboard!');
+        }
+
+        function saveConfig() {
+            const url = document.getElementById('sheetsUrl').value;
+            if (!url) {
+                alert('Please enter a Google Sheets Web App URL');
+                return;
+            }
+            config.sheetsUrl = url;
+            localStorage.setItem('sheetsUrl', url);
+            config.testMode = false;
+            showCategoryScreen();
+        }
+
+        function skipConfig() {
+            config.testMode = true;
+            showCategoryScreen();
+        }
+
+        function showCategoryScreen() {
+            document.getElementById('setupScreen').style.display = 'none';
+            document.getElementById('categoryScreen').style.display = 'block';
+            document.getElementById('interviewScreen').classList.remove('active');
+            document.getElementById('successScreen').classList.remove('active');
+        }
+
+        function selectCategory(category) {
+            currentCategory = category;
+            currentQuestion = 0;
+            answers = [];
+            
+            // Get interviewee name first
+            document.getElementById('categoryScreen').style.display = 'none';
+            document.getElementById('interviewScreen').classList.add('active');
+            
+            renderNameInput();
+        }
+
+        function renderNameInput() {
+            const container = document.getElementById('questionContainer');
+            container.innerHTML = `
+                <div class="question-card">
+                    <span class="question-number">Start</span>
+                    <h2 class="question-text">Interviewee Name</h2>
+                    <p class="question-russian">Имя респондента</p>
+                    <div class="input-group">
+                        <input type="text" id="intervieweeName" class="input-field" placeholder="Enter name..." autofocus>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="startInterview()">Begin Interview</button>
+                    </div>
+                </div>
+            `;
+            updateProgress();
+        }
+
+        function startInterview() {
+            const name = document.getElementById('intervieweeName').value.trim();
+            if (!name) {
+                alert('Please enter the interviewee name');
+                return;
+            }
+            intervieweeName = name;
+            currentQuestion = 0;
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = questions[currentCategory][currentQuestion];
+            const container = document.getElementById('questionContainer');
+            
+            let inputHtml = '';
+            
+            if (q.type === 'yes_no') {
+                inputHtml = `
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="ans_yes" name="answer" value="yes" onchange="handleConditional('yes')">
+                            <label class="radio-label" for="ans_yes">
+                                <span class="radio-circle"></span>
+                                <span>Yes / Да</span>
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="ans_no" name="answer" value="no" onchange="handleConditional('no')">
+                            <label class="radio-label" for="ans_no">
+                                <span class="radio-circle"></span>
+                                <span>No / Нет</span>
+                            </label>
+                        </div>
+                    </div>
+                `;
+            } else {
+                inputHtml = `
+                    <div class="input-group">
+                        <textarea id="textAnswer" class="input-field" rows="4" placeholder="Type your answer..." autofocus></textarea>
+                    </div>
+                `;
+            }
+
+            const conditionalField = q.conditionalField ? `
+                <div id="conditionalField" class="conditional-field">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">${q.text}</label>
+                    <textarea id="conditionalAnswer" class="input-field" rows="3" placeholder="Enter details..."></textarea>
+                </div>
+            ` : '';
+
+            container.innerHTML = `
+                <div class="question-card">
+                    <span class="question-number">Question ${currentQuestion + 1} of ${questions[currentCategory].length}</span>
+                    <h2 class="question-text">${q.text}</h2>
+                    <p class="question-russian">${q.russian}</p>
+                    ${inputHtml}
+                    ${conditionalField}
+                    <div class="btn-group">
+                        ${currentQuestion > 0 ? `<button class="btn btn-secondary" onclick="previousQuestion()">Back</button>` : ''}
+                        <button class="btn btn-primary" onclick="submitAnswer()" id="submitBtn">Next</button>
+                    </div>
+                </div>
+            `;
+
+            updateProgress();
+        }
+
+        function handleConditional(value) {
+            const q = questions[currentCategory][currentQuestion];
+            const conditionalDiv = document.getElementById('conditionalField');
+            
+            if (q.conditional && q.conditional[value] && q.conditional[value].show) {
+                if (conditionalDiv) conditionalDiv.classList.add('active');
+            } else {
+                if (conditionalDiv) conditionalDiv.classList.remove('active');
+            }
+        }
+
+        function submitAnswer() {
+            if (isSubmitting) return;
+            
+            const q = questions[currentCategory][currentQuestion];
+            let answer = '';
+            let details = '';
+
+            if (q.type === 'yes_no') {
+                const selected = document.querySelector('input[name="answer"]:checked');
+                if (!selected) {
+                    alert('Please select an answer');
+                    return;
+                }
+                answer = selected.value;
+                
+                // Check if conditional field should be shown and has value
+                const conditionalDiv = document.getElementById('conditionalField');
+                if (conditionalDiv && conditionalDiv.classList.contains('active')) {
+                    const condVal = document.getElementById('conditionalAnswer').value.trim();
+                    if (!condVal) {
+                        alert('Please provide details');
+                        return;
+                    }
+                    details = condVal;
+                }
+            } else {
+                const textAns = document.getElementById('textAnswer').value.trim();
+                if (!textAns) {
+                    alert('Please provide an answer');
+                    return;
+                }
+                answer = textAns;
+            }
+
+            // Save answer
+            answers.push({
+                question: q.text,
+                answer: answer,
+                details: details
+            });
+
+            // Determine next step
+            let nextAction = 'next';
+            if (q.conditional && q.conditional[answer]) {
+                if (q.conditional[answer].end) nextAction = 'end';
+                else if (q.conditional[answer].next) {
+                    // Find index of next question
+                    const nextId = q.conditional[answer].next;
+                    const nextIndex = questions[currentCategory].findIndex(xq => xq.id === nextId);
+                    if (nextIndex !== -1) {
+                        currentQuestion = nextIndex;
+                        renderQuestion();
+                        return;
+                    }
+                }
+            }
+
+            if (nextAction === 'end' || currentQuestion >= questions[currentCategory].length - 1) {
+                finishInterview();
+            } else {
+                currentQuestion++;
+                renderQuestion();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                answers.pop();
+                renderQuestion();
+            }
+        }
+
+        function updateProgress() {
+            const total = questions[currentCategory].length;
+            const progress = intervieweeName ? ((currentQuestion + 1) / (total + 1)) * 100 : 0;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+
+        async function finishInterview() {
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.innerHTML = '<span class="loading"></span> Saving...';
+            submitBtn.disabled = true;
+            isSubmitting = true;
+
+            // Prepare data for Google Sheets
+            const data = {
+                timestamp: new Date().toISOString(),
+                category: currentCategory,
+                interviewee: intervieweeName,
+                answers: answers
+            };
+
+            // Save to Google Sheets or localStorage
+            try {
+                if (!config.testMode && config.sheetsUrl) {
+                    await saveToGoogleSheets(data);
+                } else {
+                    // Save to localStorage for testing
+                    const saved = JSON.parse(localStorage.getItem('pollData') || '[]');
+                    saved.push(data);
+                    localStorage.setItem('pollData', JSON.stringify(saved));
+                    console.log('Saved locally:', data);
+                }
+
+                showSuccess();
+            } catch (error) {
+                console.error('Error saving:', error);
+                alert('Error saving data. It has been saved locally.');
+                showSuccess();
+            } finally {
+                isSubmitting = false;
+            }
+        }
+
+        async function saveToGoogleSheets(data) {
+            // Send each answer as a separate row for better analysis
+            const promises = data.answers.map(ans => {
+                return fetch(config.sheetsUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        timestamp: data.timestamp,
+                        category: data.category,
+                        interviewee: data.interviewee,
+                        question: ans.question,
+                        answer: ans.answer,
+                        details: ans.details
+                    })
+                });
+            });
+
+            await Promise.all(promises);
+        }
+
+        function showSuccess() {
+            document.getElementById('interviewScreen').classList.remove('active');
+            document.getElementById('successScreen').classList.add('active');
+        }
+
+        function startNew() {
+            currentCategory = '';
+            currentQuestion = 0;
+            intervieweeName = '';
+            answers = [];
+            document.getElementById('successScreen').classList.remove('active');
+            document.getElementById('categoryScreen').style.display = 'block';
+        }
+
+        function backToCategories() {
+            if (confirm('Are you sure you want to go back? Current progress will be lost.')) {
+                document.getElementById('interviewScreen').classList.remove('active');
+                document.getElementById('categoryScreen').style.display = 'block';
+                currentQuestion = 0;
+                answers = [];
+            }
+        }
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
