@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentence Builder</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Century Gothic', 'Futura', 'Avenir', sans-serif;
+      background: linear-gradient(135deg, #e0f2fe 0%, #ddd6fe 50%, #fce7f3 100%);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+      margin-bottom: 1.5rem;
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      color: #1e293b;
+      font-weight: 700;
+    }
+
+    .score-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(255, 255, 255, 0.8);
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+
+    .star {
+      color: #eab308;
+      font-size: 1.25rem;
+    }
+
+    .score-text {
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #8b5cf6, #ec4899);
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: right;
+      font-size: 0.875rem;
+      color: #64748b;
+      margin-top: 0.5rem;
+    }
+
+    /* Main Card */
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 2rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Sentence Display */
+    .sentence-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .sentence {
+      font-size: 1.5rem;
+      color: #1e293b;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    @media (min-width: 768px) {
+      .sentence {
+        font-size: 1.875rem;
+      }
+    }
+
+    .blank {
+      display: inline-block;
+      min-width: 100px;
+      padding: 0.25rem 0.75rem;
+      margin: 0 0.25rem;
+      border-radius: 0.5rem;
+      border: 2px solid #cbd5e1;
+      background: #f1f5f9;
+      color: #94a3b8;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    @media (min-width: 768px) {
+      .blank {
+        min-width: 140px;
+      }
+    }
+
+    .blank.selected {
+      background: #e0f2fe;
+      border-color: #38bdf8;
+      color: #0284c7;
+    }
+
+    .blank.correct {
+      background: #d1fae5;
+      border-color: #34d399;
+      color: #059669;
+    }
+
+    .blank.incorrect {
+      background: #fee2e2;
+      border-color: #f87171;
+      color: #dc2626;
+    }
+
+    /* Word Options */
+    .options-label {
+      text-align: center;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .word-btn {
+      padding: 0.75rem 1.5rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      border: 2px solid #e2e8f0;
+      background: white;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .word-btn:hover:not(:disabled) {
+      border-color: #7dd3fc;
+      background: #f0f9ff;
+      transform: scale(1.05);
+    }
+
+    .word-btn:active:not(:disabled) {
+      transform: scale(0.95);
+    }
+
+    .word-btn.selected {
+      background: #0ea5e9;
+      border-color: #0ea5e9;
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.3);
+      transform: scale(1.05);
+    }
+
+    .word-btn.selected.correct {
+      background: #10b981;
+      border-color: #10b981;
+    }
+
+    .word-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    /* Feedback */
+    .feedback {
+      padding: 1rem;
+      border-radius: 0.75rem;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1.5rem;
+      animation: fadeInUp 0.3s ease;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .feedback.correct {
+      background: #d1fae5;
+      color: #059669;
+    }
+
+    .feedback.incorrect {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    /* Buttons */
+    .button-row {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 1rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .btn:disabled {
+      background: #cbd5e1;
+      color: #64748b;
+      cursor: not-allowed;
+    }
+
+    .btn-check {
+      background: linear-gradient(135deg, #10b981, #14b8a6);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-check:hover:not(:disabled) {
+      background: linear-gradient(135deg, #059669, #0d9488);
+      box-shadow: 0 20px 25px -5px rgba(16, 185, 129, 0.4);
+      transform: scale(1.02);
+    }
+
+    .btn-next {
+      background: linear-gradient(135deg, #8b5cf6, #a855f7);
+      color: white;
+      box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3);
+    }
+
+    .btn-next:hover:not(:disabled) {
+      background: linear-gradient(135deg, #7c3aed, #9333ea);
+      box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4);
+      transform: scale(1.02);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.875rem;
+      margin-top: 1.5rem;
+    }
+
+    /* Celebration Screen */
+    .celebration {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: linear-gradient(135deg, #ede9fe 0%, #fce7f3 50%, #fbcfe8 100%);
+    }
+
+    .celebration-card {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      padding: 3rem 2rem;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .trophy {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      animation: bounce 1s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+    }
+
+    .celebration h2 {
+      font-size: 2.5rem;
+      color: #1e293b;
+      margin-bottom: 1rem;
+    }
+
+    .celebration p {
+      font-size: 1.25rem;
+      color: #64748b;
+      margin-bottom: 1.5rem;
+    }
+
+    .final-score {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 2rem;
+    }
+
+    .btn-restart {
+      width: 100%;
+      padding: 1.25rem;
+      font-size: 1.125rem;
+      font-weight: 600;
+      border-radius: 0.75rem;
+      border: none;
+      cursor: pointer;
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .btn-restart:hover {
+      background: linear-gradient(135deg, #7c3aed, #db2777);
+      transform: scale(1.05);
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+  <div id="app">
+    <!-- Main Game Screen -->
+    <div id="game-screen" class="container">
+      <div class="header">
+        <div class="header-top">
+          <h1>Sentence Builder</h1>
+          <div class="score-box">
+            <span class="star">★</span>
+            <span class="score-text"><span id="score">0</span> / <span id="total">100</span></span>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div id="progress" class="progress-fill" style="width: 1%"></div>
+        </div>
+        <p class="progress-text">Question <span id="current">1</span> of <span id="total-progress">100</span></p>
+      </div>
+
+      <div class="card">
+        <!-- Sentence Display -->
+        <div class="sentence-box">
+          <p id="sentence" class="sentence"></p>
+        </div>
+
+        <!-- Word Options -->
+        <p class="options-label">Choose the correct word</p>
+        <div id="options" class="options"></div>
+
+        <!-- Feedback -->
+        <div id="feedback" class="feedback hidden"></div>
+
+        <!-- Action Buttons -->
+        <div class="button-row">
+          <button id="check-btn" class="btn btn-check" disabled>
+            <span>✓</span> Check
+          </button>
+          <button id="next-btn" class="btn btn-next" disabled>
+            <span>→</span> Next
+          </button>
+        </div>
+      </div>
+
+      
+    </div>
+
+    <!-- Celebration Screen -->
+    <div id="celebration-screen" class="celebration hidden">
+      <div class="celebration-card">
+        <div class="trophy">🏆</div>
+        <h2>Great Job!</h2>
+        <p>You completed all <span id="celebration-total">100</span> sentences!</p>
+        <div class="final-score">
+          <span class="star">★</span>
+          <span id="final-score">0 / 100</span>
+          <span class="star">★</span>
+        </div>
+        <button id="restart-btn" class="btn-restart">
+          <span>↻</span> Start Over
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Sentence Data
+    const sentences = [
+      { id: 1, sentence: "_____ like to play with my sister.", answer: "I", options: ["I", "you", "need", "she", "we"] },
+      { id: 2, sentence: '"Drink _____ of your milk," Mom said.', answer: "all", options: ["all", "no", "be", "at", "yes"] },
+      { id: 3, sentence: "She _____ at the table to eat her dinner.", answer: "sat", options: ["sat", "yes", "an", "go", "my"] },
+      { id: 4, sentence: "_____, you may open the window.", answer: "Yes", options: ["Yes", "No", "all", "an", "go"] },
+      { id: 5, sentence: "_____, you may not open the window.", answer: "No", options: ["No", "Yes", "be", "at", "sat"] },
+      { id: 6, sentence: "I want to _____ to the park.", answer: "go", options: ["go", "my", "an", "all", "yes"] },
+      { id: 7, sentence: "The book is _____ school.", answer: "at", options: ["at", "be", "no", "yes", "sat"] },
+      { id: 8, sentence: "I have _____ apple for snack.", answer: "an", options: ["an", "go", "my", "all", "I"] },
+      { id: 9, sentence: '"_____ good!" Dad smiled.', answer: "Be", options: ["Be", "all", "no", "at", "yes"] },
+      { id: 10, sentence: "_____ lunch box is blue, but hers is yellow.", answer: "My", options: ["My", "I", "you", "she", "we"] },
+      { id: 11, sentence: "_____ an adult use the scissors.", answer: "Let", options: ["Let", "are", "day", "did", "has"] },
+      { id: 12, sentence: "Each _____ I go for a walk outside.", answer: "day", options: ["day", "can", "had", "am", "into"] },
+      { id: 13, sentence: "_____ you close the door?", answer: "Can", options: ["Can", "let", "did", "has", "me"] },
+      { id: 14, sentence: "He _____ a red sweater.", answer: "has", options: ["has", "are", "can", "had", "am"] },
+      { id: 15, sentence: "Will you play with _____?", answer: "me", options: ["me", "let", "day", "did", "has"] },
+      { id: 16, sentence: "I _____ a student in first grade.", answer: "am", options: ["am", "are", "can", "had", "into"] },
+      { id: 17, sentence: "_____ you read the book?", answer: "Did", options: ["Did", "let", "day", "can", "has"] },
+      { id: 18, sentence: "We _____ going to the store today.", answer: "are", options: ["are", "can", "had", "am", "into"] },
+      { id: 19, sentence: "She _____ the ball, but he took it.", answer: "had", options: ["had", "are", "can", "let", "day"] },
+      { id: 20, sentence: "Get _____ the car and put your seatbelt on.", answer: "into", options: ["into", "are", "can", "had", "am"] },
+      { id: 21, sentence: "The kitten is not big, she is _____.", answer: "little", options: ["little", "big", "as", "see", "we"] },
+      { id: 22, sentence: "The paper is _____ white as snow!", answer: "as", options: ["as", "run", "was", "saw", "two"] },
+      { id: 23, sentence: "_____ like to play together.", answer: "We", options: ["We", "little", "big", "as", "see"] },
+      { id: 24, sentence: "The puppy _____ running, but now she is sleeping.", answer: "was", options: ["was", "run", "saw", "two", "too"] },
+      { id: 25, sentence: "I have _____ cookies, one in each hand.", answer: "two", options: ["two", "little", "big", "as", "we"] },
+      { id: 26, sentence: "I like to ride bikes, and my sister likes to ride them _____.", answer: "too", options: ["too", "run", "was", "saw", "two"] },
+      { id: 27, sentence: "I _____ dark clouds in the sky yesterday.", answer: "saw", options: ["saw", "little", "big", "as", "we"] },
+      { id: 28, sentence: "Don't _____ with scissors.", answer: "run", options: ["run", "was", "saw", "two", "too"] },
+      { id: 29, sentence: "Right now, I can _____ the board.", answer: "see", options: ["see", "little", "big", "as", "we"] },
+      { id: 30, sentence: "The tree was too _____ to climb.", answer: "big", options: ["big", "run", "was", "saw", "two"] },
+      { id: 31, sentence: "My dad bought me a _____ backpack.", answer: "new", options: ["new", "this", "he", "on", "ask"] },
+      { id: 32, sentence: "I want that cup, not _____ cup.", answer: "this", options: ["this", "will", "ran", "up", "down"] },
+      { id: 33, sentence: "_____ wrote his name on the paper.", answer: "He", options: ["He", "Mrs.", "new", "on", "ask"] },
+      { id: 34, sentence: "She _____ down the stairs very quickly.", answer: "ran", options: ["ran", "will", "this", "up", "down"] },
+      { id: 35, sentence: "_____ Jones is my teacher.", answer: "Mrs.", options: ["Mrs.", "He", "new", "on", "ask"] },
+      { id: 36, sentence: "Mom _____ pick me up from school today.", answer: "will", options: ["will", "ran", "this", "up", "down"] },
+      { id: 37, sentence: "They threw the ball _____ in the air.", answer: "up", options: ["up", "will", "ran", "this", "down"] },
+      { id: 38, sentence: "I slept _____ my fluffy blanket last night.", answer: "on", options: ["on", "Mrs.", "He", "new", "ask"] },
+      { id: 39, sentence: "We slid _____ the slide over and over!", answer: "down", options: ["down", "will", "ran", "this", "up"] },
+      { id: 40, sentence: "You need to _____ before you use someone else's pencil.", answer: "ask", options: ["ask", "Mrs.", "He", "new", "on"] },
+      { id: 41, sentence: "Turn the lights _____ when you leave a room.", answer: "off", options: ["off", "get", "came", "Come", "about"] },
+      { id: 42, sentence: "Go _____ your brother from his room.", answer: "get", options: ["get", "off", "came", "Come", "about"] },
+      { id: 43, sentence: "She _____ to my house last night.", answer: "came", options: ["came", "off", "get", "Come", "about"] },
+      { id: 44, sentence: "_____ over here, now!", answer: "Come", options: ["Come", "off", "get", "came", "about"] },
+      { id: 45, sentence: "My sister is _____ to go to the store.", answer: "about", options: ["about", "off", "get", "came", "Come"] },
+      { id: 46, sentence: "We are _____ Michigan.", answer: "from", options: ["from", "old", "Mr.", "girl", "have"] },
+      { id: 47, sentence: "My dog is _____ and has white fur on her face.", answer: "old", options: ["old", "from", "Mr.", "girl", "have"] },
+      { id: 48, sentence: "_____ Thomas works at the bank.", answer: "Mr.", options: ["Mr.", "from", "old", "girl", "have"] },
+      { id: 49, sentence: "The little _____ had a red bow.", answer: "girl", options: ["girl", "from", "old", "Mr.", "have"] },
+      { id: 50, sentence: "I _____ new shoes on today.", answer: "have", options: ["have", "from", "old", "Mr.", "girl"] },
+      { id: 51, sentence: "_____ Jen is my babysitter.", answer: "Miss", options: ["Miss", "She", "They", "sun", "boy"] },
+      { id: 52, sentence: "_____ likes to play with her bike.", answer: "She", options: ["She", "Miss", "They", "sun", "boy"] },
+      { id: 53, sentence: "_____ want to play outside longer.", answer: "They", options: ["They", "Miss", "She", "sun", "boy"] },
+      { id: 54, sentence: "The _____ is bright and hot.", answer: "sun", options: ["sun", "Miss", "She", "They", "boy"] },
+      { id: 55, sentence: "The _____ tied his green shoes.", answer: "boy", options: ["boy", "Miss", "She", "They", "sun"] },
+      { id: 56, sentence: "The kitten licked _____ paws and fell asleep.", answer: "its", options: ["its", "by", "out", "away", "Do"] },
+      { id: 57, sentence: "_____ you know your phone number?", answer: "Do", options: ["Do", "by", "out", "away", "its"] },
+      { id: 58, sentence: "We are going _____ on vacation.", answer: "away", options: ["away", "by", "out", "its", "Do"] },
+      { id: 59, sentence: "We drive _____ the park every day.", answer: "by", options: ["by", "out", "away", "its", "Do"] },
+      { id: 60, sentence: "We went _____ to recess today because it was not raining.", answer: "out", options: ["out", "by", "away", "its", "Do"] },
+      { id: 61, sentence: "Do _____ run across the street.", answer: "not", options: ["not", "dad", "His", "look", "said"] },
+      { id: 62, sentence: "I love to play in the park with my _____.", answer: "dad", options: ["dad", "not", "His", "look", "said"] },
+      { id: 63, sentence: "_____ car has a flat tire, so he has to change it.", answer: "His", options: ["His", "not", "dad", "look", "said"] },
+      { id: 64, sentence: "You can _____ at yourself in a mirror.", answer: "look", options: ["look", "not", "dad", "His", "said"] },
+      { id: 65, sentence: 'My sister _____, "I love you!"', answer: "said", options: ["said", "not", "dad", "His", "look"] },
+      { id: 66, sentence: "If you need _____, just raise your hand and ask.", answer: "help", options: ["help", "baby", "or", "if", "way"] },
+      { id: 67, sentence: "The _____ is sleeping in the crib.", answer: "baby", options: ["baby", "help", "or", "if", "way"] },
+      { id: 68, sentence: "Would you rather have corn _____ potatoes?", answer: "or", options: ["or", "help", "baby", "if", "way"] },
+      { id: 69, sentence: "I can play outside _____ I clean my room.", answer: "if", options: ["if", "help", "baby", "or", "way"] },
+      { id: 70, sentence: '"Let\'s hike this _____!" said Jim.', answer: "way", options: ["way", "help", "baby", "or", "if"] },
+      { id: 71, sentence: "We like to _____ our ABCs.", answer: "say", options: ["say", "Put", "dog", "father", "mother"] },
+      { id: 72, sentence: "_____ your backpack in your cubby.", answer: "Put", options: ["Put", "say", "dog", "father", "mother"] },
+      { id: 73, sentence: "My _____ likes to play fetch.", answer: "dog", options: ["dog", "say", "Put", "father", "mother"] },
+      { id: 74, sentence: "My mother and _____ live in my house.", answer: "father", options: ["father", "say", "Put", "dog", "mother"] },
+      { id: 75, sentence: "My _____ and father eat breakfast with me.", answer: "mother", options: ["mother", "say", "Put", "dog", "father"] },
+      { id: 76, sentence: "_____ would you like to eat for lunch?", answer: "What", options: ["What", "When", "cat", "stop", "thing"] },
+      { id: 77, sentence: "_____ does school start?", answer: "When", options: ["When", "What", "cat", "stop", "thing"] },
+      { id: 78, sentence: "The _____ played with the string.", answer: "cat", options: ["cat", "What", "When", "stop", "thing"] },
+      { id: 79, sentence: "Make sure you _____ when the light is red.", answer: "stop", options: ["stop", "What", "When", "cat", "thing"] },
+      { id: 80, sentence: '"I wonder what this _____ does?" the explorer asked.', answer: "thing", options: ["thing", "What", "When", "cat", "stop"] },
+      { id: 81, sentence: "We weren't at school, we _____ at the store this morning.", answer: "were", options: ["were", "with", "got", "bed", "sky"] },
+      { id: 82, sentence: "Can you bake cookies _____ this type of flour?", answer: "with", options: ["with", "were", "got", "bed", "sky"] },
+      { id: 83, sentence: "I _____ new shoes for Christmas!", answer: "got", options: ["got", "were", "with", "bed", "sky"] },
+      { id: 84, sentence: "My _____ is so soft, it's the perfect place to sleep.", answer: "bed", options: ["bed", "were", "with", "got", "sky"] },
+      { id: 85, sentence: "The _____ is blue and full of clouds.", answer: "sky", options: ["sky", "were", "with", "got", "bed"] },
+      { id: 86, sentence: "I have _____ when I swim in a pool.", answer: "fun", options: ["fun", "but", "men", "him", "cry"] },
+      { id: 87, sentence: "I like to read, _____ I like math better.", answer: "but", options: ["but", "fun", "men", "him", "cry"] },
+      { id: 88, sentence: "The _____ on the train are all reading the newspaper.", answer: "men", options: ["men", "fun", "but", "him", "cry"] },
+      { id: 89, sentence: "I want to sit next to _____ because he is my friend.", answer: "him", options: ["him", "fun", "but", "men", "cry"] },
+      { id: 90, sentence: "It's ok to _____ if you feel sad.", answer: "cry", options: ["cry", "fun", "but", "men", "him"] },
+      { id: 91, sentence: "My dog likes when we _____ her.", answer: "pet", options: ["pet", "room", "very", "Tell", "Why"] },
+      { id: 92, sentence: "He has to clean his _____ each week.", answer: "room", options: ["room", "pet", "very", "Tell", "Why"] },
+      { id: 93, sentence: "I love you _____ much.", answer: "very", options: ["very", "pet", "room", "Tell", "Why"] },
+      { id: 94, sentence: "_____ me when you're finished with your homework.", answer: "Tell", options: ["Tell", "pet", "room", "very", "Why"] },
+      { id: 95, sentence: "_____ did you do that?", answer: "Why", options: ["Why", "pet", "room", "very", "Tell"] },
+      { id: 96, sentence: "Earlier we had math class, but _____ it is time for science.", answer: "now", options: ["now", "her", "hat", "Oh", "fly"] },
+      { id: 97, sentence: "He likes his folder, but he likes _____ folder more.", answer: "her", options: ["her", "now", "hat", "Oh", "fly"] },
+      { id: 98, sentence: "You wear a _____ on your head.", answer: "hat", options: ["hat", "now", "her", "Oh", "fly"] },
+      { id: 99, sentence: '"_____ no!" the woman cried.', answer: "Oh", options: ["Oh", "now", "her", "hat", "fly"] },
+      { id: 100, sentence: "Birds can _____ high in the sky.", answer: "fly", options: ["fly", "now", "her", "hat", "Oh"] }
+    ];
+
+    // State
+    let currentIndex = 0;
+    let selectedWord = null;
+    let feedback = 'none';
+    let score = 0;
+    let answeredQuestions = new Set();
+
+    // DOM Elements
+    const gameScreen = document.getElementById('game-screen');
+    const celebrationScreen = document.getElementById('celebration-screen');
+    const sentenceEl = document.getElementById('sentence');
+    const optionsEl = document.getElementById('options');
+    const feedbackEl = document.getElementById('feedback');
+    const checkBtn = document.getElementById('check-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const scoreEl = document.getElementById('score');
+    const totalEl = document.getElementById('total');
+    const currentEl = document.getElementById('current');
+    const totalProgressEl = document.getElementById('total-progress');
+    const progressEl = document.getElementById('progress');
+    const celebrationTotalEl = document.getElementById('celebration-total');
+    const finalScoreEl = document.getElementById('final-score');
+
+    // Initialize
+    totalEl.textContent = sentences.length;
+    totalProgressEl.textContent = sentences.length;
+    celebrationTotalEl.textContent = sentences.length;
+
+    // Shuffle array (Fisher-Yates)
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // Render sentence with blank
+    function renderSentence() {
+      const current = sentences[currentIndex];
+      const parts = current.sentence.split('_____');
+      
+      let blankClass = 'blank';
+      if (feedback === 'correct') blankClass += ' correct';
+      else if (feedback === 'incorrect') blankClass += ' incorrect';
+      else if (selectedWord) blankClass += ' selected';
+
+      sentenceEl.innerHTML = `${parts[0]}<span class="${blankClass}">${selectedWord || '?'}</span>${parts[1]}`;
+    }
+
+    // Render word options
+    function renderOptions() {
+      const current = sentences[currentIndex];
+      const shuffledOptions = shuffleArray(current.options);
+      
+      optionsEl.innerHTML = '';
+      shuffledOptions.forEach(word => {
+        const btn = document.createElement('button');
+        btn.className = 'word-btn';
+        btn.textContent = word;
+        
+        if (selectedWord === word) {
+          btn.classList.add('selected');
+          if (feedback === 'correct') btn.classList.add('correct');
+        }
+        
+        btn.disabled = feedback === 'correct';
+        btn.onclick = () => selectWord(word);
+        optionsEl.appendChild(btn);
+      });
+    }
+
+    // Select word
+    function selectWord(word) {
+      if (feedback === 'correct') return;
+      selectedWord = word;
+      feedback = 'none';
+      feedbackEl.classList.add('hidden');
+      checkBtn.disabled = false;
+      renderSentence();
+      renderOptions();
+    }
+
+    // Check answer
+    function checkAnswer() {
+      if (!selectedWord) return;
+      
+      const current = sentences[currentIndex];
+      
+      if (selectedWord === current.answer) {
+        feedback = 'correct';
+        if (!answeredQuestions.has(currentIndex)) {
+          score++;
+          answeredQuestions.add(currentIndex);
+          scoreEl.textContent = score;
+        }
+        feedbackEl.textContent = '🎉 Correct! Great job!';
+        feedbackEl.className = 'feedback correct';
+        nextBtn.disabled = false;
+      } else {
+        feedback = 'incorrect';
+        selectedWord = null;
+        feedbackEl.textContent = '❌ Not quite. Try again!';
+        feedbackEl.className = 'feedback incorrect';
+        checkBtn.disabled = true;
+      }
+      
+      renderSentence();
+      renderOptions();
+    }
+
+    // Next question
+    function nextQuestion() {
+      if (currentIndex < sentences.length - 1) {
+        currentIndex++;
+        selectedWord = null;
+        feedback = 'none';
+        feedbackEl.classList.add('hidden');
+        checkBtn.disabled = true;
+        nextBtn.disabled = true;
+        updateProgress();
+        renderSentence();
+        renderOptions();
+      } else {
+        showCelebration();
+      }
+    }
+
+    // Update progress
+    function updateProgress() {
+      currentEl.textContent = currentIndex + 1;
+      const progress = ((currentIndex + 1) / sentences.length) * 100;
+      progressEl.style.width = `${progress}%`;
+    }
+
+    // Show celebration
+    function showCelebration() {
+      finalScoreEl.textContent = `${score} / ${sentences.length}`;
+      gameScreen.classList.add('hidden');
+      celebrationScreen.classList.remove('hidden');
+    }
+
+    // Restart
+    function restart() {
+      currentIndex = 0;
+      selectedWord = null;
+      feedback = 'none';
+      score = 0;
+      answeredQuestions = new Set();
+      
+      scoreEl.textContent = '0';
+      checkBtn.disabled = true;
+      nextBtn.disabled = true;
+      feedbackEl.classList.add('hidden');
+      
+      celebrationScreen.classList.add('hidden');
+      gameScreen.classList.remove('hidden');
+      
+      updateProgress();
+      renderSentence();
+      renderOptions();
+    }
+
+    // Event listeners
+    checkBtn.onclick = checkAnswer;
+    nextBtn.onclick = nextQuestion;
+    restartBtn.onclick = restart;
+
+    // Initial render
+    renderSentence();
+    renderOptions();
+  </script>
+</body>
+</html>
