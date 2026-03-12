@@ -7,460 +7,248 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
 :root {
-  --sky: #cce8ff;
-  --sun: #ffce47;      --sun-dark: #e8a800;
-  --grass: #4ec76a;    --grass-dark: #2f9e4f;
-  --blue: #3d8fe0;     --blue-dark: #1e66b5;
-  --purple: #8b5cf6;   --purple-dark: #6d35d9;
-  --coral: #f85555;    --coral-dark: #c42020;
-  --ink: #172032;
-  --card-radius: 26px;
+  --sky:#c8e6ff; --sun:#ffce47; --sun-dark:#e8a800;
+  --grass:#4ec76a; --grass-dark:#2f9e4f;
+  --blue:#3d8fe0; --blue-dark:#1e66b5;
+  --purple:#8b5cf6; --purple-dark:#6d35d9;
+  --coral:#f85555; --coral-dark:#c42020;
+  --ink:#172032; --r:24px;
 }
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { height: 100%; }
-
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--sky);
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px;
-  overflow-x: hidden;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%}
+body{
+  font-family:'Nunito',sans-serif;background:var(--sky);
+  min-height:100vh;display:flex;justify-content:center;align-items:center;
+  padding:12px;overflow-x:hidden;
 }
-
-/* soft background blobs */
-body::before {
-  content: '';
-  position: fixed; inset: 0;
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:
-    radial-gradient(ellipse 60% 50% at 80% 10%, rgba(139,92,246,.13), transparent),
-    radial-gradient(ellipse 50% 40% at 10% 90%, rgba(255,206,71,.18), transparent),
-    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(61,143,224,.08), transparent);
-  pointer-events: none; z-index: 0;
+    radial-gradient(ellipse 55% 45% at 85% 8%,rgba(139,92,246,.14),transparent),
+    radial-gradient(ellipse 45% 40% at 8% 92%,rgba(255,206,71,.18),transparent),
+    radial-gradient(ellipse 35% 35% at 50% 50%,rgba(61,143,224,.08),transparent);
 }
 
 /* ── SCREENS ── */
-.screen {
-  position: fixed; inset: 0;
-  display: flex; justify-content: center; align-items: center;
-  padding: 12px; z-index: 1; overflow-y: auto;
-  transition: opacity .38s ease, transform .38s ease;
+.screen{
+  position:fixed;inset:0;display:flex;justify-content:center;align-items:center;
+  padding:12px;z-index:1;overflow-y:auto;
+  transition:opacity .38s ease,transform .38s ease;
 }
-.screen.out-left  { opacity: 0; transform: translateX(-56px) scale(.97); pointer-events: none; }
-.screen.out-right { opacity: 0; transform: translateX( 56px) scale(.97); pointer-events: none; }
-.screen.hidden    { display: none; }
-#screen-game { align-items: flex-start; }
+.screen.out-left {opacity:0;transform:translateX(-56px) scale(.97);pointer-events:none}
+.screen.out-right{opacity:0;transform:translateX( 56px) scale(.97);pointer-events:none}
+.screen.hidden   {display:none}
+#screen-game{align-items:flex-start}
 
-/* ════════════════════════════
-   HOME SCREEN
-════════════════════════════ */
-.home-card {
-  background: white;
-  border-radius: var(--card-radius);
-  width: 100%; max-width: 480px;
-  box-shadow: 0 10px 0 rgba(0,0,0,.1), 0 20px 50px rgba(0,0,0,.1);
-  overflow: hidden;
+/* ════ HOME ════ */
+.home-card{
+  background:white;border-radius:var(--r);width:100%;max-width:500px;
+  box-shadow:0 10px 0 rgba(0,0,0,.1),0 20px 50px rgba(0,0,0,.1);overflow:hidden;
 }
+.home-hero{
+  background:linear-gradient(140deg,#3d8fe0,#8b5cf6);
+  padding:34px 28px 44px;text-align:center;position:relative;overflow:hidden;
+}
+.home-hero::after{
+  content:'';position:absolute;bottom:-22px;left:-10px;right:-10px;
+  height:50px;background:white;border-radius:50%;
+}
+.wiz{
+  font-size:4rem;display:block;margin-bottom:8px;
+  animation:wizFloat 3.2s ease-in-out infinite;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.25));
+}
+@keyframes wizFloat{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-12px) rotate(4deg)}}
+.home-hero h1{font-family:'Fredoka One',cursive;font-size:2.5rem;color:white;letter-spacing:1px;text-shadow:0 3px 10px rgba(0,0,0,.2)}
+.home-body{padding:28px 24px 22px}
+.field-label{display:block;font-weight:800;color:#476d8a;font-size:.74rem;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.name-row{display:flex;gap:10px;margin-bottom:22px}
+.name-input{
+  font-family:'Fredoka One',cursive;flex:1;border:3px solid #cce2f8;border-radius:50px;
+  padding:11px 20px;font-size:1.2rem;color:var(--ink);outline:none;letter-spacing:1px;
+  background:#f7fbff;transition:border-color .2s,box-shadow .2s;
+}
+.name-input:focus{border-color:var(--blue);box-shadow:0 0 0 4px rgba(61,143,224,.15)}
+.play-btn{
+  font-family:'Fredoka One',cursive;background:var(--grass);color:white;border:none;
+  padding:11px 24px;border-radius:50px;font-size:1.1rem;cursor:pointer;white-space:nowrap;
+  box-shadow:0 5px 0 var(--grass-dark);transition:transform .08s,box-shadow .08s;
+}
+.play-btn:hover{background:#41ba5e}
+.play-btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--grass-dark)}
 
-.home-hero {
-  background: linear-gradient(140deg, #3d8fe0 0%, #8b5cf6 100%);
-  padding: 36px 28px 28px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
+/* leaderboard tabs */
+.lb-tabs{display:flex;gap:8px;margin-bottom:12px}
+.lb-tab{
+  font-family:'Fredoka One',cursive;font-size:.88rem;padding:6px 18px;
+  border-radius:50px;border:2px solid #c8dff5;background:#f0f8ff;
+  color:#476d8a;cursor:pointer;transition:all .2s;
 }
-/* subtle cloud shapes in hero */
-.home-hero::before {
-  content: '';
-  position: absolute; bottom: -20px; left: -20px; right: -20px;
-  height: 50px;
-  background: white;
-  border-radius: 50% 50% 0 0 / 30px;
-}
+.lb-tab.active{background:var(--blue);color:white;border-color:var(--blue-dark)}
 
-.wiz {
-  font-size: 4.2rem;
-  display: block;
-  margin-bottom: 8px;
-  animation: wizFloat 3.2s ease-in-out infinite;
-  filter: drop-shadow(0 4px 8px rgba(0,0,0,.2));
-}
-@keyframes wizFloat {
-  0%,100% { transform: translateY(0) rotate(-4deg) scale(1); }
-  50%      { transform: translateY(-12px) rotate(4deg) scale(1.04); }
-}
+.lb-table{width:100%;border-collapse:collapse;font-size:.9rem}
+.lb-table th{background:#f0f8ff;padding:7px 12px;text-align:left;font-weight:800;color:#3a6080;font-size:.7rem;text-transform:uppercase;letter-spacing:.6px}
+.lb-table th:last-child,.lb-table td:last-child{text-align:right}
+.lb-table td{padding:9px 12px;border-bottom:1px solid #eaf3fc;color:var(--ink);font-weight:700}
+.lb-table tr:last-child td{border-bottom:none}
+.lb-table tr.me td{background:#fffbea;color:#6e4800}
+.lb-empty{text-align:center;padding:18px;color:#aabbcc;font-size:.85rem;font-weight:700}
+.clear-link{margin-top:12px;text-align:right}
+.clear-link button{background:none;border:none;color:#b0bec5;font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;cursor:pointer;text-decoration:underline;transition:color .15s}
+.clear-link button:hover{color:var(--coral)}
 
-.home-hero h1 {
-  font-family: 'Fredoka One', cursive;
-  font-size: 2.6rem;
-  color: white;
-  letter-spacing: 1px;
-  text-shadow: 0 3px 10px rgba(0,0,0,.2);
-}
+/* ════ GAME WRAP ════ */
+.game-wrap{max-width:700px;width:100%;display:flex;flex-direction:column;gap:12px;padding:8px 0 24px}
 
-.home-body { padding: 32px 24px 24px; }
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  background:white;border-radius:18px;padding:10px 18px;
+  box-shadow:0 4px 0 rgba(0,0,0,.08);gap:10px;flex-wrap:wrap;
+}
+.topbar-player{font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--ink);display:flex;align-items:center;gap:6px}
+.topbar-score{background:var(--sun);border-radius:50px;padding:5px 16px;font-weight:800;font-size:.88rem;color:#5c3d00;box-shadow:0 3px 0 var(--sun-dark)}
+.home-btn{font-family:'Nunito',sans-serif;background:#eef6ff;border:2px solid #c0d8f0;color:#4a6f8a;padding:5px 14px;border-radius:50px;font-size:.8rem;font-weight:800;cursor:pointer;transition:all .15s}
+.home-btn:hover{background:#d8eeff}
 
-.field-label {
-  display: block;
-  font-weight: 800; color: #476d8a;
-  font-size: .75rem; text-transform: uppercase; letter-spacing: 1px;
-  margin-bottom: 8px;
-}
+/* pack progress */
+.pack-progress{background:white;border-radius:16px;padding:12px 18px;box-shadow:0 4px 0 rgba(0,0,0,.07)}
+.pack-progress-label{font-size:.75rem;font-weight:800;color:#476d8a;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.pack-track{display:flex;gap:4px;flex-wrap:wrap}
+.pack-pip{flex:1;min-width:16px;height:10px;border-radius:8px;background:#ddeeff;border:2px solid #b8d4ee;transition:all .3s}
+.pack-pip.done  {background:var(--grass);border-color:var(--grass-dark)}
+.pack-pip.active{background:var(--sun);border-color:var(--sun-dark);transform:scaleY(1.4);box-shadow:0 0 6px rgba(255,200,0,.4)}
 
-.name-row { display: flex; gap: 10px; margin-bottom: 26px; }
+/* timer */
+.timer-wrap{background:#e4f0fb;border-radius:12px;overflow:hidden;border:2px solid #c0d8f0;height:16px;position:relative}
+.timer-bar{height:100%;border-radius:10px;background:var(--grass);transition:width 1s linear,background .4s}
+.timer-bar.warn  {background:var(--sun)}
+.timer-bar.danger{background:var(--coral);animation:tpulse .5s infinite alternate}
+@keyframes tpulse{to{opacity:.65}}
+.timer-secs{position:absolute;right:8px;top:50%;transform:translateY(-50%);font-size:.7rem;font-weight:800;color:white;text-shadow:0 1px 3px rgba(0,0,0,.3)}
 
-.name-input {
-  font-family: 'Fredoka One', cursive;
-  flex: 1; border: 3px solid #cce2f8; border-radius: 50px;
-  padding: 11px 20px; font-size: 1.2rem; color: var(--ink);
-  outline: none; letter-spacing: 1px;
-  transition: border-color .2s, box-shadow .2s;
-  background: #f7fbff;
+/* overlay cards */
+.overlay-card{
+  background:white;border-radius:var(--r);
+  box-shadow:0 8px 0 rgba(0,0,0,.1),0 14px 30px rgba(0,0,0,.08);
+  padding:48px 28px;text-align:center;display:none;
 }
-.name-input:focus { border-color: var(--blue); box-shadow: 0 0 0 4px rgba(61,143,224,.15); }
+.overlay-card.show{display:block;animation:cardPop .42s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cardPop{from{transform:scale(.72);opacity:0}to{transform:scale(1);opacity:1}}
+@keyframes numPop {from{transform:scale(.25);opacity:0}to{transform:scale(1);opacity:1}}
 
-.play-btn {
-  font-family: 'Fredoka One', cursive;
-  background: var(--grass); color: white; border: none;
-  padding: 11px 24px; border-radius: 50px; font-size: 1.1rem;
-  cursor: pointer; white-space: nowrap;
-  box-shadow: 0 5px 0 var(--grass-dark);
-  transition: transform .08s, box-shadow .08s;
-}
-.play-btn:hover  { background: #41ba5e; }
-.play-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--grass-dark); }
+.topic-emoji    {font-size:4rem;display:block;margin-bottom:10px;animation:cardPop .4s .1s both}
+.topic-name     {font-family:'Fredoka One',cursive;font-size:2.3rem;color:var(--ink);margin-bottom:6px}
+.topic-sub      {font-size:.95rem;font-weight:700;color:#7a9db5;margin-bottom:20px}
+.topic-countdown{font-family:'Fredoka One',cursive;font-size:5rem;color:var(--blue-dark);line-height:1;animation:numPop .38s cubic-bezier(.34,1.56,.64,1)}
 
-/* leaderboard */
-.lb-head {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.05rem; color: var(--ink);
-  display: flex; align-items: center; gap: 6px;
-  margin-bottom: 10px;
+/* word card */
+.word-card{
+  background:white;border-radius:var(--r);
+  box-shadow:0 8px 0 rgba(0,0,0,.1),0 14px 30px rgba(0,0,0,.07);
+  padding:26px 22px 24px;text-align:center;position:relative;overflow:hidden;
 }
+.rainbow-bar{position:absolute;top:0;left:0;right:0;height:7px;background:linear-gradient(90deg,#4ec76a,#3d8fe0,#8b5cf6,#f85555,#ffce47,#ff9f43)}
+.word-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 18px;border-radius:20px;font-size:.8rem;font-weight:800;margin-bottom:14px;letter-spacing:.4px}
+.dots{display:flex;justify-content:center;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.dot{width:14px;height:14px;border-radius:50%;background:#d4e8f8;border:2px solid #a8cce8;transition:all .3s}
+.dot.done{background:var(--grass);border-color:var(--grass-dark)}
+.dot.cur {background:var(--sun);border-color:var(--sun-dark);transform:scale(1.45);box-shadow:0 0 6px rgba(255,200,0,.4)}
 
-.lb-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-.lb-table th {
-  background: #f0f8ff; padding: 7px 12px;
-  text-align: left; font-weight: 800; color: #3a6080;
-  font-size: .7rem; text-transform: uppercase; letter-spacing: .6px;
-}
-.lb-table th:last-child, .lb-table td:last-child { text-align: right; }
-.lb-table td { padding: 9px 12px; border-bottom: 1px solid #eaf3fc; color: var(--ink); font-weight: 700; }
-.lb-table tr:last-child td { border-bottom: none; }
-.lb-table tr.me td { background: #fffbea; color: #6e4800; }
-.lb-empty { text-align: center; padding: 18px; color: #aabbcc; font-size: .85rem; font-weight: 700; }
-
-.clear-link { margin-top: 12px; text-align: right; }
-.clear-link button {
-  background: none; border: none;
-  color: #b0bec5; font-family: 'Nunito', sans-serif;
-  font-size: .75rem; font-weight: 700;
-  cursor: pointer; text-decoration: underline;
-  transition: color .15s;
-}
-.clear-link button:hover { color: var(--coral); }
-
-/* ════════════════════════════
-   GAME SCREEN
-════════════════════════════ */
-.game-wrap {
-  max-width: 680px; width: 100%;
-  display: flex; flex-direction: column; gap: 12px;
-  padding: 8px 0 24px;
-}
-
-/* top bar */
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  background: white; border-radius: 18px;
-  padding: 10px 18px;
-  box-shadow: 0 4px 0 rgba(0,0,0,.08);
-  gap: 10px; flex-wrap: wrap;
-}
-.topbar-player {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.05rem; color: var(--ink);
-  display: flex; align-items: center; gap: 6px;
-}
-.topbar-score {
-  background: var(--sun); border-radius: 50px;
-  padding: 5px 16px; font-weight: 800; font-size: .88rem;
-  color: #5c3d00; box-shadow: 0 3px 0 var(--sun-dark);
-  display: flex; align-items: center; gap: 4px;
-}
-.home-btn {
-  font-family: 'Nunito', sans-serif;
-  background: #eef6ff; border: 2px solid #c0d8f0;
-  color: #4a6f8a; padding: 5px 14px;
-  border-radius: 50px; font-size: .8rem; font-weight: 800;
-  cursor: pointer; transition: all .15s;
-}
-.home-btn:hover { background: #d8eeff; border-color: #99c4e8; }
-
-/* level pips */
-.level-strip { display: flex; gap: 8px; justify-content: center; align-items: center; }
-.pip {
-  flex: 1; height: 12px; border-radius: 10px; max-width: 110px;
-  background: #d4e9f8; border: 2px solid #b0d0ea;
-  transition: background .4s, border-color .4s, transform .3s;
-  position: relative; overflow: hidden;
-}
-.pip::after {
-  content: ''; position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
-  transform: translateX(-100%);
-}
-.pip.active {
-  background: var(--sun); border-color: var(--sun-dark);
-  transform: scaleY(1.4);
-  box-shadow: 0 0 8px rgba(255,200,0,.4);
-}
-.pip.active::after { animation: shimmer 1.5s infinite; }
-.pip.done { background: var(--grass); border-color: var(--grass-dark); }
-@keyframes shimmer { to { transform: translateX(200%); } }
-
-/* pip labels */
-.pip-labels {
-  display: flex; gap: 8px; justify-content: center;
-  margin-top: -4px;
-}
-.pip-lbl {
-  flex: 1; max-width: 110px;
-  text-align: center; font-size: .62rem; font-weight: 800;
-  color: #7a9db5; letter-spacing: .3px;
-  transition: color .3s;
-}
-.pip-lbl.active { color: var(--ink); }
-.pip-lbl.done   { color: var(--grass-dark); }
-
-/* timer bar */
-.timer-wrap {
-  background: #e4f0fb; border-radius: 12px;
-  overflow: hidden; border: 2px solid #c0d8f0;
-  height: 16px; position: relative;
-}
-.timer-bar {
-  height: 100%; border-radius: 10px;
-  background: var(--grass);
-  transition: width 1s linear, background .4s;
-}
-.timer-bar.warn   { background: var(--sun); }
-.timer-bar.danger { background: var(--coral); animation: timerPulse .5s infinite alternate; }
-@keyframes timerPulse { to { opacity: .7; } }
-.timer-secs {
-  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
-  font-size: .7rem; font-weight: 800; color: white;
-  text-shadow: 0 1px 3px rgba(0,0,0,.3);
+.scrambled{
+  font-family:'Fredoka One',cursive;font-size:3.6rem;letter-spacing:10px;
+  color:var(--blue-dark);line-height:1.15;word-break:break-all;
+  text-shadow:2px 2px 0 rgba(61,143,224,.1);margin-bottom:4px;
 }
 
-/* ── WORD CARD ── */
-.word-card {
-  background: white;
-  border-radius: var(--card-radius);
-  box-shadow: 0 8px 0 rgba(0,0,0,.1), 0 14px 30px rgba(0,0,0,.07);
-  padding: 28px 22px 26px;
-  text-align: center;
-  position: relative; overflow: hidden;
+.sentence-display{
+  font-size:1.1rem;font-weight:800;color:#1a3050;
+  background:#f0f8ff;border-radius:16px;
+  padding:14px 20px;margin-bottom:6px;line-height:1.7;
+  border-left:5px solid var(--blue);text-align:left;display:none;
 }
-.rainbow-bar {
-  position: absolute; top: 0; left: 0; right: 0; height: 7px;
-  background: linear-gradient(90deg, #4ec76a, #3d8fe0, #8b5cf6, #f85555, #ffce47);
-  border-radius: var(--card-radius) var(--card-radius) 0 0;
-}
-
-.level-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  padding: 5px 16px; border-radius: 20px;
-  font-size: .78rem; font-weight: 800;
-  margin-bottom: 16px; letter-spacing: .4px;
-}
-.l1 { background: #d6f5e3; color: #1a5e33; }
-.l2 { background: #fff3c4; color: #7a4a00; }
-.l3 { background: #ffd6d6; color: #7a1818; }
-.l4 { background: #ede0ff; color: #4a1880; }
-.l5 { background: #ffd6ea; color: #80183a; }
-
-/* progress dots */
-.dots { display: flex; justify-content: center; gap: 7px; flex-wrap: wrap; margin-bottom: 18px; }
-.dot {
-  width: 14px; height: 14px; border-radius: 50%;
-  background: #d4e8f8; border: 2px solid #a8cce8;
-  transition: all .3s;
-}
-.dot.done { background: var(--grass); border-color: var(--grass-dark); }
-.dot.cur  { background: var(--sun); border-color: var(--sun-dark); transform: scale(1.45); box-shadow: 0 0 6px rgba(255,200,0,.4); }
-
-/* scrambled word */
-.scrambled {
-  font-family: 'Fredoka One', cursive;
-  font-size: 3.8rem; letter-spacing: 10px;
-  color: var(--blue-dark); line-height: 1.15;
-  word-break: break-all;
-  text-shadow: 2px 2px 0 rgba(61,143,224,.12);
-  margin-bottom: 4px;
-}
-.hint {
-  font-size: .78rem; color: #9ab5cc; font-weight: 700;
-  margin-bottom: 20px; letter-spacing: .3px;
+.sentence-display.show{display:block}
+.blank-word{
+  display:inline-block;background:white;
+  border:3px dashed var(--blue);border-radius:8px;
+  min-width:80px;padding:0 10px;text-align:center;
+  color:#aaa;font-style:italic;vertical-align:middle;
 }
 
-/* answer field */
-.answer-input {
-  font-family: 'Fredoka One', cursive;
-  display: block; margin: 0 auto 16px;
-  width: 100%; max-width: 300px;
-  padding: 12px 22px; font-size: 1.85rem;
-  text-align: center; letter-spacing: 2px;
-  border: 4px solid #c4dcf5; border-radius: 60px;
-  outline: none; color: var(--ink);
-  background: #f8fbff;
-  transition: border-color .2s, box-shadow .2s;
-}
-.answer-input:focus   { border-color: var(--blue); box-shadow: 0 0 0 5px rgba(61,143,224,.14); }
-.answer-input:disabled { background: #f0f0f0; border-color: #ddd; color: #aaa; }
-.answer-input.shake   { animation: shake .38s; }
-.answer-input.glow    { animation: aglow .42s; }
+.hint{font-size:.78rem;color:#9ab5cc;font-weight:700;margin-bottom:18px;letter-spacing:.3px}
 
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  20%,60% { transform: translateX(-9px); }
-  40%,80% { transform: translateX(9px); }
+.answer-input{
+  font-family:'Fredoka One',cursive;display:block;margin:0 auto 16px;
+  width:100%;max-width:320px;padding:12px 22px;font-size:1.85rem;
+  text-align:center;letter-spacing:2px;
+  border:4px solid #c4dcf5;border-radius:60px;outline:none;color:var(--ink);
+  background:#f8fbff;transition:border-color .2s,box-shadow .2s;
 }
-@keyframes aglow {
-  0%   { transform: scale(1); }
-  50%  { transform: scale(1.055); border-color: var(--grass); box-shadow: 0 0 0 6px rgba(78,199,106,.22); }
-  100% { transform: scale(1); }
-}
+.answer-input:focus  {border-color:var(--blue);box-shadow:0 0 0 5px rgba(61,143,224,.14)}
+.answer-input:disabled{background:#f0f0f0;border-color:#ddd;color:#aaa}
+.answer-input.shake  {animation:shake .38s}
+.answer-input.glow   {animation:aglow .42s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-9px)}40%,80%{transform:translateX(9px)}}
+@keyframes aglow{0%{transform:scale(1)}50%{transform:scale(1.055);border-color:var(--grass);box-shadow:0 0 0 6px rgba(78,199,106,.22)}100%{transform:scale(1)}}
 
-/* check button */
-.check-btn {
-  font-family: 'Fredoka One', cursive;
-  background: var(--blue); color: white; border: none;
-  font-size: 1.3rem; padding: 13px 52px;
-  border-radius: 50px; cursor: pointer;
-  box-shadow: 0 6px 0 var(--blue-dark);
-  transition: transform .08s, box-shadow .08s, background .15s;
-  letter-spacing: .5px;
+.check-btn{
+  font-family:'Fredoka One',cursive;background:var(--blue);color:white;border:none;
+  font-size:1.3rem;padding:13px 52px;border-radius:50px;cursor:pointer;
+  box-shadow:0 6px 0 var(--blue-dark);transition:transform .08s,box-shadow .08s,background .15s;
 }
-.check-btn:hover  { background: #2f7dd0; }
-.check-btn:active { transform: translateY(5px); box-shadow: 0 1px 0 var(--blue-dark); }
-.check-btn:disabled { opacity: .38; pointer-events: none; }
+.check-btn:hover {background:#2f7dd0}
+.check-btn:active{transform:translateY(5px);box-shadow:0 1px 0 var(--blue-dark)}
+.check-btn:disabled{opacity:.38;pointer-events:none}
+.status-msg{margin-top:14px;min-height:28px;font-size:1.05rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--grass-dark)}
 
-.status-msg {
-  margin-top: 14px; min-height: 28px;
-  font-size: 1.05rem; font-weight: 800;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  color: var(--grass-dark);
+/* virtual keyboard */
+.vkb{background:white;border-radius:var(--r);padding:14px 10px 12px;box-shadow:0 6px 0 rgba(0,0,0,.1),0 10px 24px rgba(0,0,0,.07);user-select:none}
+.vkb-row{display:flex;justify-content:center;gap:5px;margin-bottom:6px}
+.vkb-row:last-child{margin-bottom:0}
+.vk{
+  font-family:'Fredoka One',cursive;min-width:46px;height:54px;padding:0 4px;
+  background:#f0f8ff;border:2px solid #c0d8f0;border-radius:12px;
+  font-size:1.15rem;color:var(--ink);cursor:pointer;
+  box-shadow:0 4px 0 #a0c4e0;transition:transform .07s,box-shadow .07s;
+  display:flex;align-items:center;justify-content:center;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
-
-/* ── VIRTUAL KEYBOARD ── */
-.vkb {
-  background: white;
-  border-radius: var(--card-radius);
-  padding: 14px 12px 12px;
-  box-shadow: 0 6px 0 rgba(0,0,0,.1), 0 10px 24px rgba(0,0,0,.07);
-  user-select: none;
-}
-.vkb-row {
-  display: flex; justify-content: center;
-  gap: 6px; margin-bottom: 6px;
-}
-.vkb-row:last-child { margin-bottom: 0; }
-
-.vk {
-  font-family: 'Fredoka One', cursive;
-  min-width: 44px; height: 52px; padding: 0 4px;
-  background: #f0f8ff; border: 2px solid #c0d8f0; border-radius: 12px;
-  font-size: 1.1rem; color: var(--ink);
-  cursor: pointer;
-  box-shadow: 0 4px 0 #a0c4e0;
-  transition: transform .07s, box-shadow .07s;
-  display: flex; align-items: center; justify-content: center;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-.vk:hover  { background: #e2f2ff; }
-.vk.pressed,
-.vk:active { transform: translateY(4px); box-shadow: 0 0 0 #a0c4e0; background: #d4eaff; }
-
-.vk.del {
-  background: #fff0f0; border-color: #f5b8b8;
-  color: var(--coral-dark);
-  box-shadow: 0 4px 0 #e89090;
-  min-width: 64px; font-size: .9rem;
-}
-.vk.del:hover  { background: #ffe0e0; }
-.vk.del.pressed,
-.vk.del:active { box-shadow: 0 0 0 #e89090; }
-
-/* ── TRANSITION CARDS (countdown / gameover / victory) ── */
-.overlay-card {
-  background: white;
-  border-radius: var(--card-radius);
-  box-shadow: 0 8px 0 rgba(0,0,0,.1), 0 14px 30px rgba(0,0,0,.08);
-  padding: 48px 28px;
-  text-align: center;
-  display: none;
-}
-.overlay-card.show { display: block; animation: cardPop .42s cubic-bezier(.34,1.56,.64,1); }
-@keyframes cardPop { from { transform: scale(.72); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-/* countdown */
-.cd-num {
-  font-family: 'Fredoka One', cursive;
-  font-size: 5.8rem; line-height: 1; color: var(--blue-dark);
-  animation: numPop .38s cubic-bezier(.34,1.56,.64,1);
-}
-@keyframes numPop { from { transform: scale(.25); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.cd-lbl { font-family: 'Fredoka One', cursive; font-size: 1.4rem; color: #6a8fa8; margin-top: 10px; }
+.vk:hover{background:#e2f2ff}
+.vk.pressed,.vk:active{transform:translateY(4px);box-shadow:0 0 0 #a0c4e0;background:#d4eaff}
+.vk.del{background:#fff0f0;border-color:#f5b8b8;color:var(--coral-dark);box-shadow:0 4px 0 #e89090;min-width:66px;font-size:.88rem}
+.vk.del:hover{background:#ffe0e0}
+.vk.del.pressed,.vk.del:active{box-shadow:0 0 0 #e89090}
 
 /* game over */
-.go-emoji { font-size: 3.4rem; display: block; margin-bottom: 4px; animation: cardPop .4s .2s both; }
-.go-title { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--coral-dark); margin-bottom: 8px; }
-.go-sub   { color: #6a8fa8; font-weight: 700; font-size: .93rem; margin-bottom: 4px; }
-.go-word  {
-  font-family: 'Fredoka One', cursive; font-size: 2.5rem;
-  color: var(--blue-dark); background: #f0f8ff;
-  border-radius: 14px; padding: 8px 28px; margin: 12px 0;
-  display: inline-block; letter-spacing: 3px;
-}
-.go-enc   { color: #3a8a54; font-weight: 800; font-size: .93rem; margin-bottom: 24px; }
+.go-emoji {font-size:3.4rem;display:block;margin-bottom:4px;animation:cardPop .4s .15s both}
+.go-title {font-family:'Fredoka One',cursive;font-size:2.2rem;color:var(--coral-dark);margin-bottom:8px}
+.go-sub   {color:#6a8fa8;font-weight:700;font-size:.93rem;margin-bottom:4px}
+.go-word  {font-family:'Fredoka One',cursive;font-size:2.4rem;color:var(--blue-dark);background:#f0f8ff;border-radius:14px;padding:8px 28px;margin:12px auto;display:inline-block;letter-spacing:3px}
+.go-enc   {color:#3a8a54;font-weight:800;font-size:.93rem;margin-bottom:24px}
 
 /* victory */
-.vic-trophies { font-size: 3.4rem; margin-bottom: 4px; animation: cardPop .4s .2s both; display: block; }
-.vic-title { font-family: 'Fredoka One', cursive; font-size: 2.3rem; color: var(--blue-dark); margin-bottom: 8px; }
-.vic-sub   { color: #6a8fa8; font-weight: 700; font-size: .93rem; margin-bottom: 24px; }
+.vic-emoji{font-size:3.4rem;display:block;margin-bottom:4px;animation:cardPop .4s .15s both}
+.vic-title{font-family:'Fredoka One',cursive;font-size:2.3rem;color:var(--blue-dark);margin-bottom:8px}
+.vic-sub  {color:#6a8fa8;font-weight:700;font-size:.93rem;margin-bottom:24px}
 
-/* shared big buttons */
-.big-btn {
-  font-family: 'Fredoka One', cursive;
-  font-size: 1.2rem; padding: 13px 38px;
-  border: none; border-radius: 50px; cursor: pointer;
-  transition: transform .08s, box-shadow .08s;
-  display: inline-block;
-}
-.big-btn:active { transform: translateY(4px); }
-.btn-blue   { background: var(--blue); color: white; box-shadow: 0 5px 0 var(--blue-dark); }
-.btn-blue:active { box-shadow: 0 1px 0 var(--blue-dark); }
-.btn-green  { background: var(--grass); color: white; box-shadow: 0 5px 0 var(--grass-dark); }
-.btn-green:active { box-shadow: 0 1px 0 var(--grass-dark); }
+.big-btn{font-family:'Fredoka One',cursive;font-size:1.2rem;padding:13px 38px;border:none;border-radius:50px;cursor:pointer;transition:transform .08s,box-shadow .08s;display:inline-block}
+.big-btn:active{transform:translateY(4px)}
+.btn-blue {background:var(--blue);color:white;box-shadow:0 5px 0 var(--blue-dark)}
+.btn-blue:active{box-shadow:0 1px 0 var(--blue-dark)}
+.btn-green{background:var(--grass);color:white;box-shadow:0 5px 0 var(--grass-dark)}
+.btn-green:active{box-shadow:0 1px 0 var(--grass-dark)}
 
 /* confetti */
-.cf-layer { position: fixed; inset: 0; pointer-events: none; z-index: 300; overflow: hidden; }
-.cp { position: absolute; top: -18px; animation: cffall linear forwards; }
-@keyframes cffall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+.cf-layer{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.cp{position:absolute;top:-18px;animation:cffall linear forwards}
+@keyframes cffall{to{transform:translateY(110vh) rotate(720deg);opacity:0}}
 
-.hidden { display: none !important; }
+.hidden{display:none!important}
 </style>
 </head>
 <body>
-
 <div class="cf-layer" id="cfLayer"></div>
 
-<!-- ════ SCREEN 1: HOME ════ -->
+<!-- ════ HOME ════ -->
 <div class="screen" id="screen-home">
   <div class="home-card">
     <div class="home-hero">
@@ -474,70 +262,76 @@ body::before {
         <button class="play-btn" id="playBtn">Play! 🚀</button>
       </div>
 
-      <p class="lb-head">🏆 Leaderboard</p>
+      <!-- leaderboard with tabs -->
+      <div class="lb-tabs">
+        <button class="lb-tab active" id="tabAll" onclick="switchTab('all')">🏆 All Time</button>
+        <button class="lb-tab" id="tabToday" onclick="switchTab('today')">📅 Today</button>
+      </div>
       <table class="lb-table">
         <thead><tr><th>#</th><th>Player</th><th>⭐ Stars</th></tr></thead>
-        <tbody id="lbBody">
-          <tr><td colspan="3"><div class="lb-empty">No players yet — be the first! 🌟</div></td></tr>
-        </tbody>
+        <tbody id="lbBody"><tr><td colspan="3"><div class="lb-empty">No players yet — be the first! 🌟</div></td></tr></tbody>
       </table>
       <div class="clear-link"><button id="clearBtn">🗑️ Clear</button></div>
     </div>
   </div>
 </div>
 
-<!-- ════ SCREEN 2: GAME ════ -->
+<!-- ════ GAME ════ -->
 <div class="screen hidden" id="screen-game">
   <div class="game-wrap">
 
-    <!-- top bar -->
     <div class="topbar">
       <div class="topbar-player">🧙‍♂️ <span id="playerEl">—</span></div>
-      <div class="topbar-score">⭐ <span id="scoreEl">0</span> stars</div>
+      <div class="topbar-score">⭐ <span id="scoreEl">0</span> stars today</div>
       <button class="home-btn" id="homeBtn">← Home</button>
     </div>
 
-    <!-- level pips + labels -->
-    <div class="level-strip" id="pipStrip"></div>
-    <div class="pip-labels" id="pipLabels"></div>
+    <div class="pack-progress">
+      <div class="pack-progress-label">
+        <span id="packLabel">Pack 1 of 14</span>
+        <span id="packName">🗓️ Days of the Week</span>
+      </div>
+      <div class="pack-track" id="packTrack"></div>
+    </div>
 
-    <!-- timer -->
     <div class="timer-wrap hidden" id="timerWrap">
       <div class="timer-bar" id="timerBar" style="width:100%"></div>
-      <span class="timer-secs" id="timerSecs">20</span>
+      <span class="timer-secs" id="timerSecs">35</span>
+    </div>
+
+    <!-- topic reveal -->
+    <div class="overlay-card" id="topicCard">
+      <span class="topic-emoji" id="topicEmoji">🗓️</span>
+      <div class="topic-name" id="topicName">Days of the Week</div>
+      <div class="topic-sub" id="topicSub">Get ready!</div>
+      <div class="topic-countdown" id="topicCD">3</div>
     </div>
 
     <!-- word card -->
-    <div class="word-card" id="wordCard">
+    <div class="word-card hidden" id="wordCard">
       <div class="rainbow-bar"></div>
-      <span class="level-badge l1" id="levelBadge">⭐ Level 1</span>
+      <span class="word-badge" id="wordBadge">🗓️ Days of the Week</span>
       <div class="dots" id="dotsEl"></div>
-      <div class="scrambled" id="scrambledEl">—</div>
-      <p class="hint">Unscramble the letters!</p>
-      <input class="answer-input" type="text" id="answerInput"
-        placeholder="type here" autocomplete="off" spellcheck="false" disabled>
+      <div class="scrambled hidden" id="scrambledEl">—</div>
+      <div class="sentence-display" id="sentenceDisplay"></div>
+      <p class="hint" id="hintLine">Unscramble the letters!</p>
+      <input class="answer-input" type="text" id="answerInput" placeholder="type here" autocomplete="off" spellcheck="false" disabled>
       <button class="check-btn" id="checkBtn" disabled>Check ✓</button>
       <div class="status-msg" id="statusMsg"></div>
     </div>
 
     <!-- virtual keyboard -->
-    <div class="vkb" id="vkb">
+    <div class="vkb hidden" id="vkb">
       <div class="vkb-row" id="vkr1"></div>
       <div class="vkb-row" id="vkr2"></div>
       <div class="vkb-row" id="vkr3"></div>
-    </div>
-
-    <!-- countdown -->
-    <div class="overlay-card" id="cdCard">
-      <div class="cd-num" id="cdNum">3</div>
-      <div class="cd-lbl" id="cdLbl">Get ready!</div>
     </div>
 
     <!-- game over -->
     <div class="overlay-card" id="goCard">
       <span class="go-emoji">😢</span>
       <h2 class="go-title">Game Over!</h2>
-      <p class="go-sub">The right word was…</p>
+      <p class="go-sub">The right answer was…</p>
       <div class="go-word" id="goWord">—</div>
       <p class="go-enc">Keep practising — you'll get it! 💪</p>
       <button class="big-btn btn-blue" id="goHomeBtn">Back to Home 🏠</button>
@@ -545,9 +339,9 @@ body::before {
 
     <!-- victory -->
     <div class="overlay-card" id="victoryCard">
-      <span class="vic-trophies">🎉🏆🎉</span>
+      <span class="vic-emoji">🎉🏆🎉</span>
       <h2 class="vic-title">You're a Word Wizard!</h2>
-      <p class="vic-sub">All 5 levels completed perfectly! You're incredible! ⭐</p>
+      <p class="vic-sub">You completed ALL packs! You're incredible! ⭐</p>
       <button class="big-btn btn-green" id="victoryBtn">Play Again! 🔄</button>
     </div>
 
@@ -555,389 +349,645 @@ body::before {
 </div>
 
 <script>
-(function () {
+(function(){
+'use strict';
 
-// ─── WORD LISTS ───────────────────────────────────────────────
-const LEVELS = {
-  1: {
-    label: 'Level 1', emoji: '⭐', cls: 'l1', timer: true,
-    words: ["cat","dog","sun","run","big","map","fly","cup","hat","red",
-            "bus","wet","top","sit","leg","win","fun","bed","sky","hen",
-            "pen","tin","box","ant","jam","mud","net","wig","zip","dip"]
+// ═══════════════════════════════════════════════
+// ALL PACKS — timer:35 for all, sessionSize varies
+// type: 'scramble' | 'wh' | 'fillin'
+// ═══════════════════════════════════════════════
+const PACKS_MASTER = [
+
+  {
+    id:'days', name:'Days of the Week', emoji:'🗓️',
+    color:'#d4f5e0', textColor:'#1a5e33',
+    type:'scramble', timer:35, sessionSize:7,
+    words:[
+      {w:'monday'},{w:'tuesday'},{w:'wednesday'},{w:'thursday'},
+      {w:'friday'},{w:'saturday'},{w:'sunday'}
+    ]
   },
-  2: {
-    label: 'Level 2', emoji: '🌟', cls: 'l2', timer: true,
-    words: ["monday","tuesday","wednesday","thursday","friday","saturday","sunday",
-            "play","road","rain","frog","jump","tree","soft","cold","warm",
-            "milk","step","swim","flag","skip","spin","drum","clap","grab"]
+
+  {
+    id:'months', name:'Months of the Year', emoji:'📅',
+    color:'#fff3c4', textColor:'#7a4a00',
+    type:'scramble', timer:35, sessionSize:8,
+    words:[
+      {w:'january'},{w:'february'},{w:'march'},{w:'april'},
+      {w:'may'},{w:'june'},{w:'july'},{w:'august'},
+      {w:'september'},{w:'october'},{w:'november'},{w:'december'}
+    ]
   },
-  3: {
-    label: 'Level 3', emoji: '🍀', cls: 'l3', timer: false,
-    words: ["january","february","march","april","may","june",
-            "july","august","september","october","november","december",
-            "stem","petal","petals","flower","stone","water","cloud","grass"]
+
+  {
+    id:'plants', name:'Plants', emoji:'🌱',
+    color:'#d4f5e0', textColor:'#1a5e33',
+    type:'scramble', timer:35, sessionSize:8,
+    words:[
+      {w:'petal'},{w:'stem'},{w:'flower'},{w:'roots'},{w:'soil'},
+      {w:'seed'},{w:'leaf'},{w:'trunk'},{w:'branch'},{w:'pollen'},
+      {w:'thorn'},{w:'fruit'},{w:'leaves'}
+    ]
   },
-  4: {
-    label: 'Level 4', emoji: '🔥', cls: 'l4', timer: false,
-    words: ["because","recycle","reduce","reuse","waste","trash",
-            "planet","energy","forest","garden","bottle","plastic",
-            "nature","spring","summer","autumn","winter","silver"]
+
+  {
+    id:'body', name:'The Body', emoji:'🧍',
+    color:'#ffd6ea', textColor:'#80183a',
+    type:'scramble', timer:35, sessionSize:10,
+    words:[
+      {w:'head'},{w:'neck'},{w:'shoulder'},{w:'elbow'},{w:'wrist'},
+      {w:'finger'},{w:'thumb'},{w:'knee'},{w:'ankle'},{w:'heel'},
+      {w:'chin'},{w:'chest'},{w:'spine'},{w:'rib'},{w:'palm'}
+    ]
   },
-  5: {
-    label: 'Level 5', emoji: '💎', cls: 'l5', timer: false,
-    words: ["beautiful","important","different","together","wonderful",
-            "carefully","everyone","surprise","knowledge","discover",
-            "treasure","question","mountain","chocolate","adventure",
-            "favourite","creatures","butterfly","strawberry","thousand"]
+
+  {
+    id:'animals', name:'Animals', emoji:'🐾',
+    color:'#ffe8cc', textColor:'#7a3a00',
+    type:'scramble', timer:35, sessionSize:10,
+    words:[
+      {w:'tiger'},{w:'dolphin'},{w:'penguin'},{w:'elephant'},{w:'giraffe'},
+      {w:'crocodile'},{w:'butterfly'},{w:'octopus'},{w:'hedgehog'},{w:'cheetah'},
+      {w:'flamingo'},{w:'gorilla'},{w:'leopard'},{w:'seahorse'},{w:'fox'},
+      {w:'whale'},{w:'shark'},{w:'crab'},{w:'parrot'},{w:'panda'}
+    ]
+  },
+
+  {
+    id:'weather', name:'Weather', emoji:'⛅',
+    color:'#d6eeff', textColor:'#1a3e6e',
+    type:'scramble', timer:35, sessionSize:10,
+    words:[
+      {w:'sunny'},{w:'cloudy'},{w:'windy'},{w:'rainy'},{w:'stormy'},
+      {w:'snowy'},{w:'foggy'},{w:'thunder'},{w:'lightning'},{w:'rainbow'},
+      {w:'hail'},{w:'frost'},{w:'breeze'},{w:'drizzle'},{w:'blizzard'}
+    ]
+  },
+
+  {
+    id:'food', name:'Food & Drinks', emoji:'🍎',
+    color:'#ffd6d6', textColor:'#7a1818',
+    type:'scramble', timer:35, sessionSize:12,
+    words:[
+      {w:'apple'},{w:'banana'},{w:'strawberry'},{w:'chocolate'},{w:'carrot'},
+      {w:'potato'},{w:'tomato'},{w:'broccoli'},{w:'pineapple'},{w:'sandwich'},
+      {w:'lemonade'},{w:'biscuit'},{w:'mango'},{w:'avocado'},{w:'spaghetti'}
+    ]
+  },
+
+  {
+    id:'environment', name:'Environment', emoji:'♻️',
+    color:'#d4f5e0', textColor:'#1a5e33',
+    type:'scramble', timer:35, sessionSize:12,
+    words:[
+      {w:'recycle'},{w:'reduce'},{w:'reuse'},{w:'waste'},{w:'trash'},
+      {w:'planet'},{w:'energy'},{w:'forest'},{w:'plastic'},{w:'nature'},
+      {w:'garden'},{w:'bottle'},{w:'pollution'},{w:'compost'},{w:'landfill'}
+    ]
+  },
+
+  {
+    id:'wh', name:'WH Questions', emoji:'❓',
+    color:'#ede0ff', textColor:'#4a1880',
+    type:'wh', timer:35, sessionSize:5,   // 5 of 7 shown randomly
+    words:[
+      { w:'what', sentences:[
+        '___ is the next lesson?',
+        '___ is your favourite animal?',
+        '___ did you have for breakfast today?',
+        '___ is inside the mystery box?',
+        '___ makes you really happy?',
+        '___ sport do you like to play?',
+        '___ colour is a mix of blue and yellow?'
+      ]},
+      { w:'where', sentences:[
+        '___ do you go after school?',
+        '___ is the biggest ocean in the world?',
+        '___ would you travel if you could go anywhere?',
+        '___ do penguins live?',
+        '___ is your favourite place to read?',
+        '___ do butterflies go in winter?',
+        '___ did you put your bag?'
+      ]},
+      { w:'when', sentences:[
+        '___ are we going outside?',
+        '___ do you usually wake up?',
+        '___ does the school day start?',
+        '___ does it get dark in winter?',
+        '___ do flowers bloom in spring?',
+        '___ did dinosaurs live?',
+        '___ is the next school holiday?'
+      ]},
+      { w:'who', sentences:[
+        '___ is sitting next to you right now?',
+        '___ wrote the story of Cinderella?',
+        '___ is your best friend?',
+        '___ takes care of animals at the zoo?',
+        '___ invented the telephone?',
+        '___ is your favourite superhero?',
+        '___ lives at the North Pole?'
+      ]},
+      { w:'which', sentences:[
+        '___ day of the week is your favourite?',
+        '___ planet is closest to the sun?',
+        '___ season comes after summer?',
+        '___ hand do you write with?',
+        '___ colour is a mix of red and blue?',
+        '___ animal is the fastest on land?',
+        '___ month has the fewest days?'
+      ]},
+      { w:'how', sentences:[
+        '___ do you make a sandwich?',
+        '___ many legs does a spider have?',
+        '___ tall is the tallest tree in the world?',
+        '___ do birds know where to fly in winter?',
+        '___ do you say hello in Spanish?',
+        '___ long does it take to walk to school?',
+        '___ do plants make their food?'
+      ]},
+      { w:'why', sentences:[
+        '___ do leaves change colour in autumn?',
+        '___ do we need to drink water every day?',
+        '___ do cats purr?',
+        '___ is the sky blue?',
+        '___ do we recycle?',
+        '___ do we wash our hands?',
+        '___ do stars shine at night?'
+      ]}
+    ]
+  },
+
+  {
+    id:'common', name:'Common Words', emoji:'📖',
+    color:'#d6eeff', textColor:'#1a3e6e',
+    type:'scramble', timer:35, sessionSize:14,
+    words:[
+      {w:'that'},{w:'have'},{w:'this'},{w:'with'},{w:'they'},
+      {w:'will'},{w:'your'},{w:'said'},{w:'come'},{w:'some'},
+      {w:'time'},{w:'very'},{w:'just'},{w:'been'},{w:'also'},
+      {w:'than'},{w:'well'},{w:'know'},{w:'want'},{w:'could'},
+      {w:'would'},{w:'should'},{w:'because'},{w:'people'},{w:'every'},
+      {w:'think'},{w:'there'},{w:'their'},{w:'from'},{w:'then'}
+    ]
+  },
+
+  {
+    id:'time', name:'Time & Calendar', emoji:'🕐',
+    color:'#fff3c4', textColor:'#7a4a00',
+    type:'scramble', timer:35, sessionSize:14,
+    words:[
+      {w:'today'},{w:'tomorrow'},{w:'yesterday'},{w:'morning'},{w:'afternoon'},
+      {w:'evening'},{w:'night'},{w:'week'},{w:'month'},{w:'year'},
+      {w:'early'},{w:'late'},{w:'always'},{w:'never'},{w:'before'},
+      {w:'after'},{w:'during'},{w:'soon'},{w:'already'},{w:'finally'}
+    ]
+  },
+
+  {
+    id:'feelings', name:'Feelings', emoji:'😊',
+    color:'#ffd6ea', textColor:'#80183a',
+    type:'scramble', timer:35, sessionSize:16,
+    words:[
+      {w:'happy'},{w:'sad'},{w:'angry'},{w:'scared'},{w:'excited'},
+      {w:'nervous'},{w:'proud'},{w:'lonely'},{w:'confused'},{w:'surprised'},
+      {w:'grateful'},{w:'worried'},{w:'bored'},{w:'calm'},{w:'loving'},
+      {w:'shy'},{w:'brave'},{w:'tired'},{w:'curious'},{w:'cheerful'}
+    ]
+  },
+
+  {
+    id:'requests', name:'Classroom Requests', emoji:'🙋',
+    color:'#d6eeff', textColor:'#1a3e6e',
+    type:'fillin', timer:35, sessionSize:12,
+    words:[
+      {sentence:'___ I go to the restroom, please?',          answer:'may'    },
+      {sentence:'___ I see the doctor, please?',              answer:'may'    },
+      {sentence:'Can you ___ that, please?',                  answer:'repeat' },
+      {sentence:'Can you ___ me, please?',                    answer:'help'   },
+      {sentence:'Can you sharpen my ___, please?',            answer:'pencil' },
+      {sentence:'___ I get some water, please?',              answer:'may'    },
+      {sentence:'Can you speak more ___, please?',            answer:'slowly' },
+      {sentence:'___ I open the window, please?',             answer:'may'    },
+      {sentence:'Can you write that on the ___, please?',     answer:'board'  },
+      {sentence:'___ I borrow a pencil, please?',             answer:'may'    },
+      {sentence:'Can you ___ that again, please?',            answer:'explain'},
+      {sentence:'___ I go to my locker, please?',             answer:'may'    }
+    ]
+  },
+
+  {
+    id:'dodoes', name:'Do or Does?', emoji:'✏️',
+    color:'#ede0ff', textColor:'#4a1880',
+    type:'fillin', timer:35, sessionSize:12,
+    words:[
+      {sentence:'___ he know the answer?',                      answer:'does'},
+      {sentence:'___ they play football after school?',         answer:'do'  },
+      {sentence:'She ___ not like spicy food.',                 answer:'does'},
+      {sentence:'___ you have a pencil I can borrow?',          answer:'do'  },
+      {sentence:'He ___ not know how to do it.',                answer:'does'},
+      {sentence:'___ she walk to school every day?',            answer:'does'},
+      {sentence:'We ___ not have homework today.',              answer:'do'  },
+      {sentence:'___ it rain a lot in winter?',                 answer:'does'},
+      {sentence:'They ___ not understand the question.',        answer:'do'  },
+      {sentence:'___ your teacher speak slowly?',               answer:'does'},
+      {sentence:'I ___ not know the answer.',                   answer:'do'  },
+      {sentence:'___ the children eat lunch at noon?',          answer:'do'  },
+      {sentence:'He ___ his homework every evening.',           answer:'does'},
+      {sentence:'___ we need to bring our books?',              answer:'do'  },
+      {sentence:'She ___ not want to miss the lesson.',         answer:'does'},
+      {sentence:'___ your friends live near the school?',       answer:'do'  }
+    ]
   }
+
+];
+
+const TODAY  = new Date().toISOString().slice(0,10);
+const MEDALS = ['🥇','🥈','🥉'];
+const CFCOLS = ['#ffce47','#4ec76a','#3d8fe0','#f85555','#8b5cf6','#ff9f43','#48dbfb'];
+
+let student='', progressData={}, todayStars=0;
+let SESSION_PACKS=[];
+let lbMode='all'; // 'all' or 'today'
+
+let gs={
+  packIndex:0,words:[],index:0,
+  currentAnswer:'',mode:'scramble',
+  active:false,topicTimer:null,timerInterval:null,timeLeft:0
 };
 
-const SESSION = 8;
-const TODAY   = new Date().toISOString().slice(0, 10);
-const MEDALS  = ['🥇','🥈','🥉'];
-const COLS    = ['#ffce47','#4ec76a','#3d8fe0','#f85555','#8b5cf6','#ff9f43','#48dbfb'];
+// ── DOM ─────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+const nameInput=$('nameInput'),playBtn=$('playBtn'),lbBody=$('lbBody'),clearBtn=$('clearBtn'),
+      screenHome=$('screen-home'),screenGame=$('screen-game'),
+      playerEl=$('playerEl'),scoreEl=$('scoreEl'),homeBtn=$('homeBtn'),
+      packTrack=$('packTrack'),packLabel=$('packLabel'),packName=$('packName'),
+      timerWrap=$('timerWrap'),timerBar=$('timerBar'),timerSecs=$('timerSecs'),
+      topicCard=$('topicCard'),topicEmoji=$('topicEmoji'),topicName=$('topicName'),
+      topicSub=$('topicSub'),topicCD=$('topicCD'),
+      wordCard=$('wordCard'),wordBadge=$('wordBadge'),dotsEl=$('dotsEl'),
+      scrambledEl=$('scrambledEl'),sentenceDisplay=$('sentenceDisplay'),
+      hintLine=$('hintLine'),answerInput=$('answerInput'),
+      checkBtn=$('checkBtn'),statusMsg=$('statusMsg'),vkb=$('vkb'),
+      goCard=$('goCard'),goWord=$('goWord'),goHomeBtn=$('goHomeBtn'),
+      victoryCard=$('victoryCard'),victoryBtn=$('victoryBtn'),cfLayer=$('cfLayer');
 
-let student = '', progressData = {}, todayStars = 0;
-let gs = { level:1, words:[], index:0, currentWord:'', active:false, cdTimer:null, timerInterval:null, timeLeft:0 };
-
-// DOM refs
-const $ = id => document.getElementById(id);
-const nameInput   = $('nameInput'),  playBtn    = $('playBtn'),
-      lbBody      = $('lbBody'),     clearBtn   = $('clearBtn'),
-      screenHome  = $('screen-home'),screenGame = $('screen-game'),
-      playerEl    = $('playerEl'),   scoreEl    = $('scoreEl'),
-      homeBtn     = $('homeBtn'),    pipStrip   = $('pipStrip'),
-      pipLabels   = $('pipLabels'),  timerWrap  = $('timerWrap'),
-      timerBar    = $('timerBar'),   timerSecs  = $('timerSecs'),
-      wordCard    = $('wordCard'),   levelBadge = $('levelBadge'),
-      dotsEl      = $('dotsEl'),     scrambledEl= $('scrambledEl'),
-      answerInput = $('answerInput'),checkBtn   = $('checkBtn'),
-      statusMsg   = $('statusMsg'),  cdCard     = $('cdCard'),
-      cdNum       = $('cdNum'),      cdLbl      = $('cdLbl'),
-      goCard      = $('goCard'),     goWord     = $('goWord'),
-      goHomeBtn   = $('goHomeBtn'),  victoryCard= $('victoryCard'),
-      victoryBtn  = $('victoryBtn'), cfLayer    = $('cfLayer');
-
-// ─── VIRTUAL KEYBOARD (no ENTER key) ─────────────────────────
-const KB_ROWS = [
+// ── KEYBOARD ────────────────────────────────────────────────
+const KB=[
   ['q','w','e','r','t','y','u','i','o','p'],
   ['a','s','d','f','g','h','j','k','l'],
   ['z','x','c','v','b','n','m','⌫']
 ];
-KB_ROWS.forEach((row, ri) => {
-  const rowEl = $('vkr' + (ri + 1));
-  row.forEach(k => {
-    const btn = document.createElement('button');
-    btn.className = 'vk' + (k === '⌫' ? ' del' : '');
-    btn.textContent = k === '⌫' ? '⌫ del' : k;
-    btn.setAttribute('type', 'button');
-    btn.addEventListener('pointerdown', e => {
+KB.forEach((row,ri)=>{
+  const rowEl=$('vkr'+(ri+1));
+  row.forEach(k=>{
+    const btn=document.createElement('button');
+    btn.className='vk'+(k==='⌫'?' del':'');
+    btn.textContent=k==='⌫'?'⌫ del':k;
+    btn.type='button';
+    btn.addEventListener('pointerdown',e=>{
       e.preventDefault();
       btn.classList.add('pressed');
-      setTimeout(() => btn.classList.remove('pressed'), 130);
-      if (k === '⌫') {
-        answerInput.value = answerInput.value.slice(0, -1);
-      } else {
-        if (!answerInput.disabled) answerInput.value += k;
-      }
+      setTimeout(()=>btn.classList.remove('pressed'),130);
+      if(k==='⌫') answerInput.value=answerInput.value.slice(0,-1);
+      else if(!answerInput.disabled) answerInput.value+=k;
     });
     rowEl.appendChild(btn);
   });
 });
 
-// ─── UTILS ───────────────────────────────────────────────────
-function shuffle(w) {
-  let a = w.split(''), s, t = 0;
-  do {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    s = a.join('');
-  } while (s === w && ++t < 40);
+// ── UTILS ───────────────────────────────────────────────────
+function shuffleWord(w){
+  let a=w.split(''),s,t=0;
+  do{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}s=a.join('');}while(s===w&&++t<40);
   return s;
 }
-
-function pickWords(lv) {
-  const pool = [...LEVELS[lv].words];
-  for (let i = pool.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  return pool.slice(0, Math.min(SESSION, pool.length));
+function shuffleArr(a){
+  const b=[...a];
+  for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}
+  return b;
 }
-
-function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-// ─── STORAGE ─────────────────────────────────────────────────
-function loadData() {
-  try { progressData = JSON.parse(localStorage.getItem('ww_v5') || '{}'); }
-  catch (e) { progressData = {}; }
+function pickSession(pack){
+  const pool=shuffleArr(pack.words);
+  return pool.slice(0,Math.min(pack.sessionSize,pool.length));
 }
-function saveData() {
-  if (!student) return;
-  const recs = progressData[student] || [];
-  const i = recs.findIndex(r => r.date === TODAY);
-  if (i >= 0) recs[i].stars = todayStars;
-  else recs.push({ date: TODAY, stars: todayStars });
-  progressData[student] = recs;
-  try { localStorage.setItem('ww_v5', JSON.stringify(progressData)); } catch (e) {}
-  scoreEl.textContent = todayStars;
+function rand(arr){return arr[Math.floor(Math.random()*arr.length)]}
+function renderSentence(s){return s.replace('___','<span class="blank-word">___</span>')}
+
+// ── STORAGE ─────────────────────────────────────────────────
+function loadData(){
+  try{progressData=JSON.parse(localStorage.getItem('ww_v8')||'{}')}
+  catch(e){progressData={}}
+}
+function saveData(){
+  if(!student)return;
+  const recs=progressData[student]||[];
+  const i=recs.findIndex(r=>r.date===TODAY);
+  if(i>=0) recs[i].stars=todayStars;
+  else recs.push({date:TODAY,stars:todayStars});
+  progressData[student]=recs;
+  try{localStorage.setItem('ww_v8',JSON.stringify(progressData))}catch(e){}
+  scoreEl.textContent=todayStars;
   renderLB();
 }
-function totalStars(n) { return (progressData[n] || []).reduce((s, r) => s + (r.stars || 0), 0); }
-function renderLB() {
-  const names = Object.keys(progressData);
-  if (!names.length) {
-    lbBody.innerHTML = '<tr><td colspan="3"><div class="lb-empty">No players yet — be the first! 🌟</div></td></tr>';
+function allTimeStars(n){return(progressData[n]||[]).reduce((s,r)=>s+(r.stars||0),0)}
+function todayStarsOf(n){
+  const rec=(progressData[n]||[]).find(r=>r.date===TODAY);
+  return rec?rec.stars:0;
+}
+
+// ── LEADERBOARD ─────────────────────────────────────────────
+window.switchTab=function(mode){
+  lbMode=mode;
+  $('tabAll').classList.toggle('active',mode==='all');
+  $('tabToday').classList.toggle('active',mode==='today');
+  renderLB();
+};
+
+function renderLB(){
+  const names=Object.keys(progressData);
+  // filter out players with 0 stars in selected mode
+  const withStars=names.filter(n=>lbMode==='all'?allTimeStars(n)>0:todayStarsOf(n)>0);
+  if(!withStars.length){
+    const msg=lbMode==='today'
+      ? 'No one has played today yet! 🌟'
+      : 'No players yet — be the first! 🌟';
+    lbBody.innerHTML=`<tr><td colspan="3"><div class="lb-empty">${msg}</div></td></tr>`;
     return;
   }
-  const sorted = names.map(n => ({ name: n, stars: totalStars(n) })).sort((a, b) => b.stars - a.stars);
-  lbBody.innerHTML = sorted.map((p, i) => `
-    <tr class="${p.name === student ? 'me' : ''}">
-      <td>${MEDALS[i] || (i + 1) + '.'}</td>
-      <td>${p.name}${p.name === student ? ' 👈' : ''}</td>
-      <td>⭐ ${p.stars}</td>
+  const sorted=withStars
+    .map(n=>({name:n,stars:lbMode==='all'?allTimeStars(n):todayStarsOf(n)}))
+    .sort((a,b)=>b.stars-a.stars);
+  const dayName=new Date().toLocaleDateString('en-GB',{weekday:'long'});
+  lbBody.innerHTML=sorted.map((p,i)=>`
+    <tr class="${p.name===student?'me':''}">
+      <td>${MEDALS[i]||(i+1)+'.'}</td>
+      <td>${p.name}${p.name===student?' 👈':''}</td>
+      <td>⭐ ${p.stars}${lbMode==='today'?' today':''}</td>
     </tr>`).join('');
 }
 
-// ─── SCREEN TRANSITIONS ──────────────────────────────────────
-function showScreen(from, to) {
+// ── SCREEN TRANSITIONS ──────────────────────────────────────
+function showScreen(from,to){
   from.classList.add('out-left');
-  setTimeout(() => {
-    from.classList.remove('out-left');
-    from.classList.add('hidden');
-    to.classList.remove('hidden');
-    to.classList.add('out-right');
-    requestAnimationFrame(() => {
-      to.style.transition = 'opacity .38s, transform .38s';
-      to.classList.remove('out-right');
-    });
-  }, 340);
+  setTimeout(()=>{
+    from.classList.remove('out-left');from.classList.add('hidden');
+    to.classList.remove('hidden');to.classList.add('out-right');
+    requestAnimationFrame(()=>{to.style.transition='opacity .38s,transform .38s';to.classList.remove('out-right')});
+  },340);
 }
 
-// ─── PIPS ────────────────────────────────────────────────────
-function buildPips() {
-  pipStrip.innerHTML = '';
-  pipLabels.innerHTML = '';
-  for (let i = 1; i <= 5; i++) {
-    const p = document.createElement('div');
-    p.className = 'pip'; p.id = 'pip' + i;
-    pipStrip.appendChild(p);
-
-    const lb = document.createElement('div');
-    lb.className = 'pip-lbl'; lb.id = 'piplbl' + i;
-    lb.textContent = LEVELS[i].emoji + ' ' + LEVELS[i].label;
-    pipLabels.appendChild(lb);
-  }
+// ── PACK TRACK ──────────────────────────────────────────────
+function buildPackTrack(){
+  packTrack.innerHTML='';
+  SESSION_PACKS.forEach((_,i)=>{
+    const p=document.createElement('div');
+    p.className='pack-pip';p.id='pp'+i;
+    packTrack.appendChild(p);
+  });
 }
-function updatePips(lv) {
-  for (let i = 1; i <= 5; i++) {
-    const p = $('pip' + i), lb = $('piplbl' + i);
-    p.className  = 'pip'     + (i < lv ? ' done' : i === lv ? ' active' : '');
-    lb.className = 'pip-lbl' + (i < lv ? ' done' : i === lv ? ' active' : '');
+function updatePackTrack(idx){
+  SESSION_PACKS.forEach((_,i)=>{
+    const p=$('pp'+i);
+    if(p) p.className='pack-pip'+(i<idx?' done':i===idx?' active':'');
+  });
+  if(idx<SESSION_PACKS.length){
+    const pack=SESSION_PACKS[idx];
+    packLabel.textContent=`Pack ${idx+1} of ${SESSION_PACKS.length}`;
+    packName.textContent=pack.emoji+' '+pack.name;
   }
 }
 
-// ─── START GAME ──────────────────────────────────────────────
-function startGame() {
-  const raw = nameInput.value.trim();
-  student = raw ? raw.toLowerCase() : 'wizard';
-  nameInput.value = student;
+// ── START GAME ──────────────────────────────────────────────
+function startGame(){
+  const raw=nameInput.value.trim();
+  student=raw?raw.toLowerCase():'wizard';
+  nameInput.value=student;
   loadData();
-  const rec = (progressData[student] || []).find(r => r.date === TODAY);
-  todayStars = rec ? rec.stars : 0;
-  playerEl.textContent = student;
-  scoreEl.textContent  = todayStars;
-  buildPips();
-  hideAllCards();
-  wordCard.style.display = '';
-  showScreen(screenHome, screenGame);
-  startLevel(1);
+  const rec=(progressData[student]||[]).find(r=>r.date===TODAY);
+  todayStars=rec?rec.stars:0;
+  playerEl.textContent=student;
+  scoreEl.textContent=todayStars;
+  SESSION_PACKS=shuffleArr(PACKS_MASTER);
+  buildPackTrack();
+  hideAll();
+  showScreen(screenHome,screenGame);
+  startPack(0);
 }
 
-function goHome() {
+function goHome(){
   stopTimer();
-  if (gs.cdTimer) { clearTimeout(gs.cdTimer); gs.cdTimer = null; }
-  gs.active = false;
-  showScreen(screenGame, screenHome);
+  if(gs.topicTimer){clearTimeout(gs.topicTimer);gs.topicTimer=null}
+  gs.active=false;hideAll();
+  showScreen(screenGame,screenHome);
   renderLB();
 }
 
-function hideAllCards() {
-  wordCard.style.display = 'none';
-  [cdCard, goCard, victoryCard].forEach(c => c.classList.remove('show'));
+function hideAll(){
+  wordCard.classList.add('hidden');
+  vkb.classList.add('hidden');
+  timerWrap.classList.add('hidden');
+  [topicCard,goCard,victoryCard].forEach(c=>c.classList.remove('show'));
 }
 
-// ─── LEVEL MANAGEMENT ────────────────────────────────────────
-function startLevel(lv) {
-  gs.level = lv; gs.words = pickWords(lv); gs.index = 0; gs.active = true;
-  const L = LEVELS[lv];
-  levelBadge.className = 'level-badge ' + L.cls;
-  levelBadge.textContent = L.emoji + ' ' + L.label;
-  updatePips(lv);
-  [cdCard, goCard, victoryCard].forEach(c => c.classList.remove('show'));
-  wordCard.style.display = '';
-  if (L.timer) timerWrap.classList.remove('hidden');
-  else { timerWrap.classList.add('hidden'); stopTimer(); }
+// ── PACK FLOW ───────────────────────────────────────────────
+function startPack(idx){
+  gs.packIndex=idx;
+  const pack=SESSION_PACKS[idx];
+  gs.words=pickSession(pack);
+  gs.index=0;gs.active=false;
+  updatePackTrack(idx);
+  hideAll();
+  showTopicReveal(pack,()=>startWordPlay(pack));
+}
+
+function showTopicReveal(pack,cb){
+  topicEmoji.textContent=pack.emoji;
+  topicName.textContent=pack.name;
+  if(pack.type==='fillin') topicSub.textContent='Complete the sentence!';
+  else if(pack.type==='wh') topicSub.textContent='Unscramble + read the clue!';
+  else topicSub.textContent='Unscramble the letters!';
+  topicCD.textContent='3';
+  topicCard.classList.add('show');
+  const steps=['3','2','1','🚀'];
+  let i=0;
+  function tick(){
+    topicCD.textContent=steps[i];
+    topicCD.style.animation='none';void topicCD.offsetHeight;
+    topicCD.style.animation='numPop .38s cubic-bezier(.34,1.56,.64,1)';
+    i++;
+    if(i<steps.length) gs.topicTimer=setTimeout(tick,800);
+    else gs.topicTimer=setTimeout(()=>{topicCard.classList.remove('show');cb()},700);
+  }
+  setTimeout(tick,900);
+}
+
+function startWordPlay(pack){
+  gs.active=true;gs.mode=pack.type;
+  wordBadge.style.background=pack.color;
+  wordBadge.style.color=pack.textColor;
+  wordBadge.textContent=pack.emoji+' '+pack.name;
+  if(pack.timer>0) timerWrap.classList.remove('hidden');
+  else timerWrap.classList.add('hidden');
+  wordCard.classList.remove('hidden');
+  vkb.classList.remove('hidden');
   showWord();
 }
 
-function showWord() {
-  gs.currentWord = gs.words[gs.index];
-  scrambledEl.textContent = shuffle(gs.currentWord);
-  answerInput.value = '';
-  answerInput.disabled = false;
-  checkBtn.disabled = false;
-  statusMsg.textContent = '';
-  // dots
-  dotsEl.innerHTML = '';
-  gs.words.forEach((_, i) => {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i < gs.index ? ' done' : i === gs.index ? ' cur' : '');
+// ── SHOW WORD ───────────────────────────────────────────────
+function showWord(){
+  const entry=gs.words[gs.index];
+  const mode=gs.mode;
+  scrambledEl.classList.add('hidden');
+  sentenceDisplay.classList.remove('show');
+  hintLine.style.display='';
+
+  if(mode==='fillin'){
+    gs.currentAnswer=entry.answer.toLowerCase();
+    sentenceDisplay.innerHTML=renderSentence(entry.sentence);
+    sentenceDisplay.classList.add('show');
+    hintLine.textContent='Type the missing word!';
+    answerInput.placeholder='missing word…';
+  } else if(mode==='wh'){
+    gs.currentAnswer=entry.w.toLowerCase();
+    sentenceDisplay.innerHTML=renderSentence(rand(entry.sentences));
+    sentenceDisplay.classList.add('show');
+    scrambledEl.textContent=shuffleWord(gs.currentAnswer);
+    scrambledEl.classList.remove('hidden');
+    hintLine.textContent='Unscramble the word that fits!';
+    answerInput.placeholder='type here…';
+  } else {
+    gs.currentAnswer=entry.w.toLowerCase();
+    scrambledEl.textContent=shuffleWord(gs.currentAnswer);
+    scrambledEl.classList.remove('hidden');
+    hintLine.textContent='Unscramble the letters!';
+    answerInput.placeholder='type here…';
+  }
+
+  answerInput.value='';
+  answerInput.disabled=false;
+  checkBtn.disabled=false;
+  statusMsg.textContent='';
+
+  dotsEl.innerHTML='';
+  gs.words.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot'+(i<gs.index?' done':i===gs.index?' cur':'');
     dotsEl.appendChild(d);
   });
-  setTimeout(() => answerInput.focus(), 50);
-  if (LEVELS[gs.level].timer) startTimer(20);
+
+  setTimeout(()=>answerInput.focus(),50);
+  const pack=SESSION_PACKS[gs.packIndex];
+  if(pack.timer>0) startTimer(pack.timer);
 }
 
-// ─── TIMER ───────────────────────────────────────────────────
-function startTimer(secs) {
+// ── TIMER ───────────────────────────────────────────────────
+function startTimer(secs){
   stopTimer();
-  gs.timeLeft = secs;
-  timerBar.style.transition = 'none';
-  timerBar.style.width = '100%';
-  timerBar.className = 'timer-bar';
-  timerSecs.textContent = secs;
+  gs.timeLeft=secs;
+  timerBar.style.transition='none';
+  timerBar.style.width='100%';
+  timerBar.className='timer-bar';
+  timerSecs.textContent=secs;
   void timerBar.offsetHeight;
-  timerBar.style.transition = 'width 1s linear';
-
-  gs.timerInterval = setInterval(() => {
+  timerBar.style.transition='width 1s linear';
+  gs.timerInterval=setInterval(()=>{
     gs.timeLeft--;
-    const pct = (gs.timeLeft / secs) * 100;
-    timerBar.style.width = pct + '%';
-    timerSecs.textContent = gs.timeLeft;
-    if      (pct <= 25) timerBar.className = 'timer-bar danger';
-    else if (pct <= 55) timerBar.className = 'timer-bar warn';
-    if (gs.timeLeft <= 0) { stopTimer(); triggerGameOver(); }
-  }, 1000);
+    const pct=(gs.timeLeft/secs)*100;
+    timerBar.style.width=pct+'%';
+    timerSecs.textContent=gs.timeLeft;
+    if(pct<=25) timerBar.className='timer-bar danger';
+    else if(pct<=55) timerBar.className='timer-bar warn';
+    if(gs.timeLeft<=0){stopTimer();triggerGameOver()}
+  },1000);
 }
-function stopTimer() {
-  if (gs.timerInterval) { clearInterval(gs.timerInterval); gs.timerInterval = null; }
-}
+function stopTimer(){if(gs.timerInterval){clearInterval(gs.timerInterval);gs.timerInterval=null}}
 
-// ─── ANSWER LOGIC ────────────────────────────────────────────
-function checkAnswer() {
-  if (!gs.active) return;
-  const ans = answerInput.value.trim().toLowerCase();
-  if (!ans) { answerInput.focus(); return; }
-  if (ans === gs.currentWord) handleCorrect();
+// ── CHECK ANSWER ────────────────────────────────────────────
+function checkAnswer(){
+  if(!gs.active)return;
+  const ans=answerInput.value.trim().toLowerCase();
+  if(!ans){answerInput.focus();return}
+  if(ans===gs.currentAnswer) handleCorrect();
   else triggerGameOver();
 }
-
-function handleCorrect() {
-  stopTimer();
-  todayStars++;
-  saveData();
+function handleCorrect(){
+  stopTimer();todayStars++;saveData();
   answerInput.classList.add('glow');
-  setTimeout(() => answerInput.classList.remove('glow'), 450);
-  statusMsg.textContent = '✅ Correct!';
-  answerInput.disabled = true;
-  checkBtn.disabled = true;
-  setTimeout(() => {
-    statusMsg.textContent = '';
-    gs.index++;
-    if (gs.index >= gs.words.length) levelComplete();
+  setTimeout(()=>answerInput.classList.remove('glow'),450);
+  statusMsg.textContent='✅ Correct!';
+  answerInput.disabled=true;checkBtn.disabled=true;
+  setTimeout(()=>{
+    statusMsg.textContent='';gs.index++;
+    if(gs.index>=gs.words.length) packComplete();
     else showWord();
-  }, 700);
+  },700);
 }
-
-function triggerGameOver() {
-  stopTimer();
-  gs.active = false;
+function triggerGameOver(){
+  stopTimer();gs.active=false;
   answerInput.classList.add('shake');
-  setTimeout(() => answerInput.classList.remove('shake'), 400);
-  answerInput.disabled = true;
-  checkBtn.disabled = true;
-  setTimeout(() => {
-    wordCard.style.display = 'none';
+  setTimeout(()=>answerInput.classList.remove('shake'),400);
+  answerInput.disabled=true;checkBtn.disabled=true;
+  setTimeout(()=>{
+    wordCard.classList.add('hidden');
+    vkb.classList.add('hidden');
     timerWrap.classList.add('hidden');
-    goWord.textContent = gs.currentWord;
+    goWord.textContent=gs.currentAnswer;
     goCard.classList.add('show');
-  }, 500);
+  },500);
 }
 
-// ─── LEVEL COMPLETE ──────────────────────────────────────────
-function levelComplete() {
-  gs.active = false;
-  wordCard.style.display = 'none';
+// ── PACK COMPLETE ───────────────────────────────────────────
+function packComplete(){
+  gs.active=false;
+  wordCard.classList.add('hidden');
+  vkb.classList.add('hidden');
   timerWrap.classList.add('hidden');
-  const next = gs.level + 1;
-  if (next <= 5) startCountdown(next);
-  else { victoryCard.classList.add('show'); launchConfetti(160); }
-}
-
-function startCountdown(nextLv) {
-  cdCard.classList.add('show');
-  const steps = [
-    { n: '🎉', l: 'Level Complete!' },
-    { n: '3',  l: 'Get ready…'      },
-    { n: '2',  l: 'Almost there…'   },
-    { n: '1',  l: 'Here we go!'     },
-    { n: '🚀', l: 'Go!'             }
-  ];
-  let i = 0;
-  function tick() {
-    cdNum.textContent = steps[i].n;
-    cdLbl.textContent = steps[i].l;
-    cdNum.style.animation = 'none'; void cdNum.offsetHeight; cdNum.style.animation = '';
-    i++;
-    if (i < steps.length) gs.cdTimer = setTimeout(tick, 750);
-    else gs.cdTimer = setTimeout(() => { cdCard.classList.remove('show'); startLevel(nextLv); }, 600);
+  const next=gs.packIndex+1;
+  if(next<SESSION_PACKS.length){
+    updatePackTrack(next);
+    startPack(next);
+  } else {
+    victoryCard.classList.add('show');
+    launchConfetti(200);
   }
-  tick();
 }
 
-// ─── CONFETTI ────────────────────────────────────────────────
-function launchConfetti(n) {
-  for (let i = 0; i < n; i++) {
-    const p = document.createElement('div');
-    p.className = 'cp';
-    p.style.left = (Math.random() * 100) + '%';
-    const sz = (6 + Math.random() * 11) + 'px';
-    p.style.width = p.style.height = sz;
-    p.style.background = rand(COLS);
-    p.style.borderRadius = Math.random() > .5 ? '50%' : '3px';
-    p.style.animationDuration  = (1.2 + Math.random() * 1.7) + 's';
-    p.style.animationDelay     = (Math.random() * .9) + 's';
+// ── CONFETTI ────────────────────────────────────────────────
+function launchConfetti(n){
+  for(let i=0;i<n;i++){
+    const p=document.createElement('div');
+    p.className='cp';p.style.left=(Math.random()*100)+'%';
+    const sz=(6+Math.random()*11)+'px';p.style.width=p.style.height=sz;
+    p.style.background=rand(CFCOLS);
+    p.style.borderRadius=Math.random()>.5?'50%':'3px';
+    p.style.animationDuration=(1.2+Math.random()*1.8)+'s';
+    p.style.animationDelay=(Math.random()*1)+'s';
     cfLayer.appendChild(p);
-    setTimeout(() => p.remove(), 3500);
+    setTimeout(()=>p.remove(),3800);
   }
 }
 
-// ─── EVENTS ──────────────────────────────────────────────────
-playBtn.addEventListener('click', startGame);
-nameInput.addEventListener('keypress', e => { if (e.key === 'Enter') startGame(); });
-checkBtn.addEventListener('click', checkAnswer);
-answerInput.addEventListener('keypress', e => { if (e.key === 'Enter') { e.preventDefault(); checkAnswer(); } });
-answerInput.addEventListener('input', () => { answerInput.value = answerInput.value.toLowerCase(); });
-homeBtn.addEventListener('click', goHome);
-goHomeBtn.addEventListener('click', () => { goCard.classList.remove('show'); goHome(); });
-victoryBtn.addEventListener('click', () => {
+// ── EVENTS ──────────────────────────────────────────────────
+playBtn.addEventListener('click',startGame);
+nameInput.addEventListener('keypress',e=>{if(e.key==='Enter')startGame()});
+checkBtn.addEventListener('click',checkAnswer);
+answerInput.addEventListener('keypress',e=>{if(e.key==='Enter'){e.preventDefault();checkAnswer()}});
+answerInput.addEventListener('input',()=>{answerInput.value=answerInput.value.toLowerCase()});
+homeBtn.addEventListener('click',goHome);
+goHomeBtn.addEventListener('click',()=>{goCard.classList.remove('show');goHome()});
+victoryBtn.addEventListener('click',()=>{
   victoryCard.classList.remove('show');
-  buildPips(); hideAllCards();
-  wordCard.style.display = '';
-  startLevel(1);
+  SESSION_PACKS=shuffleArr(PACKS_MASTER);
+  buildPackTrack();hideAll();startPack(0);
 });
-clearBtn.addEventListener('click', () => {
-  if (confirm('Clear ALL player data?')) {
-    localStorage.removeItem('ww_v5');
-    progressData = {}; todayStars = 0;
-    renderLB();
+clearBtn.addEventListener('click',()=>{
+  if(confirm('Clear ALL player data?')){
+    localStorage.removeItem('ww_v8');
+    progressData={};todayStars=0;renderLB();
   }
 });
 
-// ─── INIT ────────────────────────────────────────────────────
+// ── INIT ────────────────────────────────────────────────────
 loadData();
 renderLB();
 
