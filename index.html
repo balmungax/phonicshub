@@ -4,426 +4,476 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>2C</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
-/* Base Variables - Light and Child-Friendly */
 :root {
-    --primary-color: #4a6fa5;      /* Softer blue */
-    --secondary-color: #6c8dc3;    /* Lighter blue */
-    --accent-primary: #ff9d00;     /* Bright orange */
-    --accent-secondary: #00a8a8;   /* Teal */
-    --menu-bg: #ffffff;            /* White menu background */
-    --surface-light: #f8f9fa;      /* Very light gray */
-    --surface-white: #ffffff;
-    --text-dark: #2c3e50;          /* Dark blue-gray for text */
-    --text-light: #5d6d7e;         /* Lighter text */
-    --shadow: rgba(0, 0, 0, 0.05);
-    --shadow-dark: rgba(0, 0, 0, 0.1);
-    --radius-sm: 12px;
-    --radius-md: 16px;
-    --transition-smooth: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+    --accent: #ff9d00;
+    --accent2: #ffc400;
+    --menu-w: 270px;
+    --menu-w-sm: 74px;
+    --radius: 14px;
+    --transition: 0.38s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Reset & Base */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body { 
-    display: flex; 
-    min-height: 100vh;
-    margin: 0; 
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', sans-serif; 
-    background: linear-gradient(135deg, #e8f4f8 0%, #f0f7ff 100%);
+html, body {
+    height: 100%;
     overflow: hidden;
 }
 
-/* SIDEBAR - Light Background */
+body {
+    display: flex;
+    height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    background: #eef4fb;
+}
+
+/* ═══════════════════════════════
+   SIDEBAR
+═══════════════════════════════ */
 #menu {
-    width: 280px;
-    background: var(--menu-bg);
+    width: var(--menu-w);
+    min-width: var(--menu-w);
+    height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 25px 18px;
-    gap: 10px;
-    box-shadow: 5px 0 25px var(--shadow-dark);
-    transition: width var(--transition-smooth);
-    flex-shrink: 0;
+    background: #1a2540;
     position: relative;
     z-index: 100;
-    overflow-y: auto;
-    border-right: 4px solid var(--accent-primary);
+    transition: width var(--transition), min-width var(--transition);
+    overflow: hidden; /* NO scroll ever */
+    flex-shrink: 0;
+}
+
+/* Rainbow top accent */
+#menu::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #ff9d00, #ffd000, #4ec76a, #3d8fe0, #a855f7);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+/* Subtle grid texture */
+#menu::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: 0;
 }
 
 #menu.contracted {
-    width: 85px;
-    padding: 25px 10px;
+    width: var(--menu-w-sm);
+    min-width: var(--menu-w-sm);
 }
 
-/* Header with Logo */
+/* ── HEADER ── */
 .menu-header {
     display: flex;
     align-items: center;
-    padding: 0 8px 20px;
-    margin-bottom: 10px;
-    border-bottom: 2px solid rgba(74, 111, 165, 0.1);
-    transition: all var(--transition-smooth);
+    padding: 18px 16px 14px;
+    gap: 12px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    overflow: hidden;
 }
 
-.classroom-logo {
-    width: 50px;
-    height: 50px;
-    background: linear-gradient(135deg, var(--accent-primary), #ffc400);
+.logo-badge {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: white;
-    margin-right: 15px;
-    box-shadow: 0 4px 12px rgba(255, 157, 0, 0.3);
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: #1a2540;
+    font-weight: 900;
+    box-shadow: 0 4px 14px rgba(255,157,0,0.35);
     flex-shrink: 0;
+    letter-spacing: -0.5px;
 }
 
 .header-text {
-    flex: 1;
-    color: var(--text-dark);
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity var(--transition), width var(--transition);
 }
 
 .header-text h1 {
-    font-size: 1.6rem;
-    font-weight: 800;
-    margin-bottom: 4px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: #ffffff;
     letter-spacing: 0.5px;
-    color: var(--primary-color);
+    line-height: 1;
+    margin-bottom: 2px;
 }
 
 .header-text p {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    font-weight: 400;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.4);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
 }
 
 #menu.contracted .header-text {
     opacity: 0;
     width: 0;
-    overflow: hidden;
-    margin: 0;
 }
 
-#menu.contracted .menu-header {
-    padding: 0;
-    justify-content: center;
-    border-bottom: none;
-    margin-bottom: 25px;
-}
-
-/* Burger Toggle Button */
+/* ── TOGGLE ── */
 #toggle-container {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 5px;
-    padding: 0 5px;
+    padding: 10px 14px 8px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
 }
 
 #toggle-btn {
-    background: rgba(255, 157, 0, 0.1);
-    border: 2px solid var(--accent-primary);
-    color: var(--accent-primary);
+    width: 100%;
+    height: 38px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 10px;
-    width: 52px;
-    height: 52px;
+    color: rgba(255,255,255,0.7);
     cursor: pointer;
-    font-size: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    position: relative;
+    gap: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    transition: all 0.2s ease;
+    touch-action: manipulation;
     overflow: hidden;
+    white-space: nowrap;
 }
 
 #toggle-btn:hover {
-    background: var(--accent-primary);
-    color: white;
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 157, 0, 0.4);
+    background: rgba(255,157,0,0.15);
+    border-color: rgba(255,157,0,0.4);
+    color: var(--accent);
 }
 
-/* Menu Items Container */
+.toggle-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+    transition: transform 0.38s ease;
+}
+
+#menu.contracted .toggle-icon {
+    transform: rotate(180deg);
+}
+
+.toggle-label {
+    transition: opacity var(--transition), width var(--transition);
+    overflow: hidden;
+}
+
+#menu.contracted .toggle-label {
+    opacity: 0;
+    width: 0;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+    padding: 8px 18px 4px;
+    font-size: 0.6rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: rgba(255,255,255,0.25);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity var(--transition);
+}
+
+#menu.contracted .section-label {
+    opacity: 0;
+}
+
+/* ── MENU ITEMS ── */
 .menu-items-container {
     flex: 1;
-    overflow-y: auto;
-    padding-right: 6px;
-    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    padding: 4px 10px 10px;
+    gap: 3px;
+    position: relative;
+    z-index: 2;
+    min-height: 0;
+    overflow: hidden; /* never scroll */
 }
 
-/* Menu Links */
 .menu-link {
-    height: 58px;
-    color: var(--text-dark);
-    text-decoration: none;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    font-size: 0.95rem;
     display: flex;
     align-items: center;
-    padding: 0 16px;
-    margin-bottom: 8px;
-    transition: all 0.25s ease;
+    gap: 0;
+    padding: 0 12px;
+    border-radius: 11px;
+    text-decoration: none;
+    color: rgba(255,255,255,0.6);
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: all 0.2s ease;
     position: relative;
     overflow: hidden;
     white-space: nowrap;
-    border: 2px solid rgba(74, 111, 165, 0.1);
-    background: rgba(74, 111, 165, 0.03);
+    border: 1px solid transparent;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    /* KEY: each item grows equally — no scroll needed */
+    flex: 1;
+    min-height: 0;
+    animation: slideIn 0.35s ease both;
 }
 
-.menu-link::after {
+/* Left accent bar */
+.menu-link::before {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    width: 6px;
-    height: 100%;
+    left: 0; top: 20%; bottom: 20%;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
     background: currentColor;
     transform: scaleY(0);
-    transition: transform 0.3s ease;
-    border-radius: 3px 0 0 3px;
+    transition: transform 0.25s ease;
 }
 
-.menu-link:hover::after {
+.menu-link:hover::before,
+.menu-link.active::before {
     transform: scaleY(1);
 }
 
-.menu-link span:first-child {
-    font-size: 1.5rem;
-    min-width: 40px;
-    text-align: center;
-    transition: transform 0.3s ease;
-    filter: drop-shadow(0 2px 3px rgba(0,0,0,0.1));
-}
-
-.menu-link:hover { 
-    transform: translateX(6px);
-    background: rgba(74, 111, 165, 0.08);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    border-color: rgba(74, 111, 165, 0.2);
-}
-
-.menu-link:hover span:first-child {
-    transform: scale(1.1);
+.menu-link:hover {
+    background: rgba(255,255,255,0.07);
+    color: #ffffff;
+    border-color: rgba(255,255,255,0.08);
 }
 
 .menu-link.active {
-    background: rgba(74, 111, 165, 0.12);
-    border-color: rgba(74, 111, 165, 0.3);
-    box-shadow: 0 4px 15px rgba(74, 111, 165, 0.15);
+    background: rgba(255,255,255,0.1);
+    color: #ffffff;
+    border-color: rgba(255,255,255,0.12);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
 }
 
-/* Link Text */
+.link-icon {
+    font-size: 1.2rem;
+    min-width: 38px;
+    text-align: center;
+    flex-shrink: 0;
+    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+    transition: transform 0.2s ease;
+}
+
+.menu-link:hover .link-icon,
+.menu-link.active .link-icon {
+    transform: scale(1.15);
+}
+
 .link-text {
+    overflow: hidden;
+    transition: opacity var(--transition), max-width var(--transition);
+    max-width: 200px;
     opacity: 1;
-    transition: opacity var(--transition-smooth), margin var(--transition-smooth);
-    margin-left: 16px;
-    letter-spacing: 0.3px;
-    font-size: 1rem;
-    color: var(--text-dark);
-    font-weight: 600;
+    font-size: 0.88rem;
+    font-weight: 700;
 }
 
 #menu.contracted .link-text {
     opacity: 0;
-    width: 0;
-    margin-left: 0;
+    max-width: 0;
 }
 
-/* Tooltip for Contracted State */
-.menu-link::before {
+/* Active dot */
+.link-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    margin-left: auto;
+    flex-shrink: 0;
+    box-shadow: 0 0 6px currentColor;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.menu-link.active .link-dot { opacity: 1; }
+#menu.contracted .link-dot  { display: none; }
+
+/* Tooltip when contracted */
+#menu.contracted .menu-link::after {
     content: attr(data-tooltip);
     position: absolute;
-    left: calc(100% + 12px);
+    left: calc(100% + 10px);
     top: 50%;
-    transform: translateY(-50%) translateX(-10px);
-    background: white;
-    color: var(--text-dark);
-    padding: 10px 16px;
-    border-radius: var(--radius-sm);
-    font-size: 0.9rem;
+    transform: translateY(-50%) translateX(-6px);
+    background: #1a2540;
+    color: white;
+    padding: 7px 14px;
+    border-radius: 9px;
+    font-size: 0.82rem;
+    font-weight: 700;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 20px var(--shadow-dark);
-    border: 2px solid var(--accent-primary);
-    font-weight: 600;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    z-index: 999;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,157,0,0.4);
 }
 
-#menu.contracted .menu-link:hover::before {
+#menu.contracted .menu-link:hover::after {
     opacity: 1;
     visibility: visible;
     transform: translateY(-50%) translateX(0);
 }
 
-/* Color Scheme - Bright and Child-Friendly */
-.btn-schedule { color: #2ecc71; }      /* Bright Green */
-.btn-keyboard { color: #3498db; }      /* Sky Blue */
-.btn-plants  { color: #27ae60; }       /* Forest Green */
-.btn-vocab    { color: #e67e22; }      /* Orange */
-.btn-math     { color: #9b59b6; }      /* Purple */
-.btn-trans    { color: #34495e; }      /* Dark Blue */
-.btn-words    { color: #16a085; }      /* Turquoise */
-.btn-grammar  { color: #e74c3c; }      /* Red */
-.btn-goal     { color: #f39c12; }      /* Yellow-Orange */
-.btn-puzzle   { color: #1abc9c; }      /* Teal */
-.btn-games    { color: #e84393; }      /* Pink */
+/* Per-item accent colors */
+.btn-schedule { color: #4ade80; }
+.btn-keyboard { color: #60a5fa; }
+.btn-plants   { color: #34d399; }
+.btn-vocab    { color: #fb923c; }
+.btn-math     { color: #c084fc; }
+.btn-trans    { color: #94a3b8; }
+.btn-words    { color: #2dd4bf; }
+.btn-grammar  { color: #f87171; }
+.btn-goal     { color: #fbbf24; }
+.btn-puzzle   { color: #22d3ee; }
+.btn-games    { color: #f472b6; }
 
-/* Content Frame - Always Scroll to Top */
+/* ── FOOTER ── */
+.menu-footer {
+    padding: 10px 14px 14px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+}
+
+.footer-avatar {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    background: linear-gradient(135deg, #4ade80, #3d8fe0);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.footer-text {
+    overflow: hidden;
+    transition: opacity var(--transition);
+}
+
+.footer-text p {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+
+.footer-text span {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    white-space: nowrap;
+}
+
+#menu.contracted .footer-text { opacity: 0; }
+
+/* ═══════════════════════════════
+   CONTENT
+═══════════════════════════════ */
+#content-wrapper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100vh;
+    background: #eef4fb;
+}
+
 #content-frame {
     flex-grow: 1;
     border: none;
-    background: var(--surface-white);
-    border-radius: var(--radius-md) 0 0 var(--radius-md);
-    box-shadow: inset 8px 0 20px var(--shadow);
-    transition: all var(--transition-smooth);
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+    background: #ffffff;
+    border-radius: 20px 0 0 20px;
+    box-shadow: -8px 0 40px rgba(0,0,0,0.08);
 }
 
-/* Force iframe content to top */
-#content-frame {
-    scroll-behavior: smooth;
-}
-
-/* Scrollbar Styling */
-.menu-items-container::-webkit-scrollbar {
-    width: 6px;
-}
-
-.menu-items-container::-webkit-scrollbar-track {
-    background: rgba(74, 111, 165, 0.05);
-    border-radius: 10px;
-}
-
-.menu-items-container::-webkit-scrollbar-thumb {
-    background: var(--accent-primary);
-    border-radius: 10px;
-}
-
-.menu-items-container::-webkit-scrollbar-thumb:hover {
-    background: var(--accent-secondary);
-}
-
-/* Animation for menu items on load */
+/* ═══════════════════════════════
+   ANIMATIONS
+═══════════════════════════════ */
 @keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(-15px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
+    from { opacity: 0; transform: translateX(-12px); }
+    to   { opacity: 1; transform: translateX(0); }
 }
 
-.menu-link {
-    animation: slideIn 0.4s ease forwards;
+.menu-link:nth-child(1)  { animation-delay: 0.04s; }
+.menu-link:nth-child(2)  { animation-delay: 0.08s; }
+.menu-link:nth-child(3)  { animation-delay: 0.12s; }
+.menu-link:nth-child(4)  { animation-delay: 0.16s; }
+.menu-link:nth-child(5)  { animation-delay: 0.20s; }
+.menu-link:nth-child(6)  { animation-delay: 0.24s; }
+.menu-link:nth-child(7)  { animation-delay: 0.28s; }
+.menu-link:nth-child(8)  { animation-delay: 0.32s; }
+.menu-link:nth-child(9)  { animation-delay: 0.36s; }
+.menu-link:nth-child(10) { animation-delay: 0.40s; }
+.menu-link:nth-child(11) { animation-delay: 0.44s; }
+
+@keyframes ripple {
+    from { transform: scale(0); opacity: 0.3; }
+    to   { transform: scale(3); opacity: 0; }
 }
-
-/* Stagger animation for each item */
-.menu-link:nth-child(1) { animation-delay: 0.05s; }
-.menu-link:nth-child(2) { animation-delay: 0.1s; }
-.menu-link:nth-child(3) { animation-delay: 0.15s; }
-.menu-link:nth-child(4) { animation-delay: 0.2s; }
-.menu-link:nth-child(5) { animation-delay: 0.25s; }
-.menu-link:nth-child(6) { animation-delay: 0.3s; }
-.menu-link:nth-child(7) { animation-delay: 0.35s; }
-.menu-link:nth-child(8) { animation-delay: 0.4s; }
-.menu-link:nth-child(9) { animation-delay: 0.45s; }
-.menu-link:nth-child(10) { animation-delay: 0.5s; }
-.menu-link:nth-child(11) { animation-delay: 0.55s; }
-
-/* Responsive Design */
-@media (max-height: 800px) {
-    .menu-link {
-        height: 52px;
-        margin-bottom: 6px;
-        font-size: 0.9rem;
-    }
-    
-    .menu-link span:first-child {
-        font-size: 1.3rem;
-        min-width: 32px;
-    }
-    
-    .menu-header {
-        padding-bottom: 15px;
-        margin-bottom: 10px;
-    }
-}
-
-/* Expand indicator hint */
-.expand-hint {
+.ripple-el {
     position: absolute;
-    right: -8px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 16px;
-    height: 40px;
-    background: var(--accent-primary);
-    border-radius: 0 8px 8px 0;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    cursor: pointer;
-}
-
-#menu.contracted .expand-hint {
-    opacity: 0.7;
-}
-
-.expand-hint:hover {
-    opacity: 1;
-    width: 18px;
-}
-
-/* Enhanced visual feedback for active menu items */
-.menu-link.active::before {
-    content: '';
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 8px;
-    height: 8px;
-    background: currentColor;
     border-radius: 50%;
-    box-shadow: 0 0 8px currentColor;
+    width: 50px; height: 50px;
+    background: rgba(255,255,255,0.25);
+    animation: ripple 0.5s ease-out forwards;
+    pointer-events: none;
+    margin-left: -25px;
+    margin-top: -25px;
 }
 
-#menu.contracted .menu-link.active::before {
-    right: 6px;
-}
-
-/* Decorative elements for child-friendliness */
-#menu::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, 
-        #ff9d00, #ffc400, #2ecc71, #3498db, #9b59b6);
-    z-index: 101;
-}
-
-/* Fun pattern in background */
-#menu {
-    background-image: 
-        radial-gradient(circle at 10% 20%, rgba(255, 157, 0, 0.03) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(52, 152, 219, 0.03) 0%, transparent 20%);
-    background-size: 200px 200px;
+/* Responsive */
+@media (max-width: 900px) {
+    :root { --menu-w: 74px; }
+    #menu:not(.contracted) { width: 74px; min-width: 74px; }
 }
 </style>
 </head>
@@ -431,203 +481,151 @@ body {
 <body>
 
 <nav id="menu">
+    <div class="menu-header">
+        <div class="logo-badge">2C</div>
+        <div class="header-text">
+            <h1>Class 2C</h1>
+            <p>Learning Hub</p>
+        </div>
+    </div>
 
     <div id="toggle-container">
         <button id="toggle-btn" onclick="toggleMenu()" aria-label="Toggle menu">
-            ☰
+            <span class="toggle-icon">◀</span>
+            <span class="toggle-label">Collapse</span>
         </button>
     </div>
 
-    <div class="expand-hint" onclick="toggleMenu()"></div>
+    <div class="section-label">Navigation</div>
 
     <div class="menu-items-container">
-        <a href="schedule.html" target="content-view" class="menu-link btn-schedule active" data-tooltip="Daily Schedule">
-            <span>📅</span><span class="link-text">Schedule</span>
+        <a href="schedule.html" target="content-view" class="menu-link btn-schedule active" data-tooltip="Schedule">
+            <span class="link-icon">📅</span>
+            <span class="link-text">Schedule</span>
+            <span class="link-dot"></span>
         </a>
-
-        <a href="keyboard.html" target="content-view" class="menu-link btn-keyboard" data-tooltip="Keyboard Practice">
-            <span>⌨️</span><span class="link-text">Keyboard</span>
+        <a href="keyboard.html" target="content-view" class="menu-link btn-keyboard" data-tooltip="Keyboard">
+            <span class="link-icon">⌨️</span>
+            <span class="link-text">Keyboard</span>
+            <span class="link-dot"></span>
         </a>
-
-        <a href="recycle2.html" target="content-view" class="menu-link btn-plants" data-tooltip="Plants Science">
-            <span>🌱</span><span class="link-text">Project</span>
+        <a href="recycle2.html" target="content-view" class="menu-link btn-plants" data-tooltip="Project">
+            <span class="link-icon">🌱</span>
+            <span class="link-text">Project</span>
+            <span class="link-dot"></span>
         </a>
-
         <a href="build.html" target="content-view" class="menu-link btn-vocab" data-tooltip="Vocabulary">
-            <span>📚</span><span class="link-text">Vocabulary</span>
+            <span class="link-icon">📚</span>
+            <span class="link-text">Vocabulary</span>
+            <span class="link-dot"></span>
         </a>
-
-        <a href="place.html" target="content-view" class="menu-link btn-math" data-tooltip="Math: Subtraction">
-            <span>➖</span><span class="link-text">Subtraction</span>
+        <a href="place.html" target="content-view" class="menu-link btn-math" data-tooltip="Subtraction">
+            <span class="link-icon">➖</span>
+            <span class="link-text">Subtraction</span>
+            <span class="link-dot"></span>
         </a>
-
-        <a href="tracing.html" target="content-view" class="menu-link btn-trans" data-tooltip="Translator">
-            <span>🌍</span><span class="link-text">✍️Tracing</span>
+        <a href="tracing.html" target="content-view" class="menu-link btn-trans" data-tooltip="Tracing">
+            <span class="link-icon">✍️</span>
+            <span class="link-text">Tracing</span>
+            <span class="link-dot"></span>
         </a>
-
         <a href="words2.html" target="content-view" class="menu-link btn-words" data-tooltip="Word Bank">
-            <span>🗂️</span><span class="link-text">Word Bank</span>
+            <span class="link-icon">🗂️</span>
+            <span class="link-text">Word Bank</span>
+            <span class="link-dot"></span>
         </a>
-
-        <a href="grammar.html" target="content-view" class="menu-link btn-grammar" data-tooltip="Grammar Checker">
-            <span>✔️</span><span class="link-text">Checker</span>
+        <a href="grammar.html" target="content-view" class="menu-link btn-grammar" data-tooltip="Checker">
+            <span class="link-icon">✔️</span>
+            <span class="link-text">Checker</span>
+            <span class="link-dot"></span>
         </a>
-
         <a href="goal.html" target="content-view" class="menu-link btn-goal" data-tooltip="Weekly Goal">
-            <span>🎯</span><span class="link-text">Weekly Goal</span>
+            <span class="link-icon">🎯</span>
+            <span class="link-text">Weekly Goal</span>
+            <span class="link-dot"></span>
         </a>
-
         <a href="puzzle.html" target="content-view" class="menu-link btn-puzzle" data-tooltip="Puzzle">
-            <span>🧩</span><span class="link-text">Puzzle</span>
+            <span class="link-icon">🧩</span>
+            <span class="link-text">Puzzle</span>
+            <span class="link-dot"></span>
         </a>
+        <a href="games.html" target="content-view" class="menu-link btn-games" data-tooltip="Games">
+            <span class="link-icon">🎮</span>
+            <span class="link-text">Games</span>
+            <span class="link-dot"></span>
+        </a>
+    </div>
 
-        <a href="games.html" target="content-view" class="menu-link btn-games" data-tooltip="Educational Games">
-            <span>🎮</span><span class="link-text">Games</span>
-        </a>
+    <div class="menu-footer">
+        <div class="footer-avatar">🏫</div>
+        <div class="footer-text">
+            <p>Classroom</p>
+            <span>Interactive Board</span>
+        </div>
     </div>
 </nav>
 
-<iframe name="content-view" id="content-frame" src="schedule.html" title="Classroom Content"></iframe>
+<div id="content-wrapper">
+    <iframe name="content-view" id="content-frame" src="schedule.html" title="Classroom Content"></iframe>
+</div>
 
 <script>
 function toggleMenu() {
-    const menu = document.getElementById('menu');
-    const toggleBtn = document.getElementById('toggle-btn');
-    
+    const menu  = document.getElementById('menu');
+    const btn   = document.getElementById('toggle-btn');
+    const label = btn.querySelector('.toggle-label');
     menu.classList.toggle('contracted');
-    
-    // Update aria label
-    if (menu.classList.contains('contracted')) {
-        toggleBtn.setAttribute('aria-label', 'Expand menu');
-    } else {
-        toggleBtn.setAttribute('aria-label', 'Collapse menu');
-    }
+    const contracted = menu.classList.contains('contracted');
+    btn.setAttribute('aria-label', contracted ? 'Expand menu' : 'Collapse menu');
+    if (label) label.textContent = contracted ? 'Expand' : 'Collapse';
 }
 
-// Set active menu item and scroll iframe to top
-document.addEventListener('DOMContentLoaded', function() {
-    const menuLinks = document.querySelectorAll('.menu-link');
-    const contentFrame = document.getElementById('content-frame');
-    
-    // Scroll iframe to top when it loads
-    contentFrame.onload = function() {
-        try {
-            // Scroll the iframe's content to top
-            contentFrame.contentWindow.scrollTo(0, 0);
-        } catch (e) {
-            // If cross-origin, try different approach
-            console.log('Cannot scroll iframe due to security restrictions');
-        }
-    };
-    
-    // Highlight current page and scroll to top
-    menuLinks.forEach(link => {
-        link.addEventListener('click', function(e) {
-            if (this.href === '#') {
-                e.preventDefault();
-                return;
-            }
-            
-            // Remove active class from all links
-            menuLinks.forEach(l => l.classList.remove('active'));
-            // Add active class to clicked link
+function addRipple(e, el) {
+    const r = document.createElement('span');
+    r.classList.add('ripple-el');
+    const rect = el.getBoundingClientRect();
+    const x = (e.clientX ?? e.touches?.[0]?.clientX ?? rect.left + rect.width / 2) - rect.left;
+    const y = (e.clientY ?? e.touches?.[0]?.clientY ?? rect.top + rect.height / 2) - rect.top;
+    r.style.left = x + 'px';
+    r.style.top  = y + 'px';
+    el.appendChild(r);
+    setTimeout(() => r.remove(), 550);
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    const links = document.querySelectorAll('.menu-link');
+    const frame = document.getElementById('content-frame');
+    const menu  = document.getElementById('menu');
+
+    frame.addEventListener('load', function () {
+        try { frame.contentWindow.scrollTo(0, 0); } catch(e) {}
+        const cur = frame.src.split('/').pop();
+        links.forEach(l => {
+            l.classList.toggle('active', l.getAttribute('href') === cur);
+        });
+    });
+
+    links.forEach(link => {
+        link.addEventListener('touchstart', e => addRipple(e, link), { passive: true });
+        link.addEventListener('click', function (e) {
+            addRipple(e, this);
+            links.forEach(l => l.classList.remove('active'));
             this.classList.add('active');
-            
-            // Force iframe to scroll to top immediately
-            try {
-                contentFrame.contentWindow.scrollTo({
-                    top: 0,
-                    left: 0,
-                    behavior: 'instant'
-                });
-            } catch (e) {
-                // Fallback for cross-origin
-                console.log('Cannot scroll iframe');
-            }
-            
-            // Set iframe source after a tiny delay to ensure scroll
-            setTimeout(() => {
-                // Force scroll again after load
-                contentFrame.onload = function() {
-                    try {
-                        contentFrame.contentWindow.scrollTo(0, 0);
-                    } catch (e) {
-                        console.log('Cannot scroll iframe');
-                    }
-                };
-            }, 50);
+            try { frame.contentWindow.scrollTo(0, 0); } catch(e) {}
         });
     });
-    
-    // Auto-expand on hover for contracted menu (with delay)
-    const menu = document.getElementById('menu');
-    let expandTimeout;
-    
-    menu.addEventListener('mouseenter', function() {
-        if (menu.classList.contains('contracted')) {
-            expandTimeout = setTimeout(() => {
-                if (menu.classList.contains('contracted')) {
-                    toggleMenu();
-                }
-            }, 600);
-        }
+
+    document.addEventListener('keydown', e => {
+        if (e.ctrlKey && e.key === 'm') { e.preventDefault(); toggleMenu(); }
     });
-    
-    menu.addEventListener('mouseleave', function() {
-        clearTimeout(expandTimeout);
-    });
-    
-    // Update active link when iframe loads
-    contentFrame.addEventListener('load', function() {
-        const currentSrc = contentFrame.src.split('/').pop();
-        menuLinks.forEach(link => {
-            const linkSrc = link.href.split('/').pop();
-            if (linkSrc === currentSrc) {
-                menuLinks.forEach(l => l.classList.remove('active'));
-                link.classList.add('active');
-            }
-        });
-        
-        // Always scroll to top on load
-        try {
-            contentFrame.contentWindow.scrollTo(0, 0);
-        } catch (e) {
-            console.log('Cannot scroll iframe');
-        }
-    });
-    
-    // Force initial scroll to top
-    setTimeout(() => {
-        try {
-            contentFrame.contentWindow.scrollTo(0, 0);
-        } catch (e) {
-            console.log('Cannot scroll iframe initially');
-        }
-    }, 500);
-    
-    // Responsive behavior - auto-collapse on small screens
-    function checkScreenSize() {
-        if (window.innerWidth < 900) {
-            if (!menu.classList.contains('contracted')) {
-                toggleMenu();
-            }
-        }
+
+    function checkSize() {
+        if (window.innerWidth < 900 && !menu.classList.contains('contracted')) toggleMenu();
     }
-    
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-    
-    // Keyboard shortcut for toggling menu (Ctrl+M)
-    document.addEventListener('keydown', function(e) {
-        if (e.ctrlKey && e.key === 'm') {
-            e.preventDefault();
-            toggleMenu();
-        }
-    });
+    checkSize();
+    window.addEventListener('resize', checkSize);
 });
 </script>
 
 </body>
-
 </html>
-
