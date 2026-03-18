@@ -654,464 +654,449 @@
     </div>
 
     <script>
-        // ==========================================
-        // SUPABASE CONFIGURATION - YOUR CREDENTIALS
-        // ==========================================
-        const supabaseUrl = 'https://hnziffwwwvcmqkhjmogfr.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuemlmZnd3dmNtcWtoam1vZ2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NDM2MzMsImV4cCI6MjA4OTMxOTYzM30._zX_WH3mOL8_xatUjSwudftStLXuPRYPkIrdouAmzZU';
-        
-        // Initialize Supabase
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-        
-        // Global state
-        let currentUser = null;
-        let currentStudent = null;
-        let userProgress = [];
-        let isLoginMode = true;
+    // ==========================================
+    // SUPABASE CONFIGURATION - YOUR CREDENTIALS
+    // ==========================================
+    const supabaseUrl = 'https://hnziffwwwvcmqkhjmogfr.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhuemlmZnd3dmNtcWtoam1vZ2ZyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM3NDM2MzMsImV4cCI6MjA4OTMxOTYzM30._zX_WH3mOL8_xatUjSwudftStLXuPRYPkIrdouAmzZU';
+    
+    // Initialize Supabase - ONLY ONCE!
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Global state
+    let currentUser = null;
+    let currentStudent = null;
+    let userProgress = [];
+    let isLoginMode = true;
 
-        // ==========================================
-        // AUTHENTICATION FUNCTIONS
-        // ==========================================
+    // ==========================================
+    // AUTHENTICATION FUNCTIONS
+    // ==========================================
+    
+    async function handleLogin(e) {
+        e.preventDefault();
+        showLoading('login-btn', true);
         
-        async function handleLogin(e) {
-            e.preventDefault();
-            showLoading('login-btn', true);
-            
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            const { data, error } = await supabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-            
-            showLoading('login-btn', false);
-            
-            if (error) {
-                showError(error.message);
-            } else {
-                showSuccess('Login successful!');
-                await loadUserData();
-                showDashboard();
-            }
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        
+        const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: email,
+            password: password
+        });
+        
+        showLoading('login-btn', false);
+        
+        if (error) {
+            showError(error.message);
+        } else {
+            showSuccess('Login successful!');
+            await loadUserData();
+            showDashboard();
         }
+    }
+    
+    async function handleSignup(e) {
+        e.preventDefault();
+        showLoading('signup-btn', true);
         
-        async function handleSignup(e) {
-            e.preventDefault();
-            showLoading('signup-btn', true);
-            
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            
-            // 1. Create auth user
-            const { data: authData, error: authError } = await supabase.auth.signUp({
-                email: email,
-                password: password
-            });
-            
-            if (authError) {
-                showLoading('signup-btn', false);
-                showError(authError.message);
-                return;
+        const name = document.getElementById('signup-name').value;
+        const email = document.getElementById('signup-email').value;
+        const password = document.getElementById('signup-password').value;
+        
+        // 1. Create auth user
+        const { data: authData, error: authError } = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: {
+                data: {
+                    name: name
+                }
             }
-            
-            // 2. Create student profile
-            const { error: profileError } = await supabase
-                .from('students')
-                .insert({
-                    id: authData.user.id,
-                    email: email,
-                    name: name,
-                    current_week: 1
-                });
-            
+        });
+        
+        if (authError) {
             showLoading('signup-btn', false);
+            showError(authError.message);
+            return;
+        }
+        
+        // 2. Create student profile
+        const { error: profileError } = await supabaseClient
+            .from('students')
+            .insert({
+                id: authData.user.id,
+                email: email,
+                name: name,
+                current_week: 1
+            });
+        
+        showLoading('signup-btn', false);
+        
+        if (profileError) {
+            showError('Account created but profile error: ' + profileError.message);
+        } else {
+            showSuccess('Account created! You can now log in.');
+            toggleAuthMode();
+        }
+    }
+    
+    function toggleAuthMode() {
+        isLoginMode = !isLoginMode;
+        document.getElementById('login-form').classList.toggle('hidden', !isLoginMode);
+        document.getElementById('signup-form').classList.toggle('hidden', isLoginMode);
+        document.getElementById('auth-title').textContent = isLoginMode ? 'Welcome Back!' : 'Create Account';
+        document.getElementById('auth-text').textContent = isLoginMode ? "Don't have an account?" : "Already have an account?";
+        document.getElementById('auth-link').textContent = isLoginMode ? 'Sign up' : 'Login';
+        hideMessages();
+    }
+    
+    async function logout() {
+        await supabaseClient.auth.signOut();
+        location.reload();
+    }
+    
+    // ==========================================
+    // USER DATA FUNCTIONS
+    // ==========================================
+    
+    async function loadUserData() {
+        const { data: { user } } = await supabaseClient.auth.getUser();
+        if (!user) return;
+        
+        currentUser = user;
+        
+        const { data: student } = await supabaseClient
+            .from('students')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+        
+        if (student) {
+            currentStudent = student;
+            updateUIWithUser(student);
+        }
+        
+        const { data: progress } = await supabaseClient
+            .from('progress')
+            .select('*')
+            .eq('student_id', user.id);
+        
+        if (progress) {
+            userProgress = progress;
+            updateProgressUI();
+        }
+        
+        checkWeekGate();
+        subscribeToMessages();
+    }
+    
+    function updateUIWithUser(student) {
+        document.getElementById('nav-auth').innerHTML = `
+            <span style="margin-right: 1rem;">${student.name}</span>
+            <button class="btn btn-secondary" onclick="logout()">Logout</button>
+        `;
+        
+        document.getElementById('user-name').textContent = student.name;
+        document.getElementById('user-email').textContent = student.email;
+        document.getElementById('current-week').textContent = student.current_week;
+        document.getElementById('edit-name').value = student.name;
+        
+        const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase();
+        document.getElementById('avatar-initials').textContent = initials;
+        document.getElementById('profile-initials').textContent = initials;
+        
+        if (student.avatar_url) {
+            loadAvatar(student.avatar_url);
+        }
+    }
+    
+    function loadAvatar(url) {
+        document.getElementById('avatar-img').src = url;
+        document.getElementById('avatar-img').classList.remove('hidden');
+        document.getElementById('avatar-initials').classList.add('hidden');
+        
+        document.getElementById('profile-img').src = url;
+        document.getElementById('profile-img').classList.remove('hidden');
+        document.getElementById('profile-placeholder').classList.add('hidden');
+    }
+    
+    // ==========================================
+    // WEEK GATE & PROGRESS
+    // ==========================================
+    
+    async function checkWeekGate() {
+        if (!currentStudent) return;
+        
+        const { data: schedule } = await supabaseClient
+            .from('schedule')
+            .select('*')
+            .eq('week_number', currentStudent.current_week)
+            .single();
+        
+        if (schedule) {
+            const now = new Date();
+            const unlockTime = new Date(schedule.unlock_at);
+            const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+            const isUnlocked = now >= unlockTime && isWeekend;
             
-            if (profileError) {
-                showError('Account created but profile error: ' + profileError.message);
+            const gate = document.getElementById('week-gate');
+            const status = document.getElementById('gate-status');
+            
+            if (isUnlocked) {
+                gate.classList.add('unlocked');
+                status.classList.remove('locked');
+                status.classList.add('open');
+                status.textContent = '🔓 Open Now';
+                document.getElementById('gate-locked-content').classList.add('hidden');
+                document.getElementById('gate-open-content').classList.remove('hidden');
             } else {
-                showSuccess('Account created! Please check your email to confirm.');
-                toggleAuthMode();
+                updateCountdown(unlockTime);
             }
         }
         
-        function toggleAuthMode() {
-            isLoginMode = !isLoginMode;
-            document.getElementById('login-form').classList.toggle('hidden', !isLoginMode);
-            document.getElementById('signup-form').classList.toggle('hidden', isLoginMode);
-            document.getElementById('auth-title').textContent = isLoginMode ? 'Welcome Back!' : 'Create Account';
-            document.getElementById('auth-text').textContent = isLoginMode ? "Don't have an account?" : "Already have an account?";
-            document.getElementById('auth-link').textContent = isLoginMode ? 'Sign up' : 'Login';
-            hideMessages();
+        renderWeeksGrid();
+    }
+    
+    function updateCountdown(unlockTime) {
+        const now = new Date();
+        const diff = unlockTime - now;
+        
+        if (diff <= 0) {
+            document.getElementById('countdown').textContent = 'Unlocking soon...';
+            return;
         }
         
-        async function logout() {
-            await supabase.auth.signOut();
-            location.reload();
-        }
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         
-        // ==========================================
-        // USER DATA FUNCTIONS
-        // ==========================================
+        document.getElementById('countdown').textContent = `${days}d ${hours}h ${minutes}m`;
+    }
+    
+    function renderWeeksGrid() {
+        const grid = document.getElementById('weeks-grid');
+        grid.innerHTML = '';
         
-        async function loadUserData() {
-            // Get current user
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) return;
+        for (let i = 1; i <= 100; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'week-cell';
+            cell.textContent = i;
             
-            currentUser = user;
+            const progress = userProgress.find(p => p.week_number === i);
             
-            // Load student profile
-            const { data: student } = await supabase
-                .from('students')
-                .select('*')
-                .eq('id', user.id)
-                .single();
-            
-            if (student) {
-                currentStudent = student;
-                updateUIWithUser(student);
+            if (progress && progress.completed) {
+                cell.classList.add('completed');
+            } else if (i === currentStudent?.current_week) {
+                cell.classList.add('current');
+            } else if (i < currentStudent?.current_week) {
+                cell.classList.add('available');
             }
             
-            // Load progress
-            const { data: progress } = await supabase
-                .from('progress')
-                .select('*')
-                .eq('student_id', user.id);
-            
-            if (progress) {
-                userProgress = progress;
-                updateProgressUI();
-            }
-            
-            // Check week availability
-            checkWeekGate();
-            
-            // Subscribe to real-time messages
-            subscribeToMessages();
+            cell.onclick = () => selectWeek(i);
+            grid.appendChild(cell);
         }
+    }
+    
+    function updateProgressUI() {
+        const completed = userProgress.filter(p => p.completed).length;
+        const avgScore = userProgress.length > 0 
+            ? Math.round(userProgress.reduce((a, b) => a + (b.score || 0), 0) / userProgress.length)
+            : 0;
+        const totalTime = Math.round(userProgress.reduce((a, b) => a + (b.time_spent_minutes || 0), 0) / 60);
         
-        function updateUIWithUser(student) {
-            // Nav
-            document.getElementById('nav-auth').innerHTML = `
-                <span style="margin-right: 1rem;">${student.name}</span>
-                <button class="btn btn-secondary" onclick="logout()">Logout</button>
-            `;
-            
-            // Sidebar
-            document.getElementById('user-name').textContent = student.name;
-            document.getElementById('user-email').textContent = student.email;
-            document.getElementById('current-week').textContent = student.current_week;
-            document.getElementById('edit-name').value = student.name;
-            
-            // Avatar
-            const initials = student.name.split(' ').map(n => n[0]).join('').toUpperCase();
-            document.getElementById('avatar-initials').textContent = initials;
-            document.getElementById('profile-initials').textContent = initials;
-            
-            if (student.avatar_url) {
-                loadAvatar(student.avatar_url);
-            }
-        }
+        document.getElementById('stat-weeks').textContent = completed;
+        document.getElementById('stat-score').textContent = avgScore + '%';
+        document.getElementById('stat-time').textContent = totalTime + 'h';
+    }
+    
+    // ==========================================
+    // MESSAGING
+    // ==========================================
+    
+    async function sendMessage() {
+        const input = document.getElementById('msg-input');
+        const content = input.value.trim();
+        if (!content || !currentUser) return;
         
-        function loadAvatar(url) {
-            document.getElementById('avatar-img').src = url;
-            document.getElementById('avatar-img').classList.remove('hidden');
-            document.getElementById('avatar-initials').classList.add('hidden');
-            
-            document.getElementById('profile-img').src = url;
+        addMessageToUI(content, true);
+        input.value = '';
+        
+        await supabaseClient.from('messages').insert({
+            from_id: currentUser.id,
+            to_id: null,
+            content: content
+        });
+    }
+    
+    function addMessageToUI(content, isSent) {
+        const list = document.getElementById('message-list');
+        const div = document.createElement('div');
+        div.className = `message ${isSent ? 'sent' : 'received'}`;
+        
+        const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        div.innerHTML = `
+            <div>${content}</div>
+            <div class="message-time">${time}</div>
+        `;
+        
+        list.appendChild(div);
+        list.scrollTop = list.scrollHeight;
+    }
+    
+    function subscribeToMessages() {
+        if (!currentUser) return;
+        
+        supabaseClient
+            .channel('messages')
+            .on('postgres_changes', 
+                { event: 'INSERT', schema: 'public', table: 'messages' },
+                (payload) => {
+                    if (payload.new.to_id === currentUser.id) {
+                        addMessageToUI(payload.new.content, false);
+                    }
+                }
+            )
+            .subscribe();
+    }
+    
+    // ==========================================
+    // PROFILE & PHOTO UPLOAD
+    // ==========================================
+    
+    async function uploadPhoto(event) {
+        const file = event.target.files[0];
+        if (!file || !currentUser) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            document.getElementById('profile-img').src = e.target.result;
             document.getElementById('profile-img').classList.remove('hidden');
             document.getElementById('profile-placeholder').classList.add('hidden');
-        }
-        
-        // ==========================================
-        // WEEK GATE & PROGRESS
-        // ==========================================
-        
-        async function checkWeekGate() {
-            if (!currentStudent) return;
-            
-            const { data: schedule } = await supabase
-                .from('schedule')
-                .select('*')
-                .eq('week_number', currentStudent.current_week)
-                .single();
-            
-            if (schedule) {
-                const now = new Date();
-                const unlockTime = new Date(schedule.unlock_at);
-                const isWeekend = now.getDay() === 0 || now.getDay() === 6;
-                const isUnlocked = now >= unlockTime && isWeekend;
-                
-                const gate = document.getElementById('week-gate');
-                const status = document.getElementById('gate-status');
-                
-                if (isUnlocked) {
-                    gate.classList.add('unlocked');
-                    status.classList.remove('locked');
-                    status.classList.add('open');
-                    status.textContent = '🔓 Open Now';
-                    document.getElementById('gate-locked-content').classList.add('hidden');
-                    document.getElementById('gate-open-content').classList.remove('hidden');
-                } else {
-                    updateCountdown(unlockTime);
-                }
-            }
-            
-            renderWeeksGrid();
-        }
-        
-        function updateCountdown(unlockTime) {
-            const now = new Date();
-            const diff = unlockTime - now;
-            
-            if (diff <= 0) {
-                document.getElementById('countdown').textContent = 'Unlocking soon...';
-                return;
-            }
-            
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            
-            document.getElementById('countdown').textContent = `${days}d ${hours}h ${minutes}m`;
-        }
-        
-        function renderWeeksGrid() {
-            const grid = document.getElementById('weeks-grid');
-            grid.innerHTML = '';
-            
-            for (let i = 1; i <= 100; i++) {
-                const cell = document.createElement('div');
-                cell.className = 'week-cell';
-                cell.textContent = i;
-                
-                const progress = userProgress.find(p => p.week_number === i);
-                
-                if (progress && progress.completed) {
-                    cell.classList.add('completed');
-                } else if (i === currentStudent?.current_week) {
-                    cell.classList.add('current');
-                } else if (i < currentStudent?.current_week) {
-                    cell.classList.add('available');
-                }
-                
-                cell.onclick = () => selectWeek(i);
-                grid.appendChild(cell);
-            }
-        }
-        
-        function updateProgressUI() {
-            const completed = userProgress.filter(p => p.completed).length;
-            const avgScore = userProgress.length > 0 
-                ? Math.round(userProgress.reduce((a, b) => a + (b.score || 0), 0) / userProgress.length)
-                : 0;
-            const totalTime = Math.round(userProgress.reduce((a, b) => a + (b.time_spent_minutes || 0), 0) / 60);
-            
-            document.getElementById('stat-weeks').textContent = completed;
-            document.getElementById('stat-score').textContent = avgScore + '%';
-            document.getElementById('stat-time').textContent = totalTime + 'h';
-        }
-        
-        // ==========================================
-        // MESSAGING
-        // ==========================================
-        
-        async function sendMessage() {
-            const input = document.getElementById('msg-input');
-            const content = input.value.trim();
-            if (!content || !currentUser) return;
-            
-            // Add to UI immediately
-            addMessageToUI(content, true);
-            input.value = '';
-            
-            // Save to database
-            await supabase.from('messages').insert({
-                from_id: currentUser.id,
-                to_id: null, // null = teacher
-                content: content
-            });
-        }
-        
-        function addMessageToUI(content, isSent) {
-            const list = document.getElementById('message-list');
-            const div = document.createElement('div');
-            div.className = `message ${isSent ? 'sent' : 'received'}`;
-            
-            const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-            div.innerHTML = `
-                <div>${content}</div>
-                <div class="message-time">${time}</div>
-            `;
-            
-            list.appendChild(div);
-            list.scrollTop = list.scrollHeight;
-        }
-        
-        function subscribeToMessages() {
-            if (!currentUser) return;
-            
-            supabase
-                .channel('messages')
-                .on('postgres_changes', 
-                    { event: 'INSERT', schema: 'public', table: 'messages' },
-                    (payload) => {
-                        if (payload.new.to_id === currentUser.id) {
-                            addMessageToUI(payload.new.content, false);
-                        }
-                    }
-                )
-                .subscribe();
-        }
-        
-        // ==========================================
-        // PROFILE & PHOTO UPLOAD
-        // ==========================================
-        
-        async function uploadPhoto(event) {
-            const file = event.target.files[0];
-            if (!file || !currentUser) return;
-            
-            // Show preview
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                document.getElementById('profile-img').src = e.target.result;
-                document.getElementById('profile-img').classList.remove('hidden');
-                document.getElementById('profile-placeholder').classList.add('hidden');
-            };
-            reader.readAsDataURL(file);
-            
-            // Upload to Supabase Storage
-            const fileExt = file.name.split('.').pop();
-            const fileName = `${currentUser.id}-${Date.now()}.${fileExt}`;
-            
-            const { data, error } = await supabase.storage
-                .from('avatars')
-                .upload(fileName, file);
-            
-            if (error) {
-                alert('Upload error: ' + error.message);
-                return;
-            }
-            
-            // Get public URL
-            const { data: { publicUrl } } = supabase.storage
-                .from('avatars')
-                .getPublicUrl(fileName);
-            
-            // Update profile
-            await supabase
-                .from('students')
-                .update({ avatar_url: publicUrl })
-                .eq('id', currentUser.id);
-            
-            // Update UI
-            loadAvatar(publicUrl);
-        }
-        
-        async function updateProfile() {
-            const newName = document.getElementById('edit-name').value;
-            if (!newName || !currentUser) return;
-            
-            const { error } = await supabase
-                .from('students')
-                .update({ name: newName })
-                .eq('id', currentUser.id);
-            
-            if (error) {
-                alert('Error updating profile: ' + error.message);
-            } else {
-                currentStudent.name = newName;
-                updateUIWithUser(currentStudent);
-                alert('Profile updated!');
-            }
-        }
-        
-        // ==========================================
-        // UI HELPERS
-        // ==========================================
-        
-        function showAuth() {
-            document.getElementById('auth-section').classList.remove('hidden');
-            document.getElementById('dashboard-section').classList.add('hidden');
-        }
-        
-        function showDashboard() {
-            document.getElementById('auth-section').classList.add('hidden');
-            document.getElementById('dashboard-section').classList.remove('hidden');
-        }
-        
-        function showTab(tabName) {
-            // Hide all tabs
-            document.getElementById('tab-home').classList.add('hidden');
-            document.getElementById('tab-progress').classList.add('hidden');
-            document.getElementById('tab-messages').classList.add('hidden');
-            document.getElementById('tab-profile').classList.add('hidden');
-            
-            // Show selected
-            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
-            
-            // Update menu active state
-            document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
-            event.target.closest('.menu-item').classList.add('active');
-        }
-        
-        function showError(msg) {
-            const el = document.getElementById('error-msg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            document.getElementById('success-msg').style.display = 'none';
-        }
-        
-        function showSuccess(msg) {
-            const el = document.getElementById('success-msg');
-            el.textContent = msg;
-            el.style.display = 'block';
-            document.getElementById('error-msg').style.display = 'none';
-        }
-        
-        function hideMessages() {
-            document.getElementById('error-msg').style.display = 'none';
-            document.getElementById('success-msg').style.display = 'none';
-        }
-        
-        function showLoading(btnId, show) {
-            const btn = document.getElementById(btnId);
-            if (show) {
-                btn.innerHTML = '<span class="loading"></span> Please wait...';
-                btn.disabled = true;
-            } else {
-                btn.innerHTML = btnId === 'login-btn' ? 'Login' : 'Create Account';
-                btn.disabled = false;
-            }
-        }
-        
-        function selectWeek(week) {
-            if (week <= currentStudent?.current_week) {
-                alert(`Loading Week ${week}...`);
-            } else {
-                alert('Complete previous weeks first!');
-            }
-        }
-        
-        function startLesson() {
-            alert('Starting interactive lesson...');
-        }
-        
-        function downloadWorksheet() {
-            alert('Downloading PDF worksheet...');
-        }
-        
-        // Check if already logged in on page load
-        window.onload = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                await loadUserData();
-                showDashboard();
-            }
         };
-    </script>
+        reader.readAsDataURL(file);
+        
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${currentUser.id}-${Date.now()}.${fileExt}`;
+        
+        const { data, error } = await supabaseClient.storage
+            .from('avatars')
+            .upload(fileName, file);
+        
+        if (error) {
+            alert('Upload error: ' + error.message);
+            return;
+        }
+        
+        const { data: { publicUrl } } = supabaseClient.storage
+            .from('avatars')
+            .getPublicUrl(fileName);
+        
+        await supabaseClient
+            .from('students')
+            .update({ avatar_url: publicUrl })
+            .eq('id', currentUser.id);
+        
+        loadAvatar(publicUrl);
+    }
+    
+    async function updateProfile() {
+        const newName = document.getElementById('edit-name').value;
+        if (!newName || !currentUser) return;
+        
+        const { error } = await supabaseClient
+            .from('students')
+            .update({ name: newName })
+            .eq('id', currentUser.id);
+        
+        if (error) {
+            alert('Error updating profile: ' + error.message);
+        } else {
+            currentStudent.name = newName;
+            updateUIWithUser(currentStudent);
+            alert('Profile updated!');
+        }
+    }
+    
+    // ==========================================
+    // UI HELPERS
+    // ==========================================
+    
+    function showAuth() {
+        document.getElementById('auth-section').classList.remove('hidden');
+        document.getElementById('dashboard-section').classList.add('hidden');
+    }
+    
+    function showDashboard() {
+        document.getElementById('auth-section').classList.add('hidden');
+        document.getElementById('dashboard-section').classList.remove('hidden');
+    }
+    
+    function showTab(tabName) {
+        document.getElementById('tab-home').classList.add('hidden');
+        document.getElementById('tab-progress').classList.add('hidden');
+        document.getElementById('tab-messages').classList.add('hidden');
+        document.getElementById('tab-profile').classList.add('hidden');
+        
+        document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+        
+        document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('active'));
+        event.target.closest('.menu-item').classList.add('active');
+    }
+    
+    function showError(msg) {
+        const el = document.getElementById('error-msg');
+        el.textContent = msg;
+        el.style.display = 'block';
+        document.getElementById('success-msg').style.display = 'none';
+    }
+    
+    function showSuccess(msg) {
+        const el = document.getElementById('success-msg');
+        el.textContent = msg;
+        el.style.display = 'block';
+        document.getElementById('error-msg').style.display = 'none';
+    }
+    
+    function hideMessages() {
+        document.getElementById('error-msg').style.display = 'none';
+        document.getElementById('success-msg').style.display = 'none';
+    }
+    
+    function showLoading(btnId, show) {
+        const btn = document.getElementById(btnId);
+        if (show) {
+            btn.innerHTML = 'Please wait...';
+            btn.disabled = true;
+        } else {
+            btn.innerHTML = btnId === 'login-btn' ? 'Login' : 'Create Account';
+            btn.disabled = false;
+        }
+    }
+    
+    function selectWeek(week) {
+        if (week <= currentStudent?.current_week) {
+            alert(`Loading Week ${week}...`);
+        } else {
+            alert('Complete previous weeks first!');
+        }
+    }
+    
+    function startLesson() {
+        alert('Starting interactive lesson...');
+    }
+    
+    function downloadWorksheet() {
+        alert('Downloading PDF worksheet...');
+    }
+    
+    window.onload = async () => {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) {
+            await loadUserData();
+            showDashboard();
+        }
+    };
+</script>
 </body>
 </html>
