@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Do vs Does – Grammar Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #f7f3ee;
+  --card: #ffffff;
+  --text: #1a1a2e;
+  --muted: #6b7280;
+  --green: #22c55e;
+  --green-light: #dcfce7;
+  --green-dark: #15803d;
+  --orange: #f97316;
+  --orange-light: #ffedd5;
+  --orange-dark: #c2410c;
+  --red: #ef4444;
+  --red-light: #fee2e2;
+  --blue: #3b82f6;
+  --blue-light: #dbeafe;
+  --yellow: #eab308;
+  --purple: #8b5cf6;
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.13);
+  --radius: 18px;
+  --radius-sm: 10px;
+}
+
+body {
+  font-family: 'Quicksand', sans-serif;
+  background: var(--bg);
+  background-image: radial-gradient(circle at 20% 20%, #fde68a33 0%, transparent 50%),
+                    radial-gradient(circle at 80% 80%, #bbf7d033 0%, transparent 50%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px 16px 48px;
+  color: var(--text);
+}
+
+/* ── HEADER ── */
+.app-header {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.app-header h1 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2.6rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+.app-header h1 .do-word { color: var(--green-dark); }
+.app-header h1 .vs-word { color: var(--muted); font-size: 1.8rem; margin: 0 6px; }
+.app-header h1 .does-word { color: var(--orange-dark); }
+.app-header p { color: var(--muted); font-size: 1rem; margin-top: 4px; font-weight: 500; }
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  width: 100%;
+  max-width: 680px;
+  overflow: hidden;
+  border: 1.5px solid #e5e7eb;
+}
+
+/* ── SECTION VISIBILITY ── */
+.section { display: none; }
+.section.active { display: block; animation: fadeUp 0.35s ease; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RULES SECTION ── */
+.rules-body { padding: 32px 28px 24px; }
+.rules-body h2 {
+  font-family: 'Baloo 2', cursive;
+  font-size: 1.6rem; font-weight: 700;
+  text-align: center; margin-bottom: 6px;
+}
+.rules-body .sub {
+  text-align: center; color: var(--muted); font-size: 0.95rem;
+  margin-bottom: 24px; font-weight: 500;
+}
+
+.rules-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;
+}
+.rule-card {
+  border-radius: var(--radius-sm); padding: 22px 18px; text-align: center;
+  border: 2.5px solid transparent;
+}
+.rule-card.do-card { background: var(--green-light); border-color: var(--green); }
+.rule-card.does-card { background: var(--orange-light); border-color: var(--orange); }
+
+.rule-card .word {
+  font-family: 'Baloo 2', cursive;
+  font-size: 2.4rem; font-weight: 800; line-height: 1; margin-bottom: 12px;
+}
+.do-card .word { color: var(--green-dark); }
+.does-card .word { color: var(--orange-dark); }
+
+.rule-card .use-with { font-size: 0.8rem; font-weight: 700; color: var(--muted); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.07em; }
+
+.pronouns { display: flex; flex-wrap: wrap; justify-content: center; gap: 7px; margin-bottom: 12px; }
+.pronoun {
+  padding: 6px 14px; border-radius: 50px; font-weight: 700; font-size: 1rem;
+  background: white; box-shadow: var(--shadow-sm);
+}
+.do-card .pronoun { color: var(--green-dark); }
+.does-card .pronoun { color: var(--orange-dark); }
+
+.rule-card .tip {
+  font-size: 0.82rem; font-weight: 600; padding: 8px 10px; border-radius: 8px;
+  background: rgba(255,255,255,0.65); line-height: 1.4;
+}
+.do-card .tip { color: var(--green-dark); }
+.does-card .tip { color: var(--orange-dark); }
+
+.memory-tip {
+  background: #f0f9ff; border: 1.5px solid #bae6fd;
+  border-radius: var(--radius-sm); padding: 16px 18px;
+  font-size: 0.92rem; line-height: 1.6; color: #0369a1;
+  font-weight: 600; text-align: center; margin-bottom: 24px;
+}
+.memory-tip strong { color: #0c4a6e; }
+
+/* ── EXAMPLES SECTION ── */
+.ex-body { padding: 28px; }
+.ex-body h2 { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.ex-body .sub { text-align: center; color: var(--muted); font-size: 0.92rem; margin-bottom: 22px; font-weight: 500; }
+
+.ex-progress { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.ex-dots { display: flex; gap: 6px; flex: 1; }
+.ex-dot {
+  flex: 1; height: 6px; border-radius: 3px; background: #e5e7eb; transition: background 0.3s;
+}
+.ex-dot.done { background: var(--green); }
+.ex-dot.active { background: var(--blue); }
+
+.ex-card {
+  background: #f9fafb; border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-sm); padding: 28px 24px; text-align: center;
+  margin-bottom: 20px;
+}
+.ex-sentence {
+  font-size: 1.45rem; font-weight: 700; line-height: 1.5; margin-bottom: 22px;
+  color: var(--text);
+}
+.ex-sentence .blank {
+  display: inline-block; min-width: 72px; border-bottom: 3px solid var(--blue);
+  color: var(--blue); font-weight: 800;
+}
+.ex-sentence .filled-correct { color: var(--green-dark); border-color: var(--green); }
+.ex-sentence .filled-wrong   { color: var(--red); border-color: var(--red); }
+
+.options { display: flex; justify-content: center; gap: 16px; }
+.opt-btn {
+  padding: 16px 44px; font-size: 1.3rem;
+  font-family: 'Baloo 2', cursive; font-weight: 700;
+  border: 2.5px solid #e5e7eb; background: white;
+  border-radius: var(--radius-sm); cursor: pointer;
+  transition: transform 0.15s, border-color 0.15s, background 0.15s, color 0.15s;
+}
+.opt-btn:hover:not(:disabled) { transform: scale(1.06); box-shadow: var(--shadow-sm); }
+.opt-btn.do-opt:hover:not(:disabled)   { border-color: var(--green); color: var(--green-dark); }
+.opt-btn.does-opt:hover:not(:disabled) { border-color: var(--orange); color: var(--orange-dark); }
+.opt-btn.selected.do-opt   { background: var(--green);  border-color: var(--green);  color: white; }
+.opt-btn.selected.does-opt { background: var(--orange); border-color: var(--orange); color: white; }
+.opt-btn.correct { background: var(--green) !important; border-color: var(--green) !important; color: white !important; animation: pop 0.4s; }
+.opt-btn.wrong   { background: var(--red)   !important; border-color: var(--red)   !important; color: white !important; animation: wobble 0.4s; }
+.opt-btn:disabled { opacity: 0.7; cursor: default; }
+
+@keyframes pop    { 0%,100%{transform:scale(1)} 50%{transform:scale(1.18)} }
+@keyframes wobble { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+.ex-feedback {
+  margin-top: 16px; padding: 12px 16px; border-radius: 8px;
+  font-weight: 700; font-size: 0.95rem; display: none;
+}
+.ex-feedback.ok  { background: var(--green-light); color: var(--green-dark); display: block; }
+.ex-feedback.bad { background: var(--red-light);   color: #991b1b; display: block; }
+
+/* ── REGISTRATION ── */
+.reg-body { padding: 28px; }
+.reg-body h2 { font-family: 'Baloo 2', cursive; font-size: 1.5rem; font-weight: 700; text-align: center; margin-bottom: 4px; }
+.reg-body .sub { text-align: center; color: var(--muted); font-size: 0.92rem; margin-bottom: 22px; font-weight: 500; }
+
+.student-list { max-height: 180px; overflow-y: auto; border: 1.5px solid #e5e7eb; border-radius: var(--radius-sm); margin-bottom: 16px; }
+.s-item {
+  padding: 13px 16px; border-bottom: 1px solid #f3f4f6;
+  cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  transition: background 0.15s; font-weight: 600; font-size: 0.95rem;
+}
+.s-item:last-child { border-bottom: none; }
+.s-item:hover { background: var(--blue-light); }
+.s-item.active { background: var(--blue); color: white; }
+.s-item .best { font-size: 0.8rem; font-weight: 500; opacity: 0.7; }
+
+.input-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.input-row input {
+  flex: 1; padding: 12px 14px; border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-sm); font-family: 'Quicksand', sans-serif;
+  font-size: 0.95rem; font-weight: 600; transition: border-color 0.2s;
+}
+.input-row input:focus { outline: none; border-color: var(--blue); }
+
+.info-box {
+  background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: var(--radius-sm);
+  padding: 16px 18px; margin-bottom: 22px;
+}
+.info-box h4 { font-family: 'Baloo 2', cursive; font-size: 1rem; color: var(--green-dark); margin-bottom: 8px; }
+.info-box ul { list-style: none; }
+.info-box li { font-size: 0.88rem; font-weight: 600; color: #166534; line-height: 2; }
+.info-box li::before { content: '▶ '; color: var(--green); }
+
+/* ── QUIZ SECTION ── */
+.quiz-body { padding: 24px 28px; }
+
+.quiz-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px; flex-wrap: wrap; gap: 12px;
+}
+.q-name { font-weight: 700; font-size: 1rem; color: var(--muted); }
+.q-name span { color: var(--text); }
+
+.hearts { display: flex; gap: 4px; }
+.heart { font-size: 1.4rem; transition: transform 0.2s; }
+.heart.lost { filter: grayscale(1); opacity: 0.3; }
+
+.q-score {
+  font-family: 'Baloo 2', cursive; font-weight: 700; font-size: 1.05rem; color: var(--text);
+}
+
+.progress-bar { width: 100%; height: 7px; background: #e5e7eb; border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+.progress-fill { height: 100%; background: linear-gradient(90deg, var(--green), var(--blue)); border-radius: 4px; transition: width 0.4s ease; }
+
+.timer-row { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.timer-track { flex: 1; height: 8px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.timer-fill { height: 100%; border-radius: 4px; transition: width 1s linear, background 0.5s; background: var(--green); }
+.timer-fill.warn { background: var(--yellow); }
+.timer-fill.danger { background: var(--red); }
+.timer-num { font-weight: 700; font-size: 0.9rem; min-width: 28px; text-align: right; color: var(--muted); }
+
+.q-card {
+  background: #f9fafb; border: 1.5px solid #e5e7eb;
+  border-radius: var(--radius-sm); padding: 32px 24px; text-align: center;
+  margin-bottom: 20px; transition: border-color 0.3s;
+}
+.q-label { font-size: 0.8rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 14px; }
+.q-sentence { font-size: 1.55rem; font-weight: 700; line-height: 1.5; }
+.q-sentence .blank { display: inline-block; min-width: 80px; border-bottom: 3px solid var(--blue); color: var(--blue); font-weight: 800; }
+
+.streak-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--orange-light); color: var(--orange-dark);
+  padding: 5px 12px; border-radius: 50px; font-size: 0.82rem; font-weight: 700;
+  margin-bottom: 14px; opacity: 0; transition: opacity 0.3s;
+}
+.streak-badge.show { opacity: 1; }
+
+/* ── RESULTS SECTION ── */
+.results-body { padding: 32px 28px; text-align: center; }
+.result-emoji { font-size: 4rem; margin-bottom: 10px; }
+.result-title {
+  font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; margin-bottom: 6px;
+}
+.result-msg { color: var(--muted); font-size: 0.95rem; font-weight: 600; margin-bottom: 24px; }
+
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 28px; }
+.stat-box { background: #f9fafb; border: 1.5px solid #e5e7eb; border-radius: var(--radius-sm); padding: 18px 10px; }
+.stat-val { font-family: 'Baloo 2', cursive; font-size: 2rem; font-weight: 800; color: var(--blue); }
+.stat-lbl { font-size: 0.78rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
+
+.board-title { font-family: 'Baloo 2', cursive; font-size: 1.2rem; font-weight: 700; margin-bottom: 14px; }
+.board { border: 1.5px solid #e5e7eb; border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 24px; }
+.board-head { display: grid; grid-template-columns: 1fr auto auto; background: var(--text); color: white; padding: 10px 16px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; gap: 12px; }
+.board-row { display: grid; grid-template-columns: 1fr auto auto; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; font-size: 0.92rem; font-weight: 600; gap: 12px; align-items: center; transition: background 0.15s; }
+.board-row:last-child { border-bottom: none; }
+.board-row.me { background: var(--blue-light); }
+.badge { padding: 4px 12px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; }
+.badge.master { background: var(--green-light); color: var(--green-dark); }
+.badge.trying { background: #fef9c3; color: #854d0e; }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+.btn {
+  padding: 13px 26px; font-size: 0.95rem;
+  font-family: 'Quicksand', sans-serif; font-weight: 700;
+  border: none; border-radius: var(--radius-sm); cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s; display: inline-flex; align-items: center; gap: 7px;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.btn:active { transform: scale(0.97); }
+
+.btn-primary  { background: var(--blue);  color: white; }
+.btn-green    { background: var(--green); color: white; }
+.btn-orange   { background: var(--orange); color: white; }
+.btn-ghost    { background: #f3f4f6; color: var(--text); }
+.btn-add      { background: var(--text); color: white; padding: 13px 18px; }
+.btn-start    { background: linear-gradient(135deg, var(--green), #16a34a); color: white; font-size: 1.05rem; padding: 15px 32px; box-shadow: 0 4px 14px rgba(34,197,94,0.35); }
+.btn-start:hover { box-shadow: 0 6px 20px rgba(34,197,94,0.45); }
+.btn[disabled]  { opacity: 0.45; pointer-events: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 520px) {
+  .rules-grid { grid-template-columns: 1fr; }
+  .stats-row  { grid-template-columns: 1fr; }
+  .options    { flex-direction: column; align-items: center; }
+  .opt-btn    { width: 200px; }
+  .app-header h1 { font-size: 2rem; }
+  .quiz-body, .rules-body, .ex-body, .reg-body, .results-body { padding: 20px 16px; }
+}
+
+/* ── CONFETTI ── */
+.confetti-wrap { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+.confetti-piece {
+  position: absolute; width: 9px; height: 9px; top: -10px;
+  animation: fall linear forwards;
+}
+@keyframes fall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <h1><span class="do-word">Do</span><span class="vs-word">vs</span><span class="does-word">Does</span></h1>
+  <p>English Grammar Challenge</p>
+</header>
+
+<div class="card">
+
+  <!-- ── SECTION 1: RULES ── -->
+  <div id="sec-rules" class="section active">
+    <div class="rules-body">
+      <h2>When to use Do and Does?</h2>
+      <p class="sub">Learn the rule, then test yourself!</p>
+
+      <div class="rules-grid">
+        <div class="rule-card do-card">
+          <div class="word">do</div>
+          <div class="use-with">Use with</div>
+          <div class="pronouns">
+            <span class="pronoun">I</span>
+            <span class="pronoun">You</span>
+            <span class="pronoun">We</span>
+            <span class="pronoun">They</span>
+          </div>
+          <div class="tip">👥 More than one person, or talking about yourself / the person you speak to</div>
+        </div>
+        <div class="rule-card does-card">
+          <div class="word">does</div>
+          <div class="use-with">Use with</div>
+          <div class="pronouns">
+            <span class="pronoun">He</span>
+            <span class="pronoun">She</span>
+            <span class="pronoun">It</span>
+          </div>
+          <div class="tip">👤 One other person (boy/girl) or one animal/thing</div>
+        </div>
+      </div>
+
+      <div class="memory-tip">
+        💡 <strong>Easy trick:</strong> He / She / It → always <strong>does</strong>. Everyone else → <strong>do</strong>.
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="show('sec-examples')">See Examples →</button>
+        <button class="btn btn-start" onclick="show('sec-reg')">🚀 Play the Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: EXAMPLES ── -->
+  <div id="sec-examples" class="section">
+    <div class="ex-body">
+      <h2>Practice Examples</h2>
+      <p class="sub">Choose the correct word</p>
+
+      <div class="ex-progress">
+        <div class="ex-dots" id="exDots"></div>
+        <span style="font-size:0.82rem;font-weight:700;color:var(--muted)" id="exCounter">1 / 6</span>
+      </div>
+
+      <div class="ex-card">
+        <div class="ex-sentence" id="exSentence"></div>
+        <div class="options">
+          <button class="opt-btn do-opt"   id="exBtnDo"   onclick="exSelect('do')">do</button>
+          <button class="opt-btn does-opt" id="exBtnDoes" onclick="exSelect('does')">does</button>
+        </div>
+        <div class="ex-feedback" id="exFeedback"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost"  onclick="show('sec-rules')">← Rules</button>
+        <button class="btn btn-primary" id="exCheckBtn" onclick="exCheck()">Check ✓</button>
+        <button class="btn btn-green hidden" id="exNextBtn" onclick="exNext()">Next →</button>
+        <button class="btn btn-start hidden" id="exPlayBtn" onclick="show('sec-reg')">🚀 Play the Game</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: REGISTRATION ── -->
+  <div id="sec-reg" class="section">
+    <div class="reg-body">
+      <h2>Who is playing?</h2>
+      <p class="sub">Select your name or add a new one</p>
+
+      <div class="student-list" id="studentList"></div>
+
+      <div class="input-row">
+        <input type="text" id="nameInput" placeholder="Type your name…">
+        <button class="btn btn-add" onclick="addStudent()">Add</button>
+      </div>
+
+      <div class="info-box">
+        <h4>🎮 How to play</h4>
+        <ul>
+          <li>15 questions to answer</li>
+          <li>30 seconds per question</li>
+          <li>One mistake = Game over!</li>
+          <li>Answer fast for a better time score</li>
+        </ul>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost" onclick="show('sec-rules')">← Back</button>
+        <button class="btn btn-start" id="startBtn" onclick="startQuiz()" disabled>Start! 🚀</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4: QUIZ ── -->
+  <div id="sec-quiz" class="section">
+    <div class="quiz-body">
+      <div class="quiz-top">
+        <div class="q-name">Player: <span id="qName">—</span></div>
+        <div class="hearts" id="heartsDisplay">
+          <span class="heart">❤️</span>
+        </div>
+        <div class="q-score">⭐ <span id="qScore">0</span> / 15</div>
+      </div>
+
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+      <div class="timer-row">
+        <span style="font-size:0.85rem;font-weight:700;color:var(--muted)">⏱</span>
+        <div class="timer-track"><div class="timer-fill" id="timerFill"></div></div>
+        <span class="timer-num" id="timerNum">30</span>
+      </div>
+
+      <div class="streak-badge" id="streakBadge">🔥 <span id="streakNum">0</span> in a row!</div>
+
+      <div class="q-card" id="qCard">
+        <div class="q-label">Question <span id="qNum">1</span> of 15</div>
+        <div class="q-sentence" id="qSentence"></div>
+      </div>
+
+      <div class="options">
+        <button class="opt-btn do-opt"   onclick="submitAnswer('do')">do</button>
+        <button class="opt-btn does-opt" onclick="submitAnswer('does')">does</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 5: RESULTS ── -->
+  <div id="sec-results" class="section">
+    <div class="results-body">
+      <div class="result-emoji" id="resEmoji">🎉</div>
+      <div class="result-title" id="resTitle">Awesome!</div>
+      <div class="result-msg" id="resMsg">—</div>
+
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-val" id="resSc">0</div><div class="stat-lbl">Correct</div></div>
+        <div class="stat-box"><div class="stat-val" id="resTm">0s</div><div class="stat-lbl">Total time</div></div>
+        <div class="stat-box"><div class="stat-val" id="resAvg">0s</div><div class="stat-lbl">Avg / question</div></div>
+      </div>
+
+      <div class="board-title">🏅 Class Scoreboard</div>
+      <div class="board">
+        <div class="board-head"><span>Name</span><span>Best</span><span>Status</span></div>
+        <div id="boardBody"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-ghost"   onclick="show('sec-rules')">📖 Review Rules</button>
+        <button class="btn btn-primary" onclick="show('sec-reg')">🔄 Play Again</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .card -->
+
+<div id="confettiWrap" class="confetti-wrap"></div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────
+const EXAMPLES = [
+  { s: "She _____ yoga every morning.",     a: "does", hint: "She = one girl → does" },
+  { s: "I _____ my homework after school.", a: "do",   hint: "I = talking about yourself → do" },
+  { s: "They _____ their best at work.",    a: "do",   hint: "They = more than one person → do" },
+  { s: "He _____ a great job.",             a: "does", hint: "He = one boy → does" },
+  { s: "We _____ exercises in the gym.",    a: "do",   hint: "We = you + others → do" },
+  { s: "It _____ tricks at the park.",      a: "does", hint: "It = one thing/animal → does" }
+];
+
+const QUIZ_POOL = [
+  { s: "Aleksa _____ sports every day.",             a: "does" },
+  { s: "All my classmates _____ their work well.",   a: "do"   },
+  { s: "My teacher _____ yoga in the afternoon.",    a: "does" },
+  { s: "I _____ karate at home.",                    a: "do"   },
+  { s: "My family and I _____ arts together.",       a: "do"   },
+  { s: "The cat _____ not like water.",              a: "does" },
+  { s: "They _____ their homework every day.",       a: "do"   },
+  { s: "John _____ his best at work.",               a: "does" },
+  { s: "You _____ a great job!",                     a: "do"   },
+  { s: "The dog _____ tricks at the park.",          a: "does" },
+  { s: "We _____ exercises in class.",               a: "do"   },
+  { s: "Mary _____ not want to go.",                 a: "does" },
+  { s: "The students _____ their tests carefully.",  a: "do"   },
+  { s: "He _____ everything perfectly.",             a: "does" },
+  { s: "My friends and I _____ fun together.",       a: "do"   },
+  { s: "She _____ not understand the question.",     a: "does" },
+  { s: "We _____ our best every day.",               a: "do"   },
+  { s: "The bird _____ not fly in bad weather.",     a: "does" },
+  { s: "You and I _____ make a great team.",         a: "do"   },
+  { s: "He _____ not know the answer.",              a: "does" }
+];
+
+// ── STORAGE ───────────────────────────────────────────────────────────────
+function loadStudents() {
+  try { return JSON.parse(localStorage.getItem('doDoes_students')) || []; }
+  catch { return []; }
+}
+function saveStudents() {
+  try { localStorage.setItem('doDoes_students', JSON.stringify(students)); }
+  catch {}
+}
+let students = loadStudents();
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'sec-reg')     renderStudentList();
+  if (id === 'sec-examples') initExamples();
+}
+
+// ── EXAMPLES ──────────────────────────────────────────────────────────────
+let exIdx = 0, exPicked = null;
+
+function initExamples() {
+  exIdx = 0; exPicked = null;
+  buildExDots();
+  renderExample();
+}
+
+function buildExDots() {
+  const wrap = document.getElementById('exDots');
+  wrap.innerHTML = '';
+  EXAMPLES.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'ex-dot' + (i === 0 ? ' active' : '');
+    d.id = 'exDot' + i;
+    wrap.appendChild(d);
+  });
+}
+
+function renderExample() {
+  exPicked = null;
+  const ex = EXAMPLES[exIdx];
+  document.getElementById('exCounter').textContent = (exIdx+1) + ' / ' + EXAMPLES.length;
+
+  // Sync dots
+  EXAMPLES.forEach((_, i) => {
+    const d = document.getElementById('exDot' + i);
+    d.className = 'ex-dot' + (i < exIdx ? ' done' : i === exIdx ? ' active' : '');
+  });
+
+  const html = ex.s.replace('_____', '<span class="blank" id="exBlank">_____</span>');
+  document.getElementById('exSentence').innerHTML = html;
+
+  ['exBtnDo','exBtnDoes'].forEach(id => {
+    const b = document.getElementById(id);
+    b.className = 'opt-btn ' + (id === 'exBtnDo' ? 'do-opt' : 'does-opt');
+    b.disabled = false;
+  });
+  const fb = document.getElementById('exFeedback');
+  fb.className = 'ex-feedback'; fb.textContent = '';
+
+  document.getElementById('exCheckBtn').classList.remove('hidden');
+  document.getElementById('exNextBtn').classList.add('hidden');
+  document.getElementById('exPlayBtn').classList.add('hidden');
+}
+
+function exSelect(v) {
+  exPicked = v;
+  document.getElementById('exBtnDo').classList.toggle('selected', v === 'do');
+  document.getElementById('exBtnDoes').classList.toggle('selected', v === 'does');
+}
+
+function exCheck() {
+  if (!exPicked) { alert("Please choose 'do' or 'does' first!"); return; }
+  const ex = EXAMPLES[exIdx];
+  const correct = exPicked === ex.a;
+
+  document.getElementById('exBtnDo').disabled = true;
+  document.getElementById('exBtnDoes').disabled = true;
+
+  const doBtnClass   = 'opt-btn do-opt'   + (exPicked === 'do'   ? (correct ? ' correct' : ' wrong')   : (ex.a === 'do'   ? ' correct' : ''));
+  const doesBtnClass = 'opt-btn does-opt' + (exPicked === 'does' ? (correct ? ' correct' : ' wrong')   : (ex.a === 'does' ? ' correct' : ''));
+  document.getElementById('exBtnDo').className   = doBtnClass;
+  document.getElementById('exBtnDoes').className = doesBtnClass;
+
+  const blank = document.getElementById('exBlank');
+  blank.textContent = ex.a;
+  blank.className = 'blank ' + (correct ? 'filled-correct' : 'filled-wrong');
+
+  const fb = document.getElementById('exFeedback');
+  fb.className = 'ex-feedback ' + (correct ? 'ok' : 'bad');
+  fb.textContent = correct ? '✓ Correct! ' + ex.hint : '✗ Not quite. ' + ex.hint;
+
+  document.getElementById('exCheckBtn').classList.add('hidden');
+  const isLast = exIdx === EXAMPLES.length - 1;
+  document.getElementById('exNextBtn').classList.toggle('hidden', isLast);
+  document.getElementById('exPlayBtn').classList.toggle('hidden', !isLast);
+}
+
+function exNext() { exIdx++; renderExample(); }
+
+// ── REGISTRATION ──────────────────────────────────────────────────────────
+let selectedIdx = null;
+
+function renderStudentList() {
+  const list = document.getElementById('studentList');
+  list.innerHTML = '';
+  if (students.length === 0) {
+    list.innerHTML = '<div style="padding:14px 16px;color:var(--muted);font-size:0.9rem;font-weight:600;text-align:center;">No students yet — add your name!</div>';
+    return;
+  }
+  students.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 's-item' + (selectedIdx === i ? ' active' : '');
+    div.innerHTML = `<span>${s.name}</span><span class="best">Best: ${s.best}/15</span>`;
+    div.onclick = () => { selectedIdx = i; document.getElementById('nameInput').value = s.name; renderStudentList(); document.getElementById('startBtn').disabled = false; };
+    list.appendChild(div);
+  });
+}
+
+function addStudent() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) return;
+  const cap = name.charAt(0).toUpperCase() + name.slice(1);
+  const ex = students.findIndex(s => s.name.toLowerCase() === cap.toLowerCase());
+  if (ex >= 0) { selectedIdx = ex; }
+  else { students.push({ name: cap, best: 0, master: false }); saveStudents(); selectedIdx = students.length - 1; }
+  renderStudentList();
+  document.getElementById('startBtn').disabled = false;
+}
+
+document.getElementById('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') addStudent(); });
+
+// ── QUIZ ──────────────────────────────────────────────────────────────────
+let qData = [], qIdx = 0, qScore = 0, qTimer = null, qTimeLeft = 30;
+let qTotalTime = 0, qTimes = [], qStreak = 0;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  if (selectedIdx === null) return;
+  qData = shuffle(QUIZ_POOL).slice(0, 15);
+  qIdx = 0; qScore = 0; qTotalTime = 0; qTimes = []; qStreak = 0;
+
+  document.getElementById('qName').textContent = students[selectedIdx].name;
+  document.getElementById('qScore').textContent = '0';
+  document.getElementById('heartsDisplay').innerHTML = '<span class="heart">❤️</span>';
+  document.getElementById('streakBadge').classList.remove('show');
+
+  show('sec-quiz');
+  loadQuestion();
+}
+
+function loadQuestion() {
+  if (qIdx >= qData.length) { endQuiz(true); return; }
+  const q = qData[qIdx];
+  qTimeLeft = 30;
+
+  document.getElementById('qNum').textContent = qIdx + 1;
+  document.getElementById('qScore').textContent = qScore;
+  document.getElementById('progressFill').style.width = ((qIdx / qData.length) * 100) + '%';
+
+  const html = q.s.replace('_____', '<span class="blank" id="qBlank">_____</span>');
+  document.getElementById('qSentence').innerHTML = html;
+  document.getElementById('qCard').style.borderColor = '#e5e7eb';
+
+  // reset option buttons
+  document.querySelectorAll('#sec-quiz .opt-btn').forEach(b => {
+    b.className = b.classList.contains('do-opt') ? 'opt-btn do-opt' : 'opt-btn does-opt';
+    b.disabled = false;
+  });
+
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(qTimer);
+  updateTimer();
+  qTimer = setInterval(() => {
+    qTimeLeft--;
+    qTotalTime++;
+    updateTimer();
+    if (qTimeLeft <= 0) { clearInterval(qTimer); submitAnswer(null); }
+  }, 1000);
+}
+
+function updateTimer() {
+  const pct = (qTimeLeft / 30) * 100;
+  const fill = document.getElementById('timerFill');
+  fill.style.width = pct + '%';
+  fill.className = 'timer-fill' + (qTimeLeft <= 10 ? ' danger' : qTimeLeft <= 20 ? ' warn' : '');
+  document.getElementById('timerNum').textContent = qTimeLeft;
+}
+
+function submitAnswer(chosen) {
+  clearInterval(qTimer);
+  const q = qData[qIdx];
+  const timeTaken = 30 - qTimeLeft;
+  qTimes.push(timeTaken);
+  qTotalTime = qTimes.reduce((a,b)=>a+b, 0);
+
+  // disable buttons
+  document.querySelectorAll('#sec-quiz .opt-btn').forEach(b => b.disabled = true);
+
+  const correct = chosen === q.a;
+
+  // colour the chosen button
+  document.querySelectorAll('#sec-quiz .opt-btn').forEach(b => {
+    const isChosen = (b.classList.contains('do-opt') && chosen === 'do') ||
+                     (b.classList.contains('does-opt') && chosen === 'does');
+    const isCorrect = (b.classList.contains('do-opt') && q.a === 'do') ||
+                      (b.classList.contains('does-opt') && q.a === 'does');
+    if (isChosen && correct) b.classList.add('correct');
+    else if (isChosen && !correct) b.classList.add('wrong');
+    else if (!isChosen && isCorrect) b.classList.add('correct');
+  });
+
+  const blank = document.getElementById('qBlank');
+  if (blank) { blank.textContent = q.a; blank.style.color = correct ? 'var(--green-dark)' : 'var(--red)'; }
+
+  document.getElementById('qCard').style.borderColor = correct ? 'var(--green)' : 'var(--red)';
+
+  if (correct) {
+    qScore++;
+    qStreak++;
+    updateStreak();
+    qIdx++;
+    setTimeout(loadQuestion, 900);
+  } else {
+    qStreak = 0;
+    updateStreak();
+    setTimeout(() => endQuiz(false), 1100);
+  }
+}
+
+function updateStreak() {
+  const badge = document.getElementById('streakBadge');
+  if (qStreak >= 3) {
+    document.getElementById('streakNum').textContent = qStreak;
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+}
+
+// ── END QUIZ ──────────────────────────────────────────────────────────────
+function endQuiz(perfect) {
+  clearInterval(qTimer);
+  const st = students[selectedIdx];
+  if (qScore > st.best) st.best = qScore;
+  if (perfect && qScore === 15) st.master = true;
+  saveStudents();
+
+  const avg = qTimes.length ? Math.round(qTimes.reduce((a,b)=>a+b,0) / qTimes.length) : 0;
+
+  document.getElementById('resSc').textContent  = qScore;
+  document.getElementById('resTm').textContent  = qTotalTime + 's';
+  document.getElementById('resAvg').textContent = avg + 's';
+
+  if (perfect && qScore === 15) {
+    document.getElementById('resEmoji').textContent = '🏆';
+    document.getElementById('resTitle').textContent = 'Perfect Score!';
+    document.getElementById('resMsg').textContent   = 'You are a grammar master! Incredible work!';
+    launchConfetti();
+  } else {
+    document.getElementById('resEmoji').textContent = '😊';
+    document.getElementById('resTitle').textContent = 'Good Try!';
+    document.getElementById('resMsg').textContent   = 'You got ' + qScore + ' correct. Keep practising, you\'ll get there!';
+  }
+
+  renderBoard();
+  show('sec-results');
+}
+
+function renderBoard() {
+  const body = document.getElementById('boardBody');
+  body.innerHTML = '';
+  const sorted = [...students].sort((a,b) => b.best - a.best);
+  const meName = students[selectedIdx]?.name;
+  sorted.forEach(s => {
+    const isMe = s.name === meName;
+    const row = document.createElement('div');
+    row.className = 'board-row' + (isMe ? ' me' : '');
+    row.innerHTML = `
+      <span>${s.name}${isMe ? ' <strong>(You)</strong>' : ''}</span>
+      <span>${s.best}/15</span>
+      <span class="badge ${s.master ? 'master' : 'trying'}">${s.master ? '⭐ Master' : '💪 Trying'}</span>
+    `;
+    body.appendChild(row);
+  });
+}
+
+// ── CONFETTI ──────────────────────────────────────────────────────────────
+function launchConfetti() {
+  const wrap = document.getElementById('confettiWrap');
+  wrap.innerHTML = '';
+  const colors = ['#22c55e','#3b82f6','#f97316','#eab308','#8b5cf6','#ef4444','#06b6d4'];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.cssText = [
+      'left:' + Math.random()*100 + '%',
+      'background:' + colors[Math.floor(Math.random()*colors.length)],
+      'width:' + (6+Math.random()*8) + 'px',
+      'height:' + (6+Math.random()*8) + 'px',
+      'border-radius:' + (Math.random() > 0.5 ? '50%' : '2px'),
+      'animation-duration:' + (1.8+Math.random()*1.6) + 's',
+      'animation-delay:' + (Math.random()*0.8) + 's',
+      'opacity:' + (0.7+Math.random()*0.3)
+    ].join(';');
+    wrap.appendChild(el);
+  }
+  setTimeout(() => { wrap.innerHTML = ''; }, 4000);
+}
+</script>
+</body>
+</html>
