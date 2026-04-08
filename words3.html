@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Word Scramble Game</title>
+    <style>
+        @font-face { font-family: 'Century Gothic'; src: local('Century Gothic'), local('Apple Gothic'); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Century Gothic', 'Apple Gothic', 'Avant Garde', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+
+        .container {
+            background: white; border-radius: 20px; padding: 40px;
+            max-width: 900px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 { color: #333; text-align: center; margin-bottom: 30px; font-size: 2.2em; font-family: 'Century Gothic', sans-serif; }
+        h2 { color: #667eea; text-align: center; margin-bottom: 20px; font-size: 1.5em; font-family: 'Century Gothic', sans-serif; }
+
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Guest Banner */
+        .guest-banner {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white; border-radius: 15px; padding: 20px 25px;
+            margin-bottom: 25px; display: flex; align-items: center;
+            justify-content: space-between; gap: 15px;
+        }
+        .guest-banner-text strong { font-size: 1.1em; display: block; margin-bottom: 4px; font-family: 'Century Gothic', sans-serif; }
+        .guest-banner-text span   { font-size: 0.85em; opacity: 0.9; font-family: 'Century Gothic', sans-serif; }
+        .btn-guest {
+            padding: 12px 28px; border: none; border-radius: 10px; background: white;
+            color: #f5576c; font-size: 1em; font-weight: bold; cursor: pointer;
+            font-family: 'Century Gothic', sans-serif; white-space: nowrap; transition: all 0.2s;
+        }
+        .btn-guest:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+        .guest-badge {
+            display: inline-block; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white; font-size: 0.8em; padding: 3px 12px; border-radius: 20px;
+            margin-left: 10px; vertical-align: middle; font-family: 'Century Gothic', sans-serif;
+        }
+
+        /* Student Grid */
+        .student-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 15px; margin-bottom: 30px;
+        }
+        .student-card {
+            padding: 15px 10px; border: 3px solid #ddd; background: white;
+            border-radius: 15px; cursor: pointer; text-align: center; transition: all 0.3s;
+            min-height: 80px; display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+        }
+        .student-card:hover { border-color: #667eea; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(102,126,234,0.3); }
+        .student-card.selected { background: #667eea; color: white; border-color: #667eea; }
+        .student-name { font-size: 0.95em; font-weight: bold; line-height: 1.2; word-break: break-word; hyphens: auto; font-family: 'Century Gothic', sans-serif; }
+        .student-stats { font-size: 0.75em; color: #888; margin-top: 5px; font-family: 'Century Gothic', sans-serif; }
+        .student-card.selected .student-stats { color: rgba(255,255,255,0.9); }
+
+        .btn-primary {
+            display: block; width: 100%; padding: 15px; border: none; border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; font-size: 1.2em; font-weight: bold; cursor: pointer;
+            font-family: 'Century Gothic', sans-serif; transition: all 0.2s;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(102,126,234,0.4); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Level Progress */
+        .level-progress-wrap { margin-bottom: 14px; }
+        .level-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+        .level-label { font-size: 0.92em; font-weight: bold; color: #667eea; font-family: 'Century Gothic', sans-serif; }
+        .level-words-label { font-size: 0.82em; color: #888; font-family: 'Century Gothic', sans-serif; }
+        .level-bar-bg { width: 100%; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+        .level-bar-fill { height: 100%; border-radius: 5px; background: linear-gradient(90deg, #667eea, #764ba2); transition: width 0.4s ease; }
+
+        /* Level dots */
+        .level-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+        .level-dot {
+            width: 34px; height: 34px; border-radius: 50%; border: 2px solid #ddd; background: white;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75em; font-weight: bold; color: #bbb;
+            font-family: 'Century Gothic', sans-serif; transition: all 0.3s;
+        }
+        .level-dot.done   { background: #4CAF50; border-color: #4CAF50; color: white; }
+        .level-dot.active { background: #667eea; border-color: #667eea; color: white; transform: scale(1.18); box-shadow: 0 2px 8px rgba(102,126,234,0.4); }
+
+        /* Game header */
+        .game-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 15px; background: #f8f9fa; border-radius: 10px; }
+        .lives { display: flex; gap: 5px; font-size: 1.5em; }
+        .game-info { text-align: right; }
+        .score-display { font-size: 1.2em; color: #667eea; font-weight: bold; font-family: 'Century Gothic', sans-serif; }
+        .timer-display { font-size: 1.5em; color: #f44336; font-weight: bold; font-family: 'Century Gothic', sans-serif; }
+
+        .word-area {
+            background: #f8f9fa; border-radius: 15px; padding: 30px 40px;
+            text-align: center; margin-bottom: 20px; min-height: 200px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+        }
+        .phase-indicator { color: #666; font-size: 0.9em; margin-bottom: 10px; font-family: 'Century Gothic', sans-serif; }
+        .word-display {
+            font-size: 4em; font-weight: bold; color: #333; letter-spacing: 0.1em;
+            min-height: 80px; display: flex; align-items: center; justify-content: center;
+            font-family: 'Century Gothic', sans-serif;
+        }
+        .word-display.scrambled { color: #667eea; letter-spacing: 0.2em; }
+
+        .countdown-bar { width: 100%; max-width: 300px; height: 8px; background: #e0e0e0; border-radius: 4px; margin: 20px 0; overflow: hidden; }
+        .countdown-fill { height: 100%; background: linear-gradient(90deg, #667eea, #764ba2); width: 100%; transition: width 0.1s linear; }
+
+        .input-area { width: 100%; max-width: 300px; }
+        .word-input {
+            width: 100%; padding: 20px; font-size: 1.8em; border: 3px solid #ddd;
+            border-radius: 10px; text-align: center; text-transform: lowercase;
+            font-family: 'Century Gothic', sans-serif; margin-bottom: 15px;
+        }
+        .word-input:focus { outline: none; border-color: #667eea; }
+        .word-input.correct { border-color: #4CAF50; background: #e8f5e9; }
+        .word-input.wrong   { border-color: #f44336; background: #ffebee; }
+
+        /* Keyboard */
+        .keyboard { display: flex; flex-direction: column; gap: 8px; align-items: center; background: #f0f0f0; padding: 20px; border-radius: 15px; margin-top: 10px; }
+        .keyboard-row { display: flex; gap: 6px; justify-content: center; }
+        .key {
+            width: 50px; height: 50px; border: none; border-radius: 10px; cursor: pointer;
+            font-size: 1.2em; font-weight: bold; font-family: 'Century Gothic', sans-serif;
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.15s; user-select: none; box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+        }
+        .key:active { transform: translateY(4px); box-shadow: 0 0 0 rgba(0,0,0,0.2); }
+        .key.consonant       { background: #4CAF50; color: white; }
+        .key.consonant:hover { background: #45a049; }
+        .key.vowel           { background: #FF9800; color: white; }
+        .key.vowel:hover     { background: #f57c00; }
+        .key.wide            { width: 85px;  background: #757575; color: white; }
+        .key.wide:hover      { background: #616161; }
+        .key.extra-wide      { width: 160px; background: #2196F3; color: white; }
+        .key.extra-wide:hover{ background: #1976D2; }
+
+        .nav-buttons { display: flex; gap: 15px; justify-content: center; margin-top: 30px; }
+        .btn-secondary {
+            padding: 12px 25px; border: 2px solid #667eea; background: white;
+            color: #667eea; border-radius: 8px; cursor: pointer; font-size: 1em;
+            font-family: 'Century Gothic', sans-serif; font-weight: bold; transition: all 0.2s;
+        }
+        .btn-secondary:hover { background: #667eea; color: white; }
+
+        /* Leaderboard */
+        .leaderboard { background: #f8f9fa; border-radius: 15px; padding: 20px; }
+        .leaderboard-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #e0e0e0; }
+        .leaderboard-item:last-child { border-bottom: none; }
+        .rank { font-size: 1.5em; font-weight: bold; color: #667eea; width: 40px; font-family: 'Century Gothic', sans-serif; }
+        .rank.gold   { color: #FFD700; }
+        .rank.silver { color: #C0C0C0; }
+        .rank.bronze { color: #CD7F32; }
+        .leaderboard-name  { flex: 1; font-size: 1.1em; padding-left: 15px; font-family: 'Century Gothic', sans-serif; }
+        .student-score     { text-align: right; }
+        .words-count       { font-size: 1.3em; font-weight: bold; color: #333; font-family: 'Century Gothic', sans-serif; }
+        .points-count      { font-size: 0.9em; color: #666; font-family: 'Century Gothic', sans-serif; }
+
+        /* Overlays */
+        .message-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); display: none; z-index: 999;
+            justify-content: center; align-items: center;
+        }
+        .message-overlay.show { display: flex; }
+        .message-box { background: white; padding: 40px; border-radius: 20px; text-align: center; animation: popIn 0.3s; max-width: 380px; width: 90%; }
+        @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .message-emoji { font-size: 4em; margin-bottom: 15px; }
+        .message-title { font-size: 1.8em; color: #333; margin-bottom: 10px; font-family: 'Century Gothic', sans-serif; }
+        .message-text  { color: #666; margin-bottom: 25px; font-family: 'Century Gothic', sans-serif; white-space: pre-line; line-height: 1.6; }
+
+        /* Mode cards */
+        .mode-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .mode-card { padding: 30px; border: 3px solid #ddd; border-radius: 15px; cursor: pointer; text-align: center; transition: all 0.3s; }
+        .mode-card:hover { border-color: #667eea; transform: translateY(-3px); box-shadow: 0 5px 15px rgba(102,126,234,0.3); }
+        .mode-icon  { font-size: 3em; margin-bottom: 15px; }
+        .mode-title { font-size: 1.3em; font-weight: bold; color: #333; margin-bottom: 10px; font-family: 'Century Gothic', sans-serif; }
+        .mode-desc  { color: #666; font-size: 0.9em; font-family: 'Century Gothic', sans-serif; }
+
+        /* Guest modal */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 998; justify-content: center; align-items: center; }
+        .modal-overlay.show { display: flex; }
+        .modal-box { background: white; padding: 40px; border-radius: 20px; text-align: center; max-width: 380px; width: 90%; animation: popIn 0.3s; }
+        .modal-box h3 { font-size: 1.6em; color: #333; margin-bottom: 8px; font-family: 'Century Gothic', sans-serif; }
+        .modal-box p  { color: #888; font-size: 0.9em; margin-bottom: 20px; font-family: 'Century Gothic', sans-serif; }
+        .modal-input  { width: 100%; padding: 14px 18px; font-size: 1.1em; border: 3px solid #ddd; border-radius: 10px; text-align: center; font-family: 'Century Gothic', sans-serif; margin-bottom: 20px; outline: none; transition: border-color 0.2s; }
+        .modal-input:focus { border-color: #667eea; }
+        .modal-buttons { display: flex; gap: 12px; }
+        .btn-cancel  { flex: 1; padding: 12px; border: 2px solid #ccc; background: white; color: #888; border-radius: 10px; cursor: pointer; font-size: 1em; font-family: 'Century Gothic', sans-serif; }
+        .btn-cancel:hover { border-color: #999; color: #555; }
+        .btn-confirm { flex: 2; padding: 12px; border: none; border-radius: 10px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; font-size: 1em; font-weight: bold; cursor: pointer; font-family: 'Century Gothic', sans-serif; }
+        .btn-confirm:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(245,87,108,0.4); }
+
+        @media (max-width: 600px) {
+            .word-display { font-size: 2.5em; }
+            .mode-cards { grid-template-columns: 1fr; }
+            .key { width: 40px; height: 40px; font-size: 1em; }
+            .key.wide { width: 70px; }
+            .key.extra-wide { width: 130px; }
+            .student-grid { grid-template-columns: repeat(2, 1fr); }
+            .guest-banner { flex-direction: column; text-align: center; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+<div class="container">
+
+    <!-- PAGE 1: Student Selection -->
+    <div class="page active" id="page1">
+        <h1>👋 Welcome!</h1>
+        <h2>Select Your Name</h2>
+        <div class="guest-banner">
+            <div class="guest-banner-text">
+                <strong>🎭 Not on the list?</strong>
+                <span>Play as a guest — scores won't be saved to the leaderboard</span>
+            </div>
+            <button class="btn-guest" onclick="openGuestModal()">Play as Guest</button>
+        </div>
+        <div class="student-grid" id="studentGrid"></div>
+        <button class="btn-primary" id="continueBtn" onclick="goToMenu()" disabled>Continue →</button>
+    </div>
+
+    <!-- PAGE 2: Menu -->
+    <div class="page" id="page2">
+        <h1>🎮 Game Menu</h1>
+        <h2 id="welcomeStudent">Welcome!</h2>
+        <div class="mode-cards">
+            <div class="mode-card" onclick="startMode(1)">
+                <div class="mode-icon">📖</div>
+                <div class="mode-title">Show First</div>
+                <div class="mode-desc">See the word for 2 seconds, then unscramble it in 20 seconds</div>
+            </div>
+            <div class="mode-card" onclick="startMode(2)">
+                <div class="mode-icon">🎲</div>
+                <div class="mode-title">Start Scrambled</div>
+                <div class="mode-desc">Word appears scrambled immediately. You have 20 seconds to solve it</div>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-secondary" id="leaderboardBtn" onclick="showLeaderboard()">🏆 Leaderboard</button>
+            <button class="btn-secondary" onclick="backToStudents()">← Change Player</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: Game Mode 1 (Show First) -->
+    <div class="page" id="page3">
+        <div class="game-header">
+            <div class="lives" id="lives1">❤️❤️❤️</div>
+            <div class="game-info">
+                <div class="score-display">Words: <span id="score1">0</span></div>
+                <div class="timer-display" id="timer1">--</div>
+            </div>
+        </div>
+        <div class="level-progress-wrap">
+            <div class="level-label-row">
+                <span class="level-label" id="levelLabel1">Level 1</span>
+                <span class="level-words-label" id="levelWordsLabel1">0 / 5</span>
+            </div>
+            <div class="level-bar-bg"><div class="level-bar-fill" id="levelBarFill1" style="width:0%"></div></div>
+        </div>
+        <div class="level-dots" id="levelDots1"></div>
+        <div class="word-area">
+            <div class="phase-indicator" id="phase1">Get ready...</div>
+            <div class="word-display" id="wordDisplay1">...</div>
+            <div class="countdown-bar" id="bar1"><div class="countdown-fill" id="fill1"></div></div>
+            <div class="input-area">
+                <input type="text" class="word-input" id="input1" placeholder="type here" disabled>
+            </div>
+        </div>
+        <div class="keyboard">
+            <div class="keyboard-row">
+                <button class="key consonant" onclick="pressKey(1,'q')">q</button>
+                <button class="key consonant" onclick="pressKey(1,'w')">w</button>
+                <button class="key vowel"     onclick="pressKey(1,'e')">e</button>
+                <button class="key consonant" onclick="pressKey(1,'r')">r</button>
+                <button class="key consonant" onclick="pressKey(1,'t')">t</button>
+                <button class="key consonant" onclick="pressKey(1,'y')">y</button>
+                <button class="key vowel"     onclick="pressKey(1,'u')">u</button>
+                <button class="key vowel"     onclick="pressKey(1,'i')">i</button>
+                <button class="key vowel"     onclick="pressKey(1,'o')">o</button>
+                <button class="key consonant" onclick="pressKey(1,'p')">p</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key vowel"     onclick="pressKey(1,'a')">a</button>
+                <button class="key consonant" onclick="pressKey(1,'s')">s</button>
+                <button class="key consonant" onclick="pressKey(1,'d')">d</button>
+                <button class="key consonant" onclick="pressKey(1,'f')">f</button>
+                <button class="key consonant" onclick="pressKey(1,'g')">g</button>
+                <button class="key consonant" onclick="pressKey(1,'h')">h</button>
+                <button class="key consonant" onclick="pressKey(1,'j')">j</button>
+                <button class="key consonant" onclick="pressKey(1,'k')">k</button>
+                <button class="key consonant" onclick="pressKey(1,'l')">l</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key consonant" onclick="pressKey(1,'z')">z</button>
+                <button class="key consonant" onclick="pressKey(1,'x')">x</button>
+                <button class="key consonant" onclick="pressKey(1,'c')">c</button>
+                <button class="key consonant" onclick="pressKey(1,'v')">v</button>
+                <button class="key consonant" onclick="pressKey(1,'b')">b</button>
+                <button class="key consonant" onclick="pressKey(1,'n')">n</button>
+                <button class="key consonant" onclick="pressKey(1,'m')">m</button>
+                <button class="key wide"      onclick="pressKey(1,'backspace')">⌫</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key extra-wide" onclick="submitAnswer(1)">ENTER ✓</button>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-secondary" onclick="backToMenu()">← Menu</button>
+        </div>
+    </div>
+
+    <!-- PAGE 4: Game Mode 2 (Start Scrambled) -->
+    <div class="page" id="page4">
+        <div class="game-header">
+            <div class="lives" id="lives2">❤️❤️❤️</div>
+            <div class="game-info">
+                <div class="score-display">Words: <span id="score2">0</span></div>
+                <div class="timer-display" id="timer2">20s</div>
+            </div>
+        </div>
+        <div class="level-progress-wrap">
+            <div class="level-label-row">
+                <span class="level-label" id="levelLabel2">Level 1</span>
+                <span class="level-words-label" id="levelWordsLabel2">0 / 5</span>
+            </div>
+            <div class="level-bar-bg"><div class="level-bar-fill" id="levelBarFill2" style="width:0%"></div></div>
+        </div>
+        <div class="level-dots" id="levelDots2"></div>
+        <div class="word-area">
+            <div class="phase-indicator">Unscramble this word!</div>
+            <div class="word-display scrambled" id="wordDisplay2">...</div>
+            <div class="countdown-bar"><div class="countdown-fill" id="fill2"></div></div>
+            <div class="input-area">
+                <input type="text" class="word-input" id="input2" placeholder="type here">
+            </div>
+        </div>
+        <div class="keyboard">
+            <div class="keyboard-row">
+                <button class="key consonant" onclick="pressKey(2,'q')">q</button>
+                <button class="key consonant" onclick="pressKey(2,'w')">w</button>
+                <button class="key vowel"     onclick="pressKey(2,'e')">e</button>
+                <button class="key consonant" onclick="pressKey(2,'r')">r</button>
+                <button class="key consonant" onclick="pressKey(2,'t')">t</button>
+                <button class="key consonant" onclick="pressKey(2,'y')">y</button>
+                <button class="key vowel"     onclick="pressKey(2,'u')">u</button>
+                <button class="key vowel"     onclick="pressKey(2,'i')">i</button>
+                <button class="key vowel"     onclick="pressKey(2,'o')">o</button>
+                <button class="key consonant" onclick="pressKey(2,'p')">p</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key vowel"     onclick="pressKey(2,'a')">a</button>
+                <button class="key consonant" onclick="pressKey(2,'s')">s</button>
+                <button class="key consonant" onclick="pressKey(2,'d')">d</button>
+                <button class="key consonant" onclick="pressKey(2,'f')">f</button>
+                <button class="key consonant" onclick="pressKey(2,'g')">g</button>
+                <button class="key consonant" onclick="pressKey(2,'h')">h</button>
+                <button class="key consonant" onclick="pressKey(2,'j')">j</button>
+                <button class="key consonant" onclick="pressKey(2,'k')">k</button>
+                <button class="key consonant" onclick="pressKey(2,'l')">l</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key consonant" onclick="pressKey(2,'z')">z</button>
+                <button class="key consonant" onclick="pressKey(2,'x')">x</button>
+                <button class="key consonant" onclick="pressKey(2,'c')">c</button>
+                <button class="key consonant" onclick="pressKey(2,'v')">v</button>
+                <button class="key consonant" onclick="pressKey(2,'b')">b</button>
+                <button class="key consonant" onclick="pressKey(2,'n')">n</button>
+                <button class="key consonant" onclick="pressKey(2,'m')">m</button>
+                <button class="key wide"      onclick="pressKey(2,'backspace')">⌫</button>
+            </div>
+            <div class="keyboard-row">
+                <button class="key extra-wide" onclick="submitAnswer(2)">ENTER ✓</button>
+            </div>
+        </div>
+        <div class="nav-buttons">
+            <button class="btn-secondary" onclick="backToMenu()">← Menu</button>
+        </div>
+    </div>
+
+    <!-- PAGE 5: Leaderboard -->
+    <div class="page" id="page5">
+        <h1>🏆 Leaderboard</h1>
+        <h2>Top Students</h2>
+        <div class="leaderboard" id="leaderboard"></div>
+        <div class="nav-buttons">
+            <button class="btn-secondary" onclick="backToMenu()">← Back to Menu</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- Guest Modal -->
+<div class="modal-overlay" id="guestModal">
+    <div class="modal-box">
+        <h3>🎭 Play as Guest</h3>
+        <p>Enter a nickname to get started. Your score won't be saved to the leaderboard.</p>
+        <input type="text" class="modal-input" id="guestNameInput" placeholder="Your nickname" maxlength="20">
+        <div class="modal-buttons">
+            <button class="btn-cancel" onclick="closeGuestModal()">Cancel</button>
+            <button class="btn-confirm" onclick="confirmGuest()">Let's Play! →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Message Overlay -->
+<div class="message-overlay" id="overlay">
+    <div class="message-box">
+        <div class="message-emoji" id="msgEmoji">✅</div>
+        <div class="message-title" id="msgTitle">Title</div>
+        <div class="message-text"  id="msgText">Text</div>
+        <button class="btn-primary" id="msgBtn">Continue</button>
+    </div>
+</div>
+
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const students = [
+    "Aizere","Alimkhan","Alisa","Barlas","Bulat","Dameli",
+    "Danial","Dasariya","David","Ideliya","Ildar","Laura",
+    "Liyara","Mira","Mukhammedrakhym","Ruslan","Rustem","Zhasmin"
+];
+
+// 5 levels ordered by word length → difficulty
+// Advance after WORDS_TO_ADVANCE correct answers per level
+const WORDS_TO_ADVANCE = 5;
+
+const levels = [
+    {
+        num: 1, emoji: "🌱",
+        label: "Level 1 — 2 to 3 letter words",
+        words: ["no","my","he","me","we","so","go","be","is","do","to","by","of",
+                "two","one","the","are","you","she","all","has","was","who","how",
+                "out","put","why","old","buy","own","try","run","sit","cut","big","get"]
+    },
+    {
+        num: 2, emoji: "🌿",
+        label: "Level 2 — 4 letter words",
+        words: ["here","four","what","they","come","down","said","know","just","have",
+                "goes","says","does","your","been","many","walk","both","full","only",
+                "want","done","warm","half","gone","sure","none","busy","some","once",
+                "give","from","live","very","grow","read","draw","open","help","turn"]
+    },
+    {
+        num: 3, emoji: "🌳",
+        label: "Level 3 — 5 letter words",
+        words: ["three","there","green","brown","black","where","every","could","again",
+                "other","write","would","first","today","watch","about","light","water",
+                "above","touch","carry","rough","build","earth","young","ocean","which",
+                "laugh","tough","sugar","think","place","never","after","still","clean"]
+    },
+    {
+        num: 4, emoji: "⭐",
+        label: "Level 4 — 6 letter words",
+        words: ["yellow","always","before","friend","purple","orange","should","though",
+                "enough","almost","answer","except","during","danger","caught","either",
+                "choose","bought","people","around","behind","winter","matter","simple",
+                "follow","pretty","happen","school","little","number","finger","doctor"]
+    },
+    {
+        num: 5, emoji: "🏆",
+        label: "Level 5 — 7 or more letters",
+        words: ["against","through","thought","brought","instead","usually","certain",
+                "opinion","because","nothing","someone","another","between","country",
+                "problem","already","morning","flowers","together","separate","although",
+                "beautiful","daughter","children","question","probably","practice","different"]
+    }
+];
+
+// ─── STUDENT DATA ─────────────────────────────────────────────────────────────
+let studentData = {};
+students.forEach(s => studentData[s] = { totalWords: 0, totalPoints: 0 });
+
+// ─── GAME STATE ───────────────────────────────────────────────────────────────
+let currentStudent  = null;
+let isGuest         = false;
+let currentMode     = null;   // 1 or 2
+
+let currentLevelIdx = 0;
+let levelCorrect    = 0;
+let levelWords      = [];
+let levelWordIdx    = 0;
+let currentWord     = "";
+let lives           = 3;
+let score           = 0;
+let gameTimer       = null;
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function init() {
+    const grid = document.getElementById('studentGrid');
+    students.forEach(name => {
+        const div = document.createElement('div');
+        div.className = 'student-card';
+        div.id = `card-${name}`;
+        div.onclick = () => selectStudent(name);
+        div.innerHTML = `<div class="student-name">${name}</div>
+                         <div class="student-stats" id="stats-${name}">0 words</div>`;
+        grid.appendChild(div);
+    });
+    buildLevelDots(1);
+    buildLevelDots(2);
+}
+
+function buildLevelDots(mode) {
+    const wrap = document.getElementById(`levelDots${mode}`);
+    wrap.innerHTML = '';
+    levels.forEach((lv, i) => {
+        const d = document.createElement('div');
+        d.className = 'level-dot' + (i === 0 ? ' active' : '');
+        d.id = `dot${mode}_${i}`;
+        d.textContent = lv.num;
+        wrap.appendChild(d);
+    });
+}
+
+function refreshLevelUI(mode) {
+    const lv  = levels[currentLevelIdx];
+    const pct = Math.min(100, (levelCorrect / WORDS_TO_ADVANCE) * 100);
+    document.getElementById(`levelLabel${mode}`).textContent      = lv.label;
+    document.getElementById(`levelWordsLabel${mode}`).textContent = `${levelCorrect} / ${WORDS_TO_ADVANCE}`;
+    document.getElementById(`levelBarFill${mode}`).style.width    = pct + '%';
+    levels.forEach((_, i) => {
+        const dot = document.getElementById(`dot${mode}_${i}`);
+        dot.className = 'level-dot' +
+            (i < currentLevelIdx ? ' done' : i === currentLevelIdx ? ' active' : '');
+    });
+}
+
+// ─── STUDENT / GUEST ─────────────────────────────────────────────────────────
+function selectStudent(name) {
+    isGuest = false;
+    currentStudent = name;
+    document.querySelectorAll('.student-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(`card-${name}`).classList.add('selected');
+    document.getElementById('continueBtn').disabled = false;
+}
+
+function openGuestModal() {
+    document.getElementById('guestNameInput').value = '';
+    document.getElementById('guestModal').classList.add('show');
+    setTimeout(() => document.getElementById('guestNameInput').focus(), 100);
+}
+function closeGuestModal() { document.getElementById('guestModal').classList.remove('show'); }
+
+function confirmGuest() {
+    const name = document.getElementById('guestNameInput').value.trim();
+    if (!name) {
+        const inp = document.getElementById('guestNameInput');
+        inp.style.borderColor = '#f44336'; inp.focus();
+        setTimeout(() => inp.style.borderColor = '', 1000);
+        return;
+    }
+    isGuest = true; currentStudent = name;
+    document.querySelectorAll('.student-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById('continueBtn').disabled = true;
+    closeGuestModal();
+    goToMenu();
+}
+document.getElementById('guestNameInput').addEventListener('keypress', e => { if (e.key === 'Enter') confirmGuest(); });
+
+// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+function goToMenu() {
+    const badge = isGuest ? '<span class="guest-badge">Guest</span>' : '';
+    document.getElementById('welcomeStudent').innerHTML = `Hello, ${currentStudent}!${badge}`;
+    document.getElementById('leaderboardBtn').style.display = isGuest ? 'none' : '';
+    showPage('page2');
+}
+function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+function backToStudents() { showPage('page1'); }
+function backToMenu()     { clearInterval(gameTimer); showPage('page2'); }
+
+// ─── START GAME ───────────────────────────────────────────────────────────────
+function startMode(mode) {
+    currentMode = mode;
+    lives = 3; score = 0;
+    currentLevelIdx = 0; levelCorrect = 0;
+    levelWords = shuffle([...levels[0].words]); levelWordIdx = 0;
+    updateLives(); updateScore();
+    refreshLevelUI(mode);
+    showPage(mode === 1 ? 'page3' : 'page4');
+    nextWord();
+}
+
+// ─── WORD FLOW ────────────────────────────────────────────────────────────────
+function nextWord() {
+    if (lives <= 0) { endGame(); return; }
+    if (levelWordIdx >= levelWords.length) {
+        levelWords = shuffle([...levels[currentLevelIdx].words]);
+        levelWordIdx = 0;
+    }
+    currentWord = levelWords[levelWordIdx];
+
+    if (currentMode === 1) {
+        // Show for 2 seconds, then scramble
+        const display = document.getElementById('wordDisplay1');
+        const input   = document.getElementById('input1');
+        const phase   = document.getElementById('phase1');
+        input.value = ''; input.disabled = true; input.className = 'word-input';
+        display.textContent = currentWord; display.className = 'word-display';
+        phase.textContent = 'Memorize this word...';
+        document.getElementById('bar1').style.visibility = 'visible';
+        document.getElementById('timer1').textContent = '2s';
+
+        let t = 2;
+        document.getElementById('fill1').style.width = '100%';
+        clearInterval(gameTimer);
+        gameTimer = setInterval(() => {
+            t -= 0.05;
+            document.getElementById('fill1').style.width = Math.max(0, t / 2 * 100) + '%';
+            document.getElementById('timer1').textContent = Math.ceil(Math.max(0,t)) + 's';
+            if (t <= 0) { clearInterval(gameTimer); startScramblePhase(); }
+        }, 50);
+
+    } else {
+        // Mode 2: immediately scrambled
+        const display = document.getElementById('wordDisplay2');
+        const input   = document.getElementById('input2');
+        input.value = ''; input.className = 'word-input';
+        display.textContent = scramble(currentWord);
+        startCountdown(20);
+    }
+}
+
+function startScramblePhase() {
+    document.getElementById('wordDisplay1').textContent  = scramble(currentWord);
+    document.getElementById('wordDisplay1').className    = 'word-display scrambled';
+    document.getElementById('phase1').textContent        = 'Unscramble it!';
+    const input = document.getElementById('input1');
+    input.disabled = false; input.focus();
+    document.getElementById('timer1').textContent = '20s';
+    startCountdown(20);
+}
+
+function startCountdown(seconds) {
+    const fillId  = `fill${currentMode}`;
+    const timerId = `timer${currentMode}`;
+    let time = seconds;
+    document.getElementById(fillId).style.width = '100%';
+    clearInterval(gameTimer);
+    gameTimer = setInterval(() => {
+        time -= 0.1;
+        document.getElementById(fillId).style.width  = Math.max(0, time / seconds * 100) + '%';
+        document.getElementById(timerId).textContent = Math.ceil(Math.max(0,time)) + 's';
+        if (time <= 0) { clearInterval(gameTimer); handleTimeout(); }
+    }, 100);
+}
+
+// ─── ANSWER CHECK ─────────────────────────────────────────────────────────────
+function pressKey(mode, key) {
+    const input = document.getElementById(`input${mode}`);
+    if (key === 'backspace') input.value = input.value.slice(0, -1);
+    else input.value += key;
+    input.focus();
+}
+
+function submitAnswer(mode) {
+    clearInterval(gameTimer);
+    const input  = document.getElementById(`input${mode}`);
+    const answer = input.value.toLowerCase().trim();
+
+    if (answer === currentWord) {
+        input.className = 'word-input correct';
+        score++; levelCorrect++;
+        updateScore();
+
+        if (!isGuest) {
+            studentData[currentStudent].totalWords++;
+            studentData[currentStudent].totalPoints += 10;
+            document.getElementById(`stats-${currentStudent}`).textContent =
+                `${studentData[currentStudent].totalWords} words`;
+        }
+
+        levelWordIdx++;
+        refreshLevelUI(mode);
+
+        if (levelCorrect >= WORDS_TO_ADVANCE && currentLevelIdx < levels.length - 1) {
+            setTimeout(() => levelUp(), 400);
+        } else {
+            setTimeout(() => nextWord(), 600);
+        }
+
+    } else {
+        input.className = 'word-input wrong';
+        lives--; updateLives();
+        setTimeout(() => {
+            if (lives <= 0) endGame();
+            else { levelWordIdx++; nextWord(); }
+        }, 800);
+    }
+}
+
+function handleTimeout() {
+    lives--; updateLives();
+    if (lives <= 0) endGame();
+    else { levelWordIdx++; nextWord(); }
+}
+
+function levelUp() {
+    currentLevelIdx++;
+    levelCorrect = 0;
+    levelWords   = shuffle([...levels[currentLevelIdx].words]);
+    levelWordIdx = 0;
+    refreshLevelUI(currentMode);
+    const lv = levels[currentLevelIdx];
+    showMessage(lv.emoji, `Level ${lv.num} unlocked!`,
+        `Great job! Moving up to\n${lv.label}`, 'Keep going!', () => nextWord());
+}
+
+function endGame() {
+    clearInterval(gameTimer);
+    const finalLvl = levels[currentLevelIdx].num;
+    let text;
+    if (isGuest) {
+        text = `${currentStudent} got ${score} word${score !== 1 ? 's' : ''} this session!\n(Guest — not saved to leaderboard)`;
+    } else {
+        const td = studentData[currentStudent];
+        text = `${score} words this session — reached Level ${finalLvl}!\nTotal: ${td.totalWords} words · ${td.totalPoints} pts`;
+    }
+    showMessage('💔', 'Game Over!', text, 'Back to Menu', () => backToMenu());
+}
+
+// ─── UI HELPERS ───────────────────────────────────────────────────────────────
+function updateLives() {
+    ['1','2'].forEach(m =>
+        document.getElementById(`lives${m}`).innerHTML = '❤️'.repeat(lives) + '🖤'.repeat(3 - lives)
+    );
+}
+function updateScore() {
+    ['1','2'].forEach(m =>
+        document.getElementById(`score${m}`).textContent = score
+    );
+}
+
+function showMessage(emoji, title, text, btnLabel, cb) {
+    document.getElementById('msgEmoji').textContent = emoji;
+    document.getElementById('msgTitle').textContent = title;
+    document.getElementById('msgText').textContent  = text;
+    document.getElementById('msgBtn').textContent   = btnLabel || 'Continue';
+    document.getElementById('msgBtn').onclick = () => { closeMessage(); if (cb) cb(); };
+    document.getElementById('overlay').classList.add('show');
+}
+function closeMessage() { document.getElementById('overlay').classList.remove('show'); }
+
+// ─── LEADERBOARD ──────────────────────────────────────────────────────────────
+function showLeaderboard() {
+    const sorted = Object.entries(studentData).sort((a,b) => b[1].totalWords - a[1].totalWords);
+    const board  = document.getElementById('leaderboard');
+    board.innerHTML = '';
+    sorted.forEach(([name, data], i) => {
+        const item = document.createElement('div');
+        item.className = 'leaderboard-item';
+        const rc = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+        item.innerHTML = `
+            <div class="rank ${rc}">#${i+1}</div>
+            <div class="leaderboard-name">${name}</div>
+            <div class="student-score">
+                <div class="words-count">${data.totalWords} words</div>
+                <div class="points-count">${data.totalPoints} points</div>
+            </div>`;
+        board.appendChild(item);
+    });
+    showPage('page5');
+}
+
+// ─── UTILS ────────────────────────────────────────────────────────────────────
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function scramble(word) {
+    if (word.length <= 1) return word;
+    let s = word.split(''), attempts = 0;
+    do {
+        for (let i = s.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [s[i], s[j]] = [s[j], s[i]];
+        }
+        attempts++;
+    } while (s.join('') === word && attempts < 30);
+    return s.join('');
+}
+
+// ─── KEYBOARD ─────────────────────────────────────────────────────────────────
+document.addEventListener('keypress', e => {
+    if (e.key === 'Enter' && currentMode) submitAnswer(currentMode);
+});
+document.querySelectorAll('.word-input').forEach(inp => {
+    inp.addEventListener('paste', e => e.preventDefault());
+});
+
+init();
+</script>
+</body>
+</html>
