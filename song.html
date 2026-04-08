@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>🎵 Kid's Music Player | Play 2C.mp3 🎶</title>
+  <!-- Google Font + Font Awesome for cute icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      user-select: none; /* avoid accidental highlighting, but still fine */
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #f9e7b3 0%, #f5b0cb 50%, #c0e0ff 100%);
+      font-family: 'Quicksand', 'Comic Neue', 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* floating colorful blobs for child-friendly magic */
+    body::before {
+      content: "✨🎈🎨";
+      font-size: 120px;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      opacity: 0.2;
+      pointer-events: none;
+      transform: rotate(-10deg);
+    }
+
+    body::after {
+      content: "🐻🐼🐧";
+      font-size: 100px;
+      position: absolute;
+      top: 20px;
+      right: 15px;
+      opacity: 0.25;
+      pointer-events: none;
+    }
+
+    /* main music card */
+    .music-card {
+      max-width: 550px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      border-radius: 80px 60px 80px 60px;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2), 0 0 0 8px rgba(255, 240, 180, 0.5);
+      padding: 30px 28px 40px;
+      transition: all 0.2s ease;
+      text-align: center;
+      border: 2px solid rgba(255, 255, 200, 0.8);
+    }
+
+    /* header with cute character */
+    .kid-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      background: #ffe8b6;
+      padding: 10px 20px;
+      border-radius: 100px;
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+      box-shadow: 0 6px 0 #e0a878;
+    }
+
+    .kid-header i {
+      font-size: 2.3rem;
+      filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.1));
+    }
+
+    .kid-header h1 {
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #FF8C42, #D44C2E);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    /* song artwork / disc area */
+    .artwork {
+      background: radial-gradient(circle, #ffdd99, #ffb76e);
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      margin: 15px auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 15px 20px rgba(0,0,0,0.2), inset 0 -5px 0 rgba(0,0,0,0.05);
+      transition: transform 0.3s ease;
+      animation: floatSoft 3s infinite ease-in-out;
+    }
+
+    @keyframes floatSoft {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-6px); }
+      100% { transform: translateY(0px); }
+    }
+
+    .artwork i {
+      font-size: 5rem;
+      color: #ffefc0;
+      text-shadow: 4px 4px 0 #c2622e;
+    }
+
+    .song-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(125deg, #2c3e66, #ff8c42);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      margin-top: 8px;
+      letter-spacing: -0.3px;
+      word-break: break-word;
+    }
+
+    .file-hint {
+      font-size: 0.8rem;
+      background: #f0e2b6;
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 50px;
+      margin-top: 5px;
+      color: #aa6f3c;
+      font-weight: 600;
+    }
+
+    /* custom controls grid */
+    .controls {
+      margin: 30px 0 20px;
+    }
+
+    .big-play-btn {
+      background: #f5a65b;
+      border: none;
+      width: 85px;
+      height: 85px;
+      border-radius: 50%;
+      font-size: 3rem;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 12px 0 #b45f2b;
+      transition: 0.05s linear;
+      margin-bottom: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 30% 20%, #ffbc7a, #f28b3a);
+    }
+
+    .big-play-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 6px 0 #b45f2b;
+    }
+
+    /* progress bar */
+    .progress-area {
+      margin: 15px 0 10px;
+    }
+
+    .time-row {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+      color: #4b2e1a;
+      background: #fffaec;
+      padding: 5px 12px;
+      border-radius: 40px;
+      font-size: 0.9rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      background: #ffe0b5;
+      border-radius: 20px;
+      outline: none;
+      margin: 12px 0;
+    }
+
+    input[type="range"]:focus {
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 22px;
+      height: 22px;
+      background: #ff884d;
+      border-radius: 50%;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      border: 2px solid white;
+    }
+
+    /* volume & extra row */
+    .volume-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: rgba(253, 241, 212, 0.8);
+      padding: 12px 20px;
+      border-radius: 60px;
+      margin: 20px 0 15px;
+    }
+
+    .volume-row i {
+      font-size: 1.5rem;
+      color: #cb6e2e;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+
+    .volume-slider {
+      width: 140px;
+      margin: 0;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin: 10px 0 5px;
+    }
+
+    .action-btn {
+      background: #ffdeae;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      color: #a5551f;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+    }
+
+    .action-btn i {
+      font-size: 1.1rem;
+    }
+
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    .upload-label {
+      background: #c1e0aa;
+      color: #3c6b1f;
+    }
+
+    .error-message {
+      background: #ffb3b3;
+      color: #a1220a;
+      border-radius: 60px;
+      padding: 12px;
+      margin-top: 15px;
+      font-weight: bold;
+      font-size: 0.85rem;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .error-message i {
+      font-size: 1.3rem;
+    }
+
+    /* dancing notes (animation when playing) */
+    .music-note-animation {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 15px;
+      opacity: 0.7;
+    }
+
+    .note {
+      font-size: 1.5rem;
+      transition: all 0.1s;
+      display: inline-block;
+    }
+
+    .playing .note {
+      animation: bounceNote 0.5s infinite alternate ease;
+    }
+
+    .playing .note:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .playing .note:nth-child(3) {
+      animation-delay: 0.35s;
+    }
+
+    @keyframes bounceNote {
+      0% { transform: translateY(0px) rotate(0deg); }
+      100% { transform: translateY(-12px) rotate(10deg); }
+    }
+
+    footer {
+      font-size: 0.7rem;
+      margin-top: 25px;
+      color: #b47242;
+    }
+  </style>
+</head>
+<body>
+
+<div class="music-card" id="musicCard">
+  <div class="kid-header">
+    <i class="fas fa-crown"></i>
+    <h1>🐣 KIDZ TUNES 🎧</h1>
+    <i class="fas fa-music"></i>
+  </div>
+
+  <!-- Artwork / record disc -->
+  <div class="artwork">
+    <i class="fas fa-headphones"></i>
+  </div>
+
+  <!-- song name display -->
+  <div class="song-title" id="songTitleDisplay">🎵 2C 🎵</div>
+  <div class="file-hint">
+    <i class="fas fa-file-audio"></i> song: <strong id="fileNameHint">2C.mp3</strong>
+  </div>
+
+  <!-- main control area -->
+  <div class="controls">
+    <button class="big-play-btn" id="playPauseBtn">
+      <i class="fas fa-play"></i>
+    </button>
+  </div>
+
+  <!-- progress & time -->
+  <div class="progress-area">
+    <div class="time-row">
+      <span id="currentTime">0:00</span>
+      <span id="durationTime">0:00</span>
+    </div>
+    <input type="range" id="progressSlider" value="0" step="0.01">
+  </div>
+
+  <!-- volume & extra tools -->
+  <div class="volume-row">
+    <i class="fas fa-volume-up" id="muteToggleBtn"></i>
+    <input type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.7" class="volume-slider">
+    <button class="action-btn" id="restartBtn" style="background:#ffe0b0; padding:8px 14px;"><i class="fas fa-redo-alt"></i> Restart</button>
+  </div>
+
+  <div class="action-buttons">
+    <label for="uploadSongInput" class="action-btn upload-label" style="cursor:pointer;">
+      <i class="fas fa-cloud-upload-alt"></i> Pick MP3
+    </label>
+    <input type="file" id="uploadSongInput" accept=".mp3,audio/mpeg" style="display:none;">
+  </div>
+
+  <!-- dancing notes (fun visual) -->
+  <div class="music-note-animation" id="noteAnimation">
+    <span class="note">🎵</span>
+    <span class="note">🎶</span>
+    <span class="note">🎵</span>
+  </div>
+
+  <!-- error / info message -->
+  <div id="errorMessage" class="error-message">
+    <i class="fas fa-face-frown"></i> <span id="errorText">Oops! Song not found? Upload or place "2C.mp3"</span>
+  </div>
+  <footer>✨ press play & sing along! ✨</footer>
+</div>
+
+<!-- hidden audio element -->
+<audio id="audioPlayer" preload="auto"></audio>
+
+<script>
+  (function() {
+    // ---------- DOM elements ----------
+    const audio = document.getElementById('audioPlayer');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const playIcon = playPauseBtn.querySelector('i');
+    const progressSlider = document.getElementById('progressSlider');
+    const currentTimeSpan = document.getElementById('currentTime');
+    const durationSpan = document.getElementById('durationTime');
+    const volumeSlider = document.getElementById('volumeSlider');
+    const muteToggle = document.getElementById('muteToggleBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const uploadInput = document.getElementById('uploadSongInput');
+    const songTitleDisplay = document.getElementById('songTitleDisplay');
+    const fileNameHintSpan = document.getElementById('fileNameHint');
+    const errorDiv = document.getElementById('errorMessage');
+    const errorTextSpan = document.getElementById('errorText');
+    const noteContainer = document.getElementById('noteAnimation');
+    const musicCard = document.getElementById('musicCard');
+
+    // ---------- STATE ----------
+    let isPlaying = false;
+    let currentObjectUrl = null;  // to clean up uploaded file URL
+    let isMuted = false;
+    let previousVolume = 0.7;      // store volume before mute
+
+    // ---------- Helper: format time (seconds to mm:ss) ----------
+    function formatTime(seconds) {
+      if (isNaN(seconds)) return "0:00";
+      const mins = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+      return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
+
+    // update progress bar & time display (called by timeupdate)
+    function updateProgressAndTime() {
+      if (!isNaN(audio.duration) && isFinite(audio.duration)) {
+        const percent = (audio.currentTime / audio.duration) * 100;
+        progressSlider.value = percent;
+        currentTimeSpan.innerText = formatTime(audio.currentTime);
+      } else {
+        currentTimeSpan.innerText = formatTime(audio.currentTime);
+      }
+      if (!isNaN(audio.duration) && isFinite(audio.duration)) {
+        durationSpan.innerText = formatTime(audio.duration);
+      } else {
+        durationSpan.innerText = "0:00";
+      }
+    }
+
+    // set max duration when metadata loaded
+    function onLoadedMetadata() {
+      if (!isNaN(audio.duration) && isFinite(audio.duration)) {
+        durationSpan.innerText = formatTime(audio.duration);
+        progressSlider.max = 100;   // we use % based
+        progressSlider.value = 0;
+      } else {
+        durationSpan.innerText = "0:00";
+      }
+    }
+
+    // handle audio error (file missing, corrupt etc)
+    function handleAudioError(event) {
+      let errorMsg = "⚠️ Couldn't play the song. ";
+      if (!audio.src || audio.src === "") {
+        errorMsg += "No song loaded. ";
+      } else if (audio.error) {
+        switch (audio.error.code) {
+          case 4: errorMsg += "Format not supported or file not found."; break;
+          default: errorMsg += "File missing or broken. Please check '2C.mp3' exists or upload a new MP3.";
+        }
+      } else {
+        errorMsg += "Cannot load '2C.mp3'. Place the file in same folder or pick another MP3.";
+      }
+      errorTextSpan.innerText = errorMsg;
+      errorDiv.style.display = "flex";
+      // reset play button if error
+      if (isPlaying) {
+        isPlaying = false;
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+        noteContainer.classList.remove('playing');
+      }
+      // disable progress interaction? still allow but don't crash
+    }
+
+    function hideError() {
+      errorDiv.style.display = "none";
+    }
+
+    // play/pause core logic
+    function togglePlayPause() {
+      if (!audio.src || audio.src === "" || audio.readyState === 0) {
+        // if no source / error state: show hint but also try to reload if default 2C maybe not present
+        errorTextSpan.innerText = "🎵 No song loaded! Please upload an MP3 or make sure '2C.mp3' is available.";
+        errorDiv.style.display = "flex";
+        return;
+      }
+      if (isPlaying) {
+        audio.pause();
+      } else {
+        // play promise handling
+        const playPromise = audio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(err => {
+            console.warn("Playback error: ", err);
+            if (err.name === "NotAllowedError") {
+              errorTextSpan.innerText = "🔊 Click play again (browser needs user gesture).";
+              errorDiv.style.display = "flex";
+              setTimeout(() => { if(errorDiv) errorDiv.style.display = "none"; }, 2500);
+            } else {
+              handleAudioError();
+            }
+            isPlaying = false;
+            playIcon.classList.remove('fa-pause');
+            playIcon.classList.add('fa-play');
+            noteContainer.classList.remove('playing');
+          });
+        }
+      }
+    }
+
+    // Update UI based on playing status + animation
+    function updatePlayPauseUI() {
+      if (isPlaying) {
+        playIcon.classList.remove('fa-play');
+        playIcon.classList.add('fa-pause');
+        noteContainer.classList.add('playing');
+      } else {
+        playIcon.classList.remove('fa-pause');
+        playIcon.classList.add('fa-play');
+        noteContainer.classList.remove('playing');
+      }
+    }
+
+    // event listeners from audio element
+    function bindAudioEvents() {
+      audio.addEventListener('play', () => {
+        isPlaying = true;
+        updatePlayPauseUI();
+        hideError();
+      });
+      audio.addEventListener('pause', () => {
+        isPlaying = false;
+        updatePlayPauseUI();
+      });
+      audio.addEventListener('ended', () => {
+        isPlaying = false;
+        updatePlayPauseUI();
+        progressSlider.value = 0;
+        currentTimeSpan.innerText = formatTime(0);
+      });
+      audio.addEventListener('timeupdate', updateProgressAndTime);
+      audio.addEventListener('loadedmetadata', () => {
+        onLoadedMetadata();
+        updateProgressAndTime();
+        if (!isNaN(audio.duration) && audio.duration > 0) hideError();
+      });
+      audio.addEventListener('error', handleAudioError);
+      audio.addEventListener('canplay', () => {
+        if (audio.duration && !isNaN(audio.duration)) hideError();
+      });
+    }
+
+    // set source and reset error/state
+    function setAudioSource(src, displayName, isObjectUrl = false) {
+      // revoke previous object URL if needed to avoid memory leaks
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+      }
+      // pause current playing
+      if (isPlaying) {
+        audio.pause();
+        isPlaying = false;
+        updatePlayPauseUI();
+      }
+      audio.src = src;
+      audio.load();   // start loading new track
+      // update UI titles
+      let cleanName = displayName.replace(/\.mp3$/i, '');
+      songTitleDisplay.innerHTML = `🎤 ${cleanName} 🎤`;
+      fileNameHintSpan.innerText = displayName;
+      hideError();
+      progressSlider.value = 0;
+      currentTimeSpan.innerText = "0:00";
+      durationSpan.innerText = "0:00";
+      if (isObjectUrl) {
+        currentObjectUrl = src;
+      }
+    }
+
+    // load default song: 2C.mp3
+    function loadDefaultSong() {
+      setAudioSource('2C.mp3', '2C.mp3', false);
+    }
+
+    // handle upload new mp3 file
+    function handleUpload(file) {
+      if (!file) return;
+      if (!file.type.includes('mp3') && !file.type.includes('mpeg')) {
+        errorTextSpan.innerText = "🎶 Please select an MP3 audio file!";
+        errorDiv.style.display = "flex";
+        return;
+      }
+      // revoke old object url if any
+      if (currentObjectUrl) {
+        URL.revokeObjectURL(currentObjectUrl);
+        currentObjectUrl = null;
+      }
+      const objectUrl = URL.createObjectURL(file);
+      const fileName = file.name;
+      setAudioSource(objectUrl, fileName, true);
+      // try to auto-play after upload? But better not to annoy, but child friendly: we don't autoplay, just ready.
+      // show success message quickly
+      errorTextSpan.innerText = `✅ "${fileName}" loaded! Press play 🎵`;
+      errorDiv.style.display = "flex";
+      setTimeout(() => {
+        if(errorDiv.style.display === "flex") errorDiv.style.display = "none";
+      }, 2000);
+    }
+
+    // Volume & mute logic
+    function updateVolumeIcon() {
+      if (audio.volume === 0 || isMuted) {
+        muteToggle.classList.remove('fa-volume-up', 'fa-volume-down');
+        muteToggle.classList.add('fa-volume-mute');
+      } else if (audio.volume < 0.5) {
+        muteToggle.classList.remove('fa-volume-up', 'fa-volume-mute');
+        muteToggle.classList.add('fa-volume-down');
+      } else {
+        muteToggle.classList.remove('fa-volume-down', 'fa-volume-mute');
+        muteToggle.classList.add('fa-volume-up');
+      }
+    }
+
+    function setVolume(value) {
+      audio.volume = Math.min(1, Math.max(0, value));
+      if (audio.volume === 0) {
+        isMuted = true;
+      } else {
+        isMuted = false;
+        previousVolume = audio.volume;
+      }
+      updateVolumeIcon();
+      volumeSlider.value = audio.volume;
+    }
+
+    function toggleMute() {
+      if (audio.volume === 0 || isMuted) {
+        // unmute to previous volume (or 0.5)
+        let newVol = previousVolume > 0 ? previousVolume : 0.5;
+        setVolume(newVol);
+        isMuted = false;
+      } else {
+        previousVolume = audio.volume;
+        setVolume(0);
+        isMuted = true;
+      }
+    }
+
+    // seek when slider changes
+    function seekTo(event) {
+      if (audio.duration && !isNaN(audio.duration) && isFinite(audio.duration)) {
+        const percent = parseFloat(progressSlider.value) / 100;
+        audio.currentTime = percent * audio.duration;
+      } else if (audio.duration === Infinity || isNaN(audio.duration)) {
+        // not ready
+      } else {
+        progressSlider.value = 0;
+      }
+    }
+
+    // restart song from beginning
+    function restartSong() {
+      if (audio.src && audio.src !== "") {
+        audio.currentTime = 0;
+        if (!isPlaying) {
+          // if paused, just update display
+          currentTimeSpan.innerText = formatTime(0);
+          progressSlider.value = 0;
+        } else {
+          // if playing, keep playing after restart
+          // no extra action needed, timeupdate will update UI
+        }
+      } else {
+        errorTextSpan.innerText = "No song loaded to restart! Upload or add 2C.mp3";
+        errorDiv.style.display = "flex";
+        setTimeout(() => { if(errorDiv) errorDiv.style.display = "none"; }, 2000);
+      }
+    }
+
+    // ---------- EVENT LISTENERS ----------
+    playPauseBtn.addEventListener('click', togglePlayPause);
+    progressSlider.addEventListener('input', seekTo);
+    volumeSlider.addEventListener('input', (e) => {
+      setVolume(parseFloat(e.target.value));
+    });
+    muteToggle.addEventListener('click', toggleMute);
+    restartBtn.addEventListener('click', restartSong);
+
+    uploadInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        handleUpload(e.target.files[0]);
+      }
+      uploadInput.value = ''; // allow re-upload same file again
+    });
+
+    // also allow the song title area or card click extra fun? Not needed but great
+
+    // ---------- INITIAL LOAD ----------
+    bindAudioEvents();
+    // set default volume
+    audio.volume = 0.7;
+    volumeSlider.value = 0.7;
+    previousVolume = 0.7;
+    updateVolumeIcon();
+    loadDefaultSong();
+
+    // Additional small tweak: if after 1.5 sec we detect that audio has no src or error due to missing 2C.mp3, show friendly but don't crash.
+    setTimeout(() => {
+      if ((!audio.src || audio.src === "" || audio.readyState === 0) && !currentObjectUrl) {
+        if (!errorDiv.style.display || errorDiv.style.display === "none") {
+          errorTextSpan.innerText = "🎵 Hey! Place '2C.mp3' next to this file or click 'Pick MP3' to play a song! 🎧";
+          errorDiv.style.display = "flex";
+        }
+      } else if (audio.networkState === audio.NETWORK_NO_SOURCE || audio.error) {
+        if (!errorDiv.style.display || errorDiv.style.display === "none") {
+          errorTextSpan.innerText = "🎵 Missing '2C.mp3'? Use upload button or add the file to play!";
+          errorDiv.style.display = "flex";
+        }
+      }
+    }, 800);
+  })();
+</script>
+</body>
+</html>
