@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verb Master: Conjugation Challenge</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .level-indicator {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .instructions {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 0 12px 12px 0;
+            color: #4a5568;
+            font-size: 1rem;
+        }
+
+        .verbs-table {
+            width: 100%;
+            margin-bottom: 30px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        .verbs-table th {
+            text-align: left;
+            padding: 12px 20px;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .verb-row {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .verb-row:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .verb-row td {
+            padding: 18px 20px;
+            font-size: 1.2rem;
+        }
+
+        .base-verb {
+            font-weight: 700;
+            color: #2d3748;
+            width: 40%;
+        }
+
+        .drop-zone {
+            width: 60%;
+            min-height: 50px;
+            border: 2px dashed #cbd5e0;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f7fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .drop-zone.drag-over {
+            border-color: #667eea;
+            background: #e6fffa;
+            transform: scale(1.02);
+        }
+
+        .drop-zone.correct {
+            border-color: #48bb78;
+            background: #f0fff4;
+            border-style: solid;
+        }
+
+        .drop-zone.incorrect {
+            border-color: #f56565;
+            background: #fff5f5;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .drop-zone.filled {
+            border-style: solid;
+            border-color: #667eea;
+            background: #e6fffa;
+            font-weight: 700;
+            color: #2d3748;
+        }
+
+        .placeholder-text {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+
+        .options-container {
+            background: #f7fafc;
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .options-title {
+            color: #4a5568;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .option-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 12px 24px;
+            font-weight: 700;
+            color: #4a5568;
+            cursor: grab;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            user-select: none;
+        }
+
+        .option-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.25);
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .option-card.dragging {
+            opacity: 0.5;
+            cursor: grabbing;
+        }
+
+        .option-card.used {
+            opacity: 0.3;
+            pointer-events: none;
+            transform: scale(0.95);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-secondary {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
+        }
+
+        .score-display {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2rem;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .score-display span {
+            color: #667eea;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        .completion-screen {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .completion-screen h2 {
+            color: #48bb78;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .trophy {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .final-score {
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            color: white;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .feedback.show {
+            transform: translateX(0);
+        }
+
+        .feedback.success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .feedback.error {
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+        }
+
+        .drag-instruction {
+            text-align: center;
+            color: #718096;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .verbs-table td {
+                padding: 12px 15px;
+                font-size: 1rem;
+            }
+
+            .option-card {
+                padding: 10px 18px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="feedback" id="feedback"></div>
+
+    <div class="game-container">
+        <div id="game-screen">
+            <div class="header">
+                <h1>🎯 Verb Master</h1>
+                <div class="level-indicator" id="level-indicator">Level 1 of 5</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <div class="instructions" id="instructions">
+                Drag the correct past tense forms to match each verb. Look for regular patterns!
+            </div>
+
+            <table class="verbs-table">
+                <thead>
+                    <tr>
+                        <th>Base Verb</th>
+                        <th>Past Tense</th>
+                    </tr>
+                </thead>
+                <tbody id="verbs-body">
+                    <!-- Verbs will be inserted here -->
+                </tbody>
+            </table>
+
+            <div class="options-container">
+                <div class="options-title">Available Options:</div>
+                <div class="options-grid" id="options-grid">
+                    <!-- Options will be inserted here -->
+                </div>
+                <div class="drag-instruction">💡 Drag and drop or click to select</div>
+            </div>
+
+            <div class="controls">
+                <button class="btn btn-secondary" onclick="game.resetLevel()">Reset Level</button>
+                <button class="btn btn-primary" onclick="game.checkAnswers()">Check Answers</button>
+                <button class="btn btn-success hidden" id="next-btn" onclick="game.nextLevel()">Next Level →</button>
+            </div>
+
+            <div class="score-display">
+                Score: <span id="score">0</span> / <span id="total">0</span>
+            </div>
+        </div>
+
+        <div class="completion-screen" id="completion-screen">
+            <div class="trophy">🏆</div>
+            <h2>Congratulations!</h2>
+            <p style="color: #718096; font-size: 1.2rem; margin-bottom: 20px;">You've mastered all levels!</p>
+            <div class="final-score" id="final-score">0</div>
+            <p style="color: #4a5568; margin-bottom: 30px;">Final Score</p>
+            <button class="btn btn-primary" onclick="game.restart()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const levels = [
+            {
+                name: "Regular Verbs - Basic",
+                instruction: "Level 1: Regular verbs! Just add '-ed' to the base form. Watch for the spelling!",
+                verbs: [
+                    { base: "walk", past: "walked" },
+                    { base: "jump", past: "jumped" },
+                    { base: "play", past: "played" },
+                    { base: "look", past: "looked" },
+                    { base: "call", past: "called" }
+                ],
+                distractors: ["walkd", "jumpd", "plaied", "lookt", "calld", "walkked", "jumpped"]
+            },
+            {
+                name: "Regular Verbs - Tricky Spelling",
+                instruction: "Level 2: Watch out! Some verbs double the final consonant or drop the 'e' before adding '-ed'.",
+                verbs: [
+                    { base: "stop", past: "stopped" },
+                    { base: "plan", past: "planned" },
+                    { base: "dance", past: "danced" },
+                    { base: "study", past: "studied" },
+                    { base: "try", past: "tried" }
+                ],
+                distractors: ["stoped", "planed", "danceed", "studyed", "tryed", "stoppped", "plannned", "studied"]
+            },
+            {
+                name: "Common Irregular Verbs",
+                instruction: "Level 3: Irregular verbs! These don't follow the -ed rule. Think carefully!",
+                verbs: [
+                    { base: "go", past: "went" },
+                    { base: "eat", past: "ate" },
+                    { base: "see", past: "saw" },
+                    { base: "come", past: "came" },
+                    { base: "give", past: "gave" }
+                ],
+                distractors: ["goed", "eated", "seed", "comed", "gived", "gone", "eaten", "seen", "come", "given"]
+            },
+            {
+                name: "More Irregular Verbs",
+                instruction: "Level 4: Tricky irregular verbs! Pay attention to vowel changes.",
+                verbs: [
+                    { base: "begin", past: "began" },
+                    { base: "drink", past: "drank" },
+                    { base: "sing", past: "sang" },
+                    { base: "swim", past: "swam" },
+                    { base: "ring", past: "rang" }
+                ],
+                distractors: ["begun", "drunk", "sung", "swum", "rung", "beginned", "drinked", "singed", "swimed", "ringed"]
+            },
+            {
+                name: "Master Level - Mixed",
+                instruction: "Level 5: Master challenge! Mix of regular and irregular verbs. No hints!",
+                verbs: [
+                    { base: "break", past: "broke" },
+                    { base: "choose", past: "chose" },
+                    { base: "forget", past: "forgot" },
+                    { base: "freeze", past: "froze" },
+                    { base: "speak", past: "spoke" }
+                ],
+                distractors: ["breaked", "choosed", "forgetted", "freezed", "speaked", "broken", "chosen", "forgotten", "frozen", "spoken", "break", "chose", "forget", "freeze", "speak"]
+            }
+        ];
+
+        class VerbGame {
+            constructor() {
+                this.currentLevel = 0;
+                this.score = 0;
+                this.totalScore = 0;
+                this.currentAnswers = {};
+                this.selectedOption = null;
+                this.init();
+            }
+
+            init() {
+                this.loadLevel();
+            }
+
+            loadLevel() {
+                const level = levels[this.currentLevel];
+                document.getElementById('level-indicator').textContent = `Level ${this.currentLevel + 1} of ${levels.length}: ${level.name}`;
+                document.getElementById('instructions').textContent = level.instruction;
+                document.getElementById('progress-fill').style.width = `${(this.currentLevel / levels.length) * 100}%`;
+                document.getElementById('next-btn').classList.add('hidden');
+
+                // Clear previous answers
+                this.currentAnswers = {};
+
+                // Render verbs
+                const tbody = document.getElementById('verbs-body');
+                tbody.innerHTML = '';
+
+                level.verbs.forEach((verb, index) => {
+                    const row = document.createElement('tr');
+                    row.className = 'verb-row';
+                    row.innerHTML = `
+                        <td class="base-verb">${verb.base}</td>
+                        <td class="drop-zone" data-verb="${verb.base}" data-index="${index}" onclick="game.handleDropZoneClick(this)">
+                            <span class="placeholder-text">Drop here</span>
+                        </td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                // Render options
+                this.renderOptions();
+
+                // Update score display
+                this.updateScoreDisplay();
+            }
+
+            renderOptions() {
+                const level = levels[this.currentLevel];
+                const optionsGrid = document.getElementById('options-grid');
+                optionsGrid.innerHTML = '';
+
+                // Combine correct answers and distractors, shuffle
+                const correctAnswers = level.verbs.map(v => v.past);
+                const allOptions = [...correctAnswers, ...level.distractors];
+                const shuffled = this.shuffle([...allOptions]);
+
+                shuffled.forEach(option => {
+                    const card = document.createElement('div');
+                    card.className = 'option-card';
+                    card.textContent = option;
+                    card.draggable = true;
+                    card.dataset.value = option;
+
+                    // Drag events
+                    card.addEventListener('dragstart', (e) => this.handleDragStart(e, option));
+                    card.addEventListener('dragend', (e) => this.handleDragEnd(e));
+
+                    // Click event
+                    card.addEventListener('click', () => this.handleOptionClick(option, card));
+
+                    optionsGrid.appendChild(card);
+                });
+
+                // Add drop events to drop zones
+                document.querySelectorAll('.drop-zone').forEach(zone => {
+                    zone.addEventListener('dragover', (e) => this.handleDragOver(e));
+                    zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+                    zone.addEventListener('drop', (e) => this.handleDrop(e, zone));
+                });
+            }
+
+            shuffle(array) {
+                const newArray = [...array];
+                for (let i = newArray.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+                }
+                return newArray;
+            }
+
+            handleDragStart(e, value) {
+                e.target.classList.add('dragging');
+                e.dataTransfer.setData('text/plain', value);
+            }
+
+            handleDragEnd(e) {
+                e.target.classList.remove('dragging');
+            }
+
+            handleDragOver(e) {
+                e.preventDefault();
+                e.currentTarget.classList.add('drag-over');
+            }
+
+            handleDragLeave(e) {
+                e.currentTarget.classList.remove('drag-over');
+            }
+
+            handleDrop(e, zone) {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const value = e.dataTransfer.getData('text/plain');
+                this.assignValueToZone(zone, value);
+            }
+
+            handleOptionClick(value, card) {
+                // If already selected, deselect
+                if (this.selectedOption === value) {
+                    this.selectedOption = null;
+                    card.style.borderColor = '#e2e8f0';
+                    card.style.background = 'white';
+                    return;
+                }
+
+                // Clear previous selection
+                document.querySelectorAll('.option-card').forEach(c => {
+                    c.style.borderColor = '#e2e8f0';
+                    c.style.background = 'white';
+                });
+
+                // Select new
+                this.selectedOption = value;
+                card.style.borderColor = '#667eea';
+                card.style.background = '#e6fffa';
+            }
+
+            handleDropZoneClick(zone) {
+                if (!this.selectedOption) return;
+
+                this.assignValueToZone(zone, this.selectedOption);
+
+                // Clear selection
+                this.selectedOption = null;
+                document.querySelectorAll('.option-card').forEach(c => {
+                    c.style.borderColor = '#e2e8f0';
+                    c.style.background = 'white';
+                });
+            }
+
+            assignValueToZone(zone, value) {
+                const verb = zone.dataset.verb;
+                this.currentAnswers[verb] = value;
+
+                zone.innerHTML = `<span style="font-weight: 700; color: #2d3748;">${value}</span>`;
+                zone.classList.add('filled');
+                zone.classList.remove('correct', 'incorrect');
+
+                // Mark option as used
+                document.querySelectorAll('.option-card').forEach(card => {
+                    if (card.dataset.value === value) {
+                        card.classList.add('used');
+                    }
+                });
+
+                // If zone had a previous value, free up that option
+                const previousValue = zone.dataset.currentValue;
+                if (previousValue && previousValue !== value) {
+                    document.querySelectorAll('.option-card').forEach(card => {
+                        if (card.dataset.value === previousValue) {
+                            card.classList.remove('used');
+                        }
+                    });
+                }
+
+                zone.dataset.currentValue = value;
+            }
+
+            checkAnswers() {
+                const level = levels[this.currentLevel];
+                let correct = 0;
+                let allAnswered = true;
+
+                level.verbs.forEach(verb => {
+                    const zone = document.querySelector(`[data-verb="${verb.base}"]`);
+                    const userAnswer = this.currentAnswers[verb.base];
+
+                    if (!userAnswer) {
+                        allAnswered = false;
+                        zone.classList.add('incorrect');
+                        setTimeout(() => zone.classList.remove('incorrect'), 500);
+                    } else if (userAnswer === verb.past) {
+                        correct++;
+                        zone.classList.add('correct');
+                        zone.classList.remove('filled', 'incorrect');
+                    } else {
+                        zone.classList.add('incorrect');
+                        setTimeout(() => zone.classList.remove('incorrect'), 500);
+                    }
+                });
+
+                if (!allAnswered) {
+                    this.showFeedback('Please fill in all verbs!', 'error');
+                    return;
+                }
+
+                this.score = correct;
+                this.totalScore += correct;
+                this.updateScoreDisplay();
+
+                if (correct === level.verbs.length) {
+                    this.showFeedback('Perfect! All correct! 🎉', 'success');
+                    document.getElementById('next-btn').classList.remove('hidden');
+
+                    // Disable further changes
+                    document.querySelectorAll('.option-card').forEach(card => {
+                        card.style.pointerEvents = 'none';
+                    });
+                } else {
+                    this.showFeedback(`${correct}/${level.verbs.length} correct. Try again!`, 'error');
+                }
+            }
+
+            nextLevel() {
+                this.currentLevel++;
+                if (this.currentLevel >= levels.length) {
+                    this.showCompletion();
+                } else {
+                    this.loadLevel();
+                }
+            }
+
+            resetLevel() {
+                this.loadLevel();
+                this.showFeedback('Level reset!', 'success');
+            }
+
+            updateScoreDisplay() {
+                const maxScore = levels.reduce((sum, level) => sum + level.verbs.length, 0);
+                document.getElementById('score').textContent = this.totalScore;
+                document.getElementById('total').textContent = maxScore;
+            }
+
+            showFeedback(message, type) {
+                const feedback = document.getElementById('feedback');
+                feedback.textContent = message;
+                feedback.className = `feedback ${type} show`;
+
+                setTimeout(() => {
+                    feedback.classList.remove('show');
+                }, 3000);
+            }
+
+            showCompletion() {
+                document.getElementById('game-screen').classList.add('hidden');
+                document.getElementById('completion-screen').classList.remove('hidden');
+                document.getElementById('final-score').textContent = this.totalScore;
+            }
+
+            restart() {
+                this.currentLevel = 0;
+                this.score = 0;
+                this.totalScore = 0;
+                this.currentAnswers = {};
+                document.getElementById('game-screen').classList.remove('hidden');
+                document.getElementById('completion-screen').classList.add('hidden');
+                this.loadLevel();
+            }
+        }
+
+        const game = new VerbGame();
+    </script>
+</body>
+</html>
