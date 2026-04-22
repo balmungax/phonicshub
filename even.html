@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>🐻 Equal Groups · Buddy & Arrays · Grade 2</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background: #f9f3e8;
+      font-family: 'Segoe UI', 'Roboto', system-ui, sans-serif;
+      padding: 16px 10px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .main-card {
+      max-width: 900px;
+      width: 100%;
+      background: white;
+      border-radius: 48px 48px 36px 36px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+      padding: 20px 18px 28px;
+      border: 2px solid #ffeacb;
+    }
+    h1 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 2rem;
+      color: #3b2b1f;
+      margin: 0 0 10px 0;
+      flex-wrap: wrap;
+    }
+    h1 span {
+      background: #fdd49e;
+      padding: 5px 16px;
+      border-radius: 60px;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #2e241a;
+    }
+    /* ----- TABS ----- */
+    .tab-bar {
+      display: flex;
+      gap: 12px;
+      margin: 15px 0 18px;
+      border-bottom: 3px solid #e5c9a8;
+      padding-bottom: 6px;
+    }
+    .tab-btn {
+      background: #f0e7db;
+      border: none;
+      padding: 16px 24px;
+      border-radius: 40px 40px 12px 12px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 5px 0 #b0a090;
+      cursor: pointer;
+      transition: 0.05s;
+      border: 2px solid white;
+      color: #2e241a;
+      flex: 1;
+      justify-content: center;
+    }
+    .tab-btn.active {
+      background: #ffd89c;
+      box-shadow: 0 5px 0 #c49a5e;
+      border-bottom: 4px solid #b47c2e;
+      transform: translateY(-2px);
+    }
+    .tab-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #9b8d7a;
+    }
+    /* ----- ACTIVITY PANELS ----- */
+    .activity-panel {
+      display: none;
+    }
+    .activity-panel.active {
+      display: block;
+    }
+    .practice-area {
+      background: #fefaf5;
+      border-radius: 36px;
+      padding: 24px 16px;
+      margin-top: 8px;
+      box-shadow: inset 0 1px 6px #fff4e6, 0 8px 0 #d9b382;
+      border: 2px solid #e5c9a8;
+    }
+    .section-title {
+      font-size: 1.9rem;
+      font-weight: 700;
+      margin: 0 0 20px;
+      color: #3b2b1f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    /* Buddy Grid */
+    .buddy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px 20px;
+      justify-items: center;
+      max-width: 400px;
+      margin: 0 auto 25px;
+      background: #fcead8;
+      padding: 30px 20px;
+      border-radius: 70px;
+      border: 3px dashed #b58b5b;
+    }
+    .buddy-item {
+      width: 70px;
+      height: 70px;
+      background: #ffd93e;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 0 #b47c2e, 0 4px 10px rgba(0,0,0,0.1);
+      border: 3px solid #fef9e6;
+    }
+    .buddy-item span { font-size: 48px; }
+    .buddy-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      margin: 5px 0 15px;
+    }
+    .big-btn {
+      border: none;
+      background: #f5f0e6;
+      padding: 18px 28px;
+      border-radius: 60px;
+      font-size: 1.9rem;
+      font-weight: bold;
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 7px 0 #b0a28d, 0 4px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: 0.05s linear;
+      border: 2px solid white;
+      color: #2e241a;
+    }
+    .big-btn:active {
+      transform: translateY(5px);
+      box-shadow: 0 2px 0 #9b8d7a, 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .even-btn { background: #b5d9b2; box-shadow: 0 7px 0 #6f946b; }
+    .odd-btn { background: #f9c6c9; box-shadow: 0 7px 0 #b16d72; }
+    .new-btn { background: #d4c3b3; box-shadow: 0 6px 0 #8f7e6b; padding: 15px 30px; font-size: 1.6rem; }
+    .feedback {
+      min-height: 55px;
+      font-size: 1.8rem;
+      text-align: center;
+      padding: 8px;
+      color: #1e4a2b;
+      font-weight: 600;
+    }
+    /* Array */
+    .array-grid-container { display: flex; justify-content: center; margin: 10px 0 20px; }
+    .array-grid {
+      display: inline-grid;
+      gap: 12px;
+      background: #d9d0c1;
+      padding: 25px;
+      border-radius: 50px;
+      box-shadow: inset 0 0 0 4px #f3e7d9, 0 10px 0 #a28d74;
+      border: 2px solid #f1e4d3;
+    }
+    .array-cell {
+      width: 60px; height: 60px;
+      background: #84a7d9;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 0 #3f5e7a, 0 4px 8px rgba(0,0,0,0.1);
+      border: 2px solid white;
+    }
+    .array-cell span { font-size: 40px; }
+    .array-questions {
+      background: #f2e5d5;
+      border-radius: 40px;
+      padding: 24px 18px;
+      margin-top: 15px;
+    }
+    .question-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px 20px;
+      margin-bottom: 25px;
+    }
+    .q-label {
+      font-size: 1.7rem;
+      background: white;
+      padding: 8px 24px;
+      border-radius: 50px;
+      box-shadow: 0 3px 0 #ccc;
+      font-weight: 600;
+      color: #2e241a;
+    }
+    .num-selector { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .num-btn {
+      width: 65px; height: 65px;
+      border-radius: 30px;
+      background: #e0d6c8;
+      border: 3px solid white;
+      font-size: 2.2rem;
+      font-weight: bold;
+      color: #2c1f12;
+      box-shadow: 0 5px 0 #968a7a;
+      cursor: pointer;
+      transition: 0.05s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .num-btn.selected { background: #ffc857; box-shadow: 0 5px 0 #b27d2a; border-color: #fff1bb; }
+    .num-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #7a6f60; }
+    .check-array-btn { background: #b0c487; box-shadow: 0 7px 0 #6e7f4e; padding: 18px 35px; font-size: 1.8rem; }
+    .array-feedback { font-size: 1.9rem; text-align: center; margin-top: 20px; min-height: 55px; }
+    .reset-area { display: flex; justify-content: center; }
+    .footer-note { text-align: center; font-size: 1.3rem; color: #5f4e3c; margin-top: 25px; }
+    hr { margin: 15px 0 5px; border: 2px dashed #ecc9a2; }
+    button { touch-action: manipulation; user-select: none; }
+  </style>
+</head>
+<body>
+<div class="main-card">
+  <h1>
+    🧸 Equal Groups
+    <span>Buddy & Array</span>
+  </h1>
+
+  <!-- TABS for switching activities -->
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tabBuddy">🐻 Buddy (Odd/Even)</button>
+    <button class="tab-btn" id="tabArray">🍫 Arrays (Rows/Columns)</button>
+  </div>
+
+  <!-- ========== PANEL 1: ODD / EVEN (BUDDY) ========= -->
+  <div id="panelBuddy" class="activity-panel active">
+    <div class="practice-area">
+      <div class="section-title">🧦 Buddy Check · Is it EVEN or ODD?</div>
+      <div id="buddyDisplay" class="buddy-grid"></div>
+      <div class="buddy-buttons">
+        <button class="big-btn even-btn" id="evenAnswerBtn">😊 EVEN (Buddy)</button>
+        <button class="big-btn odd-btn" id="oddAnswerBtn">☹️ ODD (No Buddy)</button>
+      </div>
+      <div id="buddyFeedback" class="feedback">👆 Tap EVEN or ODD</div>
+      <div class="reset-area">
+        <button class="big-btn new-btn" id="newBuddyBtn">✨ New Number ✨</button>
+      </div>
+      <div style="text-align:center; margin-top:10px; font-size:1.4rem;">⭐ Count buddies. One alone? → ODD</div>
+    </div>
+  </div>
+
+  <!-- ========== PANEL 2: ARRAYS ========= -->
+  <div id="panelArray" class="activity-panel">
+    <div class="practice-area">
+      <div class="section-title">🍪 Array · Rows ➡️ & Columns ⬇️</div>
+      <div class="array-grid-container">
+        <div id="arrayDisplay" class="array-grid" style="grid-template-columns: repeat(3,1fr);"></div>
+      </div>
+      <div class="array-questions">
+        <div class="question-row">
+          <div class="q-label">📏 Rows ➡️</div>
+          <div id="rowSelector" class="num-selector"></div>
+        </div>
+        <div class="question-row">
+          <div class="q-label">📐 Columns ⬇️</div>
+          <div id="colSelector" class="num-selector"></div>
+        </div>
+        <div class="question-row">
+          <div class="q-label">🔢 TOTAL = ?</div>
+          <div id="totalSelector" class="num-selector"></div>
+        </div>
+        <div style="display:flex; justify-content:center; margin: 10px 0;">
+          <button class="big-btn check-array-btn" id="checkArrayBtn">✅ CHECK ARRAY</button>
+        </div>
+        <div id="arrayFeedback" class="array-feedback">👉 Count rows, then columns, then TOTAL</div>
+        <div style="display:flex; justify-content:center; margin-top:15px;">
+          <button class="big-btn new-btn" id="newArrayBtn">🔄 New Array</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+  <div class="footer-note">
+    ⭐ Choose a tab. 4–6 exercises ready — tap 'New' for more!
+  </div>
+</div>
+
+<script>
+  (function(){
+    "use strict";
+
+    // ----- STATE -----
+    let currentBuddyCount = 8;
+    let currentRows = 3;
+    let currentCols = 3;
+    let selectedRow = null, selectedCol = null, selectedTotal = null;
+
+    // ----- DOM elements -----
+    const panelBuddy = document.getElementById('panelBuddy');
+    const panelArray = document.getElementById('panelArray');
+    const tabBuddy = document.getElementById('tabBuddy');
+    const tabArray = document.getElementById('tabArray');
+    
+    // Switch tabs
+    function setActiveTab(tabId) {
+      panelBuddy.classList.remove('active');
+      panelArray.classList.remove('active');
+      tabBuddy.classList.remove('active');
+      tabArray.classList.remove('active');
+      
+      if (tabId === 'buddy') {
+        panelBuddy.classList.add('active');
+        tabBuddy.classList.add('active');
+      } else {
+        panelArray.classList.add('active');
+        tabArray.classList.add('active');
+      }
+    }
+    tabBuddy.addEventListener('click', () => setActiveTab('buddy'));
+    tabArray.addEventListener('click', () => setActiveTab('array'));
+
+    // ----- BUDDY (ODD/EVEN) -----
+    const buddyDisplay = document.getElementById('buddyDisplay');
+    const buddyFeedback = document.getElementById('buddyFeedback');
+    
+    function renderBuddyCircles(count) {
+      buddyDisplay.innerHTML = '';
+      for (let i = 0; i < count; i++) {
+        const item = document.createElement('div');
+        item.className = 'buddy-item';
+        const span = document.createElement('span');
+        span.textContent = '🧸';
+        item.appendChild(span);
+        buddyDisplay.appendChild(item);
+      }
+      buddyFeedback.textContent = '🤔 Buddy or No Buddy?';
+    }
+    
+    function randomBuddyCount() { return Math.floor(Math.random() * 9) + 2; } // 2-10
+    
+    function newBuddyQuestion() {
+      currentBuddyCount = randomBuddyCount();
+      renderBuddyCircles(currentBuddyCount);
+    }
+    
+    function checkBuddyAnswer(guessEven) {
+      const isEven = (currentBuddyCount % 2 === 0);
+      if ((guessEven && isEven) || (!guessEven && !isEven)) {
+        buddyFeedback.innerHTML = '✅ YES! ' + (isEven ? '😊 EVEN (buddies paired)' : '☹️ ODD (one alone)');
+      } else {
+        buddyFeedback.innerHTML = '❌ Try again! ' + (isEven ? 'All have buddies → EVEN' : 'One is alone → ODD');
+      }
+    }
+    
+    document.getElementById('evenAnswerBtn').addEventListener('click', () => checkBuddyAnswer(true));
+    document.getElementById('oddAnswerBtn').addEventListener('click', () => checkBuddyAnswer(false));
+    document.getElementById('newBuddyBtn').addEventListener('click', newBuddyQuestion);
+    
+    // ----- ARRAYS -----
+    const arrayDisplay = document.getElementById('arrayDisplay');
+    const arrayFeedback = document.getElementById('arrayFeedback');
+    
+    function renderArray(rows, cols) {
+      arrayDisplay.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+      arrayDisplay.innerHTML = '';
+      for (let i = 0; i < rows * cols; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'array-cell';
+        const span = document.createElement('span');
+        span.textContent = '🍪';
+        cell.appendChild(span);
+        arrayDisplay.appendChild(cell);
+      }
+      // reset selections
+      selectedRow = selectedCol = selectedTotal = null;
+      document.querySelectorAll('#rowSelector .num-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('#colSelector .num-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('#totalSelector .num-btn').forEach(b => b.classList.remove('selected'));
+      arrayFeedback.textContent = '👉 Count rows, then columns, then TOTAL';
+    }
+    
+    function randomArrayDimensions() {
+      const rows = Math.floor(Math.random() * 3) + 2; // 2,3,4
+      const cols = Math.floor(Math.random() * 4) + 2; // 2,3,4,5
+      return { rows, cols };
+    }
+    
+    function newArrayQuestion() {
+      const { rows, cols } = randomArrayDimensions();
+      currentRows = rows;
+      currentCols = cols;
+      renderArray(rows, cols);
+    }
+    
+    function checkArrayAnswers() {
+      if (selectedRow === null || selectedCol === null || selectedTotal === null) {
+        arrayFeedback.innerHTML = '⚠️ Pick rows, columns, AND total!';
+        return;
+      }
+      const correctRow = currentRows, correctCol = currentCols, correctTotal = currentRows * currentCols;
+      if (selectedRow === correctRow && selectedCol === correctCol && selectedTotal === correctTotal) {
+        arrayFeedback.innerHTML = `🎉 PERFECT! ${correctRow} rows, ${correctCol} columns, total = ${correctTotal}`;
+      } else {
+        let hint = '';
+        if (selectedRow !== correctRow) hint += `Rows: ${correctRow} (you picked ${selectedRow}). `;
+        if (selectedCol !== correctCol) hint += `Columns: ${correctCol} (you picked ${selectedCol}). `;
+        if (selectedTotal !== correctTotal) hint += `Total: ${correctTotal} (you picked ${selectedTotal}).`;
+        arrayFeedback.innerHTML = `🤔 Not yet. ${hint}`;
+      }
+    }
+    
+    // Build selectors (once)
+    function buildArraySelectors() {
+      const rowDiv = document.getElementById('rowSelector');
+      const colDiv = document.getElementById('colSelector');
+      const totalDiv = document.getElementById('totalSelector');
+      for (let i=1; i<=5; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'num-btn'; btn.textContent = i; btn.dataset.value = i;
+        btn.addEventListener('click', (e) => {
+          selectedRow = parseInt(e.currentTarget.dataset.value);
+          document.querySelectorAll('#rowSelector .num-btn').forEach(b => b.classList.remove('selected'));
+          e.currentTarget.classList.add('selected');
+        });
+        rowDiv.appendChild(btn);
+      }
+      for (let i=1; i<=5; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'num-btn'; btn.textContent = i; btn.dataset.value = i;
+        btn.addEventListener('click', (e) => {
+          selectedCol = parseInt(e.currentTarget.dataset.value);
+          document.querySelectorAll('#colSelector .num-btn').forEach(b => b.classList.remove('selected'));
+          e.currentTarget.classList.add('selected');
+        });
+        colDiv.appendChild(btn);
+      }
+      for (let i=1; i<=20; i++) {
+        const btn = document.createElement('button');
+        btn.className = 'num-btn'; btn.textContent = i; btn.dataset.value = i;
+        btn.addEventListener('click', (e) => {
+          selectedTotal = parseInt(e.currentTarget.dataset.value);
+          document.querySelectorAll('#totalSelector .num-btn').forEach(b => b.classList.remove('selected'));
+          e.currentTarget.classList.add('selected');
+        });
+        totalDiv.appendChild(btn);
+      }
+    }
+    
+    buildArraySelectors();
+    
+    // initial renders
+    renderBuddyCircles(8);
+    renderArray(3,3);
+    
+    document.getElementById('checkArrayBtn').addEventListener('click', checkArrayAnswers);
+    document.getElementById('newArrayBtn').addEventListener('click', newArrayQuestion);
+    
+    // reset feedback on new
+    const origNewArray = newArrayQuestion;
+    newArrayQuestion = function() {
+      origNewArray();
+      arrayFeedback.textContent = '👉 Count rows, then columns, then TOTAL';
+    };
+    const origNewBuddy = newBuddyQuestion;
+    newBuddyQuestion = function() {
+      origNewBuddy();
+      buddyFeedback.textContent = '🤔 Buddy or No Buddy?';
+    };
+    
+    // override button handlers
+    document.getElementById('newBuddyBtn').onclick = () => newBuddyQuestion();
+    document.getElementById('newArrayBtn').onclick = () => newArrayQuestion();
+    
+  })();
+</script>
+</body>
+</html>
