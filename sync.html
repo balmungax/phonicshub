@@ -63,6 +63,23 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 }
 #copy-btn:hover { background: rgba(255,255,255,0.25); }
 
+/* Compact page selector in header (used when cross-origin) */
+#page-select {
+  margin-left: 8px;
+  background: rgba(255,255,255,0.15);
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+  outline: none;
+}
+#page-select option {
+  background: #4f46e5;
+  color: white;
+}
+
 #main { display: flex; flex: 1; overflow: hidden; }
 
 #nav {
@@ -83,10 +100,10 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 #viewer { flex: 1; position: relative; background: white; overflow: hidden; }
 #page-iframe { width: 100%; height: 100%; border: none; display: block; }
 
-/* Cursor overlay — sits on top of iframe, invisible to user but captures mouse */
+/* Cursor overlay — sits on top of iframe */
 #cursor-track {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 5; pointer-events: none; /* allow clicks to pass through to the iframe */
+  z-index: 5; pointer-events: none;
 }
 #cursor-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
@@ -106,6 +123,15 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
   position: absolute; left: 10px; top: 10px;
   background: #f43f5e; color: white; font-size: 11px; font-weight: 500;
   padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+}
+
+/* Cursor trail dot */
+.trail-dot {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 8;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 /* Click ripple effect */
@@ -162,6 +188,21 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
     <span>Room:</span>
     <span id="room-badge"></span>
     <span id="partner-label">Waiting for partner…</span>
+    <!-- Compact page selector (shown only when cross-origin) -->
+    <select id="page-select" style="display:none;" onchange="if(this.value!==null) navigateTo(this.value, true)">
+      <option value="" selected>🏠 Home</option>
+      <option value="schedule.html">📅 Schedule</option>
+      <option value="keyboard.html">⌨️ Keyboard</option>
+      <option value="recycle2.html">🌱 Project</option>
+      <option value="build.html">📚 Vocabulary</option>
+      <option value="place.html">➖ Subtraction</option>
+      <option value="tracing.html">✍️ Tracing</option>
+      <option value="words2.html">🗂️ Word Bank</option>
+      <option value="grammar.html">✔️ Checker</option>
+      <option value="goal.html">🎯 Weekly Goal</option>
+      <option value="puzzle.html">🧩 Puzzle</option>
+      <option value="games.html">🎮 Games</option>
+    </select>
     <button id="copy-btn" onclick="copyCode()">Copy code</button>
   </div>
 
@@ -212,6 +253,8 @@ let client = null;
 let roomCode = '';
 let lastCursorAt = 0;
 let mouseDown = false;
+let isSameOrigin = false;
+let currentPath = '';
 
 /* ─── Room setup ─── */
 function rng() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
@@ -264,12 +307,18 @@ function buildNav() {
 }
 
 function navigateTo(path, broadcast) {
+  currentPath = path;
   const url = BASE + path;
 
   document.getElementById('iframe-notice').style.display = 'none';
   document.getElementById('page-iframe').src = url;
 
+  // Update sidebar active state
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.path === path));
+
+  // Update header dropdown selection
+  const select = document.getElementById('page-select');
+  select.value = path;
 
   // If iframe fails to load due to X-Frame-Options, show notice
   const iframe = document.getElementById('page-iframe');
@@ -279,17 +328,56 @@ function navigateTo(path, broadcast) {
 
   iframe.onload = () => {
     try {
-      // Try accessing contentDocument — throws if blocked
-      const _ = iframe.contentDocument;
+      // Try accessing contentDocument — throws if blocked (cross-origin)
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      isSameOrigin = true;
       notice.style.display = 'none';
+
+      // Same-origin: hide PhonicHub's internal navigation so our sidebar is the only one
+      hideInternalNav(iframeDoc);
+
+      // Show our sidebar, hide compact header selector
+      document.getElementById('nav').style.display = 'flex';
+      document.getElementById('page-select').style.display = 'none';
     } catch(e) {
+      // Cross-origin: we can't hide internal nav, so hide our sidebar to avoid duplication
+      isSameOrigin = false;
       notice.style.display = 'block';
+      document.getElementById('nav').style.display = 'none';
+      document.getElementById('page-select').style.display = 'inline-block';
     }
   };
 
   if (broadcast && client) {
     client.publish(`ph-liveshare/${roomCode}/nav`, JSON.stringify({ path }), { retain: true });
   }
+}
+
+function hideInternalNav(doc) {
+  if (!doc) return;
+  // Common selectors for navigation menus
+  const selectors = [
+    'nav',
+    '.nav',
+    '.navigation',
+    '.sidebar',
+    '.menu',
+    '#nav',
+    '#navigation',
+    '#sidebar',
+    '[class*="nav"]',
+    '[class*="menu"]'
+  ];
+  selectors.forEach(sel => {
+    try {
+      doc.querySelectorAll(sel).forEach(el => {
+        // Only hide if it looks like a main navigation block (contains multiple links)
+        if (el.querySelectorAll('a').length > 2 || el.querySelectorAll('button').length > 2) {
+          el.style.display = 'none';
+        }
+      });
+    } catch(_) {}
+  });
 }
 
 /* ─── Visual click helpers ─── */
@@ -307,6 +395,28 @@ function showClickRipple(xPct, yPct, color) {
 
 function showRemoteClick(xPct, yPct) {
   showClickRipple(xPct, yPct, 'rgba(244, 63, 94, 0.6)');
+}
+
+/* ─── Cursor trail ─── */
+function addTrailDot(xPct, yPct, isLocal) {
+  const viewer = document.getElementById('viewer');
+  const rect = viewer.getBoundingClientRect();
+  const dot = document.createElement('div');
+  dot.className = 'trail-dot';
+  const size = isLocal ? 5 : 6;
+  dot.style.width = size + 'px';
+  dot.style.height = size + 'px';
+  dot.style.background = isLocal ? 'rgba(92, 110, 240, 0.5)' : 'rgba(244, 63, 94, 0.5)';
+  dot.style.left = ((xPct / 100 * rect.width) - size/2) + 'px';
+  dot.style.top = ((yPct / 100 * rect.height) - size/2) + 'px';
+  viewer.appendChild(dot);
+
+  // Fade out and remove
+  requestAnimationFrame(() => {
+    dot.style.opacity = '0';
+    dot.style.transform = 'scale(0)';
+  });
+  setTimeout(() => dot.remove(), 450);
 }
 
 /* ─── MQTT real-time sync ─── */
@@ -343,6 +453,10 @@ function connectMQTT(code) {
         navigateTo(data.path, false);
       } else if (key === 'cursor') {
         showRemoteCursor(data.x, data.y);
+        // Show trail for remote cursor so partner can follow tracing paths
+        if (data.x >= 0 && data.y >= 0) {
+          addTrailDot(data.x, data.y, false);
+        }
       } else if (key === 'click') {
         const cursor = document.getElementById('remote-cursor');
         if (data.type === 'down') {
@@ -384,6 +498,8 @@ function connectMQTT(code) {
     const x = +((e.clientX - rect.left) / rect.width * 100).toFixed(2);
     const y = +((e.clientY - rect.top) / rect.height * 100).toFixed(2);
     if (client) client.publish(`ph-liveshare/${code}/cursor`, JSON.stringify({ x, y }));
+    // Local trail
+    addTrailDot(x, y, true);
   });
 
   viewer.addEventListener('mouseleave', () => {
