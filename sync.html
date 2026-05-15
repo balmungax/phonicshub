@@ -57,11 +57,13 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
   padding: 3px 10px; font-weight: 700; letter-spacing: 2px; font-size: 14px;
 }
 #partner-label { color: rgba(255,255,255,0.75); }
-#copy-btn {
-  margin-left: auto; background: rgba(255,255,255,0.15); border: none; color: white;
+#copy-btn, #share-btn {
+  background: rgba(255,255,255,0.15); border: none; color: white;
   padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px;
 }
-#copy-btn:hover { background: rgba(255,255,255,0.25); }
+#copy-btn:hover, #share-btn:hover { background: rgba(255,255,255,0.25); }
+#share-btn { margin-left: 8px; }
+#share-btn.active { background: #ef4444; }
 
 /* Compact page selector in header (used when cross-origin) */
 #page-select {
@@ -75,10 +77,7 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
   cursor: pointer;
   outline: none;
 }
-#page-select option {
-  background: #4f46e5;
-  color: white;
-}
+#page-select option { background: #4f46e5; color: white; }
 
 #main { display: flex; flex: 1; overflow: hidden; }
 
@@ -97,10 +96,13 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 .nav-btn.active { background: #ede9ff; color: #4f46e5; font-weight: 500; }
 .nav-btn .ni { font-size: 15px; width: 20px; text-align: center; }
 
-#viewer { flex: 1; position: relative; background: white; overflow: hidden; }
-#page-iframe { width: 100%; height: 100%; border: none; display: block; }
+#viewer { flex: 1; position: relative; background: #111; overflow: hidden; }
+#page-iframe { width: 100%; height: 100%; border: none; display: block; background: white; }
+#remote-video {
+  display: none; width: 100%; height: 100%; object-fit: contain; background: #111;
+}
 
-/* Cursor overlay — sits on top of iframe */
+/* Cursor overlay */
 #cursor-track {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
   z-index: 5; pointer-events: none;
@@ -116,9 +118,7 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
   border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
   transition: transform 0.15s ease;
 }
-.remote-cursor.clicking .remote-cursor-dot {
-  transform: scale(1.5);
-}
+.remote-cursor.clicking .remote-cursor-dot { transform: scale(1.5); }
 .remote-cursor-label {
   position: absolute; left: 10px; top: 10px;
   background: #f43f5e; color: white; font-size: 11px; font-weight: 500;
@@ -127,21 +127,14 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 
 /* Cursor trail dot */
 .trail-dot {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 8;
+  position: absolute; border-radius: 50%; pointer-events: none; z-index: 8;
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
-/* Click ripple effect */
+/* Click ripple */
 .click-ripple {
-  position: absolute;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  animation: ripple 0.5s ease-out forwards;
-  z-index: 15;
+  position: absolute; border-radius: 50%; transform: translate(-50%, -50%);
+  pointer-events: none; animation: ripple 0.5s ease-out forwards; z-index: 15;
 }
 @keyframes ripple {
   0% { width: 8px; height: 8px; opacity: 1; }
@@ -157,6 +150,13 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 #iframe-notice h3 { font-size: 16px; color: #374151; margin-bottom: 8px; }
 #iframe-notice p { font-size: 13px; color: #6b7280; line-height: 1.6; }
 #iframe-notice a { color: #4f46e5; font-weight: 500; }
+
+/* Banner for same-origin hint */
+#origin-banner {
+  display: none; background: #fef3c7; color: #92400e; font-size: 12px;
+  padding: 6px 12px; text-align: center; border-bottom: 1px solid #fcd34d;
+}
+#origin-banner a { color: #92400e; text-decoration: underline; font-weight: 600; }
 </style>
 <base target="_blank">
 </head>
@@ -178,17 +178,21 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
     <p id="setup-error"></p>
   </div>
 
-  <p class="note">No accounts or installs needed. Syncs page navigation and cursor position between two browsers.</p>
+  <p class="note">No accounts or installs needed. Syncs page navigation, cursor, clicks, and screen sharing.</p>
 </div>
 
 <!-- ═══════════ MAIN APP ═══════════ -->
 <div id="app">
+  <div id="origin-banner">
+    🔒 Deep visual sync is limited because this file is opened locally.
+    <a href="#" onclick="alert('Upload this live.html file to your https://balmungax.github.io/phonicshub/ repository and open it from there to unlock full tracing & typing mirroring.')">Learn more</a>
+  </div>
+
   <div id="header">
     <div class="dot" id="conn-dot"></div>
     <span>Room:</span>
     <span id="room-badge"></span>
     <span id="partner-label">Waiting for partner…</span>
-    <!-- Compact page selector (shown only when cross-origin) -->
     <select id="page-select" style="display:none;" onchange="if(this.value!==null) navigateTo(this.value, true)">
       <option value="" selected>🏠 Home</option>
       <option value="schedule.html">📅 Schedule</option>
@@ -203,6 +207,7 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
       <option value="puzzle.html">🧩 Puzzle</option>
       <option value="games.html">🎮 Games</option>
     </select>
+    <button id="share-btn" onclick="toggleScreenShare()">📺 Teach (Share Screen)</button>
     <button id="copy-btn" onclick="copyCode()">Copy code</button>
   </div>
 
@@ -213,6 +218,7 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 
     <div id="viewer">
       <iframe id="page-iframe" src="about:blank" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+      <video id="remote-video" autoplay playsinline></video>
       <div id="cursor-track"></div>
       <div id="cursor-overlay">
         <div id="remote-cursor" class="remote-cursor" style="display:none;">
@@ -256,6 +262,12 @@ let mouseDown = false;
 let isSameOrigin = false;
 let currentPath = '';
 
+/* ─── WebRTC state ─── */
+let localStream = null;
+let pc = null;
+let isSharing = false;
+const STUN = { urls: 'stun:stun.l.google.com:19302' };
+
 /* ─── Room setup ─── */
 function rng() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
 
@@ -293,9 +305,7 @@ function copyCode() {
 /* ─── Navigation ─── */
 function buildNav() {
   const nav = document.getElementById('nav');
-  // Prevent duplicate buttons if buildNav is ever called again
   nav.querySelectorAll('.nav-btn').forEach(btn => btn.remove());
-
   PAGES.forEach(page => {
     const btn = document.createElement('button');
     btn.className = 'nav-btn';
@@ -311,40 +321,35 @@ function navigateTo(path, broadcast) {
   const url = BASE + path;
 
   document.getElementById('iframe-notice').style.display = 'none';
-  document.getElementById('page-iframe').src = url;
-
-  // Update sidebar active state
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.path === path));
-
-  // Update header dropdown selection
-  const select = document.getElementById('page-select');
-  select.value = path;
-
-  // If iframe fails to load due to X-Frame-Options, show notice
   const iframe = document.getElementById('page-iframe');
+  iframe.style.display = 'block';
+  document.getElementById('remote-video').style.display = 'none';
+  document.getElementById('cursor-overlay').style.display = 'block';
+  iframe.src = url;
+
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.path === path));
+  document.getElementById('page-select').value = path;
+
   const notice = document.getElementById('iframe-notice');
   const link = document.getElementById('open-link');
   link.href = url;
 
   iframe.onload = () => {
     try {
-      // Try accessing contentDocument — throws if blocked (cross-origin)
       const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
       isSameOrigin = true;
       notice.style.display = 'none';
-
-      // Same-origin: hide PhonicHub's internal navigation so our sidebar is the only one
       hideInternalNav(iframeDoc);
-
-      // Show our sidebar, hide compact header selector
       document.getElementById('nav').style.display = 'flex';
       document.getElementById('page-select').style.display = 'none';
+      document.getElementById('origin-banner').style.display = 'none';
+      startDeepSync(iframeDoc);
     } catch(e) {
-      // Cross-origin: we can't hide internal nav, so hide our sidebar to avoid duplication
       isSameOrigin = false;
       notice.style.display = 'block';
       document.getElementById('nav').style.display = 'none';
       document.getElementById('page-select').style.display = 'inline-block';
+      document.getElementById('origin-banner').style.display = 'block';
     }
   };
 
@@ -355,23 +360,10 @@ function navigateTo(path, broadcast) {
 
 function hideInternalNav(doc) {
   if (!doc) return;
-  // Common selectors for navigation menus
-  const selectors = [
-    'nav',
-    '.nav',
-    '.navigation',
-    '.sidebar',
-    '.menu',
-    '#nav',
-    '#navigation',
-    '#sidebar',
-    '[class*="nav"]',
-    '[class*="menu"]'
-  ];
+  const selectors = ['nav','.nav','.navigation','.sidebar','.menu','#nav','#navigation','#sidebar','[class*="nav"]','[class*="menu"]'];
   selectors.forEach(sel => {
     try {
       doc.querySelectorAll(sel).forEach(el => {
-        // Only hide if it looks like a main navigation block (contains multiple links)
         if (el.querySelectorAll('a').length > 2 || el.querySelectorAll('button').length > 2) {
           el.style.display = 'none';
         }
@@ -380,7 +372,7 @@ function hideInternalNav(doc) {
   });
 }
 
-/* ─── Visual click helpers ─── */
+/* ─── Visual helpers ─── */
 function showClickRipple(xPct, yPct, color) {
   const overlay = document.getElementById('cursor-overlay');
   const ripple = document.createElement('div');
@@ -393,11 +385,6 @@ function showClickRipple(xPct, yPct, color) {
   setTimeout(() => ripple.remove(), 500);
 }
 
-function showRemoteClick(xPct, yPct) {
-  showClickRipple(xPct, yPct, 'rgba(244, 63, 94, 0.6)');
-}
-
-/* ─── Cursor trail ─── */
 function addTrailDot(xPct, yPct, isLocal) {
   const viewer = document.getElementById('viewer');
   const rect = viewer.getBoundingClientRect();
@@ -410,13 +397,200 @@ function addTrailDot(xPct, yPct, isLocal) {
   dot.style.left = ((xPct / 100 * rect.width) - size/2) + 'px';
   dot.style.top = ((yPct / 100 * rect.height) - size/2) + 'px';
   viewer.appendChild(dot);
-
-  // Fade out and remove
-  requestAnimationFrame(() => {
-    dot.style.opacity = '0';
-    dot.style.transform = 'scale(0)';
-  });
+  requestAnimationFrame(() => { dot.style.opacity = '0'; dot.style.transform = 'scale(0)'; });
   setTimeout(() => dot.remove(), 450);
+}
+
+/* ─── Deep sync (same-origin only) ─── */
+let lastCanvasData = {};
+let deepSyncObservers = [];
+
+function startDeepSync(doc) {
+  if (!doc) return;
+  // Clean up old observers
+  deepSyncObservers.forEach(obs => obs.disconnect());
+  deepSyncObservers = [];
+  lastCanvasData = {};
+
+  // Sync inputs
+  doc.addEventListener('input', (e) => {
+    const t = e.target;
+    if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT') {
+      const payload = { tag: t.tagName, value: t.value, id: t.id, name: t.name, idx: getElIndex(t) };
+      client.publish(`ph-liveshare/${roomCode}/input`, JSON.stringify(payload));
+    }
+  });
+
+  // Sync scroll
+  doc.addEventListener('scroll', () => {
+    client.publish(`ph-liveshare/${roomCode}/scroll`, JSON.stringify({ x: doc.scrollLeft, y: doc.scrollTop }));
+  });
+
+  // Sync canvases (tracing, drawing)
+  const canvases = doc.querySelectorAll('canvas');
+  canvases.forEach((canvas, index) => {
+    const send = () => {
+      try {
+        const data = canvas.toDataURL('image/png');
+        if (lastCanvasData[index] !== data) {
+          lastCanvasData[index] = data;
+          client.publish(`ph-liveshare/${roomCode}/canvas`, JSON.stringify({ index, data }));
+        }
+      } catch(e) {}
+    };
+    const iv = setInterval(send, 250);
+    canvas.addEventListener('mouseup', send);
+    canvas.addEventListener('touchend', send);
+    // Store interval on element for cleanup
+    canvas._syncInterval = iv;
+  });
+}
+
+function getElIndex(el) {
+  let i = 0;
+  while (el = el.previousElementSibling) i++;
+  return i;
+}
+
+function applyRemoteInput(payload) {
+  const iframe = document.getElementById('page-iframe');
+  try {
+    const doc = iframe.contentDocument;
+    let el = null;
+    if (payload.id) el = doc.getElementById(payload.id);
+    if (!el && payload.name) el = doc.querySelector(`[name="${payload.name}"]`);
+    if (!el) {
+      const all = doc.querySelectorAll(payload.tag);
+      if (all[payload.idx]) el = all[payload.idx];
+    }
+    if (el) el.value = payload.value;
+  } catch(e) {}
+}
+
+function applyRemoteCanvas(payload) {
+  const iframe = document.getElementById('page-iframe');
+  try {
+    const doc = iframe.contentDocument;
+    const canvas = doc.querySelectorAll('canvas')[payload.index];
+    if (canvas) {
+      const img = new Image();
+      img.onload = () => {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+      };
+      img.src = payload.data;
+    }
+  } catch(e) {}
+}
+
+function applyRemoteScroll(payload) {
+  const iframe = document.getElementById('page-iframe');
+  try {
+    const doc = iframe.contentDocument;
+    doc.scrollLeft = payload.x;
+    doc.scrollTop = payload.y;
+  } catch(e) {}
+}
+
+/* ─── WebRTC Screen Sharing ─── */
+async function toggleScreenShare() {
+  const btn = document.getElementById('share-btn');
+  if (isSharing) {
+    stopScreenShare();
+    btn.textContent = '📺 Teach (Share Screen)';
+    btn.classList.remove('active');
+  } else {
+    await startScreenShare();
+    btn.textContent = '⏹ Stop Sharing';
+    btn.classList.add('active');
+  }
+}
+
+async function startScreenShare() {
+  try {
+    localStream = await navigator.mediaDevices.getDisplayMedia({ video: { cursor: "always" }, audio: false });
+    isSharing = true;
+
+    pc = new RTCPeerConnection({ iceServers: [STUN] });
+    localStream.getTracks().forEach(track => pc.addTrack(track, localStream));
+
+    pc.onicecandidate = (e) => {
+      if (e.candidate) {
+        client.publish(`ph-liveshare/${roomCode}/webrtc/ice`, JSON.stringify({ candidate: e.candidate }));
+      }
+    };
+
+    const offer = await pc.createOffer();
+    await pc.setLocalDescription(offer);
+    client.publish(`ph-liveshare/${roomCode}/webrtc/offer`, JSON.stringify({ sdp: pc.localDescription.sdp }));
+
+    localStream.getVideoTracks()[0].onended = () => {
+      stopScreenShare();
+      document.getElementById('share-btn').textContent = '📺 Teach (Share Screen)';
+      document.getElementById('share-btn').classList.remove('active');
+    };
+  } catch (err) {
+    console.error(err);
+    alert('Screen sharing failed. Make sure you are on HTTPS or localhost, and you granted permission.');
+  }
+}
+
+function stopScreenShare() {
+  isSharing = false;
+  if (localStream) { localStream.getTracks().forEach(t => t.stop()); localStream = null; }
+  if (pc) { pc.close(); pc = null; }
+  client.publish(`ph-liveshare/${roomCode}/webrtc/stop`, JSON.stringify({}));
+}
+
+function setupWebRTC() {
+  client.on('message', async (topic, msg) => {
+    try {
+      const data = JSON.parse(msg.toString());
+      const key = topic.split('/').pop();
+
+      if (key === 'offer') {
+        if (isSharing) return; // We are the teacher, ignore
+        if (pc) { pc.close(); }
+        pc = new RTCPeerConnection({ iceServers: [STUN] });
+
+        pc.ontrack = (e) => {
+          const video = document.getElementById('remote-video');
+          video.srcObject = e.streams[0];
+          video.style.display = 'block';
+          document.getElementById('page-iframe').style.display = 'none';
+          document.getElementById('cursor-overlay').style.display = 'none';
+        };
+
+        pc.onicecandidate = (e) => {
+          if (e.candidate) {
+            client.publish(`ph-liveshare/${roomCode}/webrtc/ice`, JSON.stringify({ candidate: e.candidate }));
+          }
+        };
+
+        await pc.setRemoteDescription(new RTCSessionDescription({ type: 'offer', sdp: data.sdp }));
+        const answer = await pc.createAnswer();
+        await pc.setLocalDescription(answer);
+        client.publish(`ph-liveshare/${roomCode}/webrtc/answer`, JSON.stringify({ sdp: pc.localDescription.sdp }));
+      }
+      else if (key === 'answer') {
+        if (!isSharing || !pc) return;
+        await pc.setRemoteDescription(new RTCSessionDescription({ type: 'answer', sdp: data.sdp }));
+      }
+      else if (key === 'ice') {
+        if (!pc) return;
+        await pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+      }
+      else if (key === 'stop') {
+        const video = document.getElementById('remote-video');
+        video.srcObject = null;
+        video.style.display = 'none';
+        document.getElementById('page-iframe').style.display = 'block';
+        document.getElementById('cursor-overlay').style.display = 'block';
+        if (pc) { pc.close(); pc = null; }
+      }
+    } catch(e) { console.error(e); }
+  });
 }
 
 /* ─── MQTT real-time sync ─── */
@@ -438,11 +612,20 @@ function connectMQTT(code) {
       `ph-liveshare/${code}/cursor`,
       `ph-liveshare/${code}/presence`,
       `ph-liveshare/${code}/click`,
+      `ph-liveshare/${code}/input`,
+      `ph-liveshare/${code}/canvas`,
+      `ph-liveshare/${code}/scroll`,
+      `ph-liveshare/${code}/webrtc/offer`,
+      `ph-liveshare/${code}/webrtc/answer`,
+      `ph-liveshare/${code}/webrtc/ice`,
+      `ph-liveshare/${code}/webrtc/stop`,
     ];
     client.subscribe(topics, () => {
       client.publish(`ph-liveshare/${code}/presence`, JSON.stringify({ type: 'join' }));
     });
   });
+
+  setupWebRTC();
 
   client.on('message', (topic, msg) => {
     try {
@@ -453,23 +636,31 @@ function connectMQTT(code) {
         navigateTo(data.path, false);
       } else if (key === 'cursor') {
         showRemoteCursor(data.x, data.y);
-        // Show trail for remote cursor so partner can follow tracing paths
-        if (data.x >= 0 && data.y >= 0) {
-          addTrailDot(data.x, data.y, false);
-        }
+        if (data.x >= 0 && data.y >= 0) addTrailDot(data.x, data.y, false);
       } else if (key === 'click') {
         const cursor = document.getElementById('remote-cursor');
         if (data.type === 'down') {
-          if (data.x != null && data.y != null) showRemoteClick(data.x, data.y);
+          if (data.x != null && data.y != null) showClickRipple(data.x, data.y, 'rgba(244, 63, 94, 0.6)');
           cursor.classList.add('clicking');
         } else if (data.type === 'up') {
           cursor.classList.remove('clicking');
         }
+      } else if (key === 'input') {
+        applyRemoteInput(data);
+      } else if (key === 'canvas') {
+        applyRemoteCanvas(data);
+      } else if (key === 'scroll') {
+        applyRemoteScroll(data);
       } else if (key === 'presence') {
         if (data.type === 'join') {
           partnerLabel.textContent = '🟢 Partner connected!';
-          // Announce back
           client.publish(`ph-liveshare/${code}/presence`, JSON.stringify({ type: 'here' }));
+          // If we are sharing and a new partner joins, re-send offer so they get the stream
+          if (isSharing && pc) {
+            pc.createOffer().then(offer => pc.setLocalDescription(offer)).then(() => {
+              client.publish(`ph-liveshare/${code}/webrtc/offer`, JSON.stringify({ sdp: pc.localDescription.sdp }));
+            });
+          }
         } else if (data.type === 'here') {
           partnerLabel.textContent = '🟢 Partner connected!';
         } else if (data.type === 'leave') {
@@ -492,13 +683,12 @@ function connectMQTT(code) {
 
   viewer.addEventListener('mousemove', e => {
     const now = Date.now();
-    if (now - lastCursorAt < 60) return; // ~16 fps
+    if (now - lastCursorAt < 60) return;
     lastCursorAt = now;
     const rect = viewer.getBoundingClientRect();
     const x = +((e.clientX - rect.left) / rect.width * 100).toFixed(2);
     const y = +((e.clientY - rect.top) / rect.height * 100).toFixed(2);
     if (client) client.publish(`ph-liveshare/${code}/cursor`, JSON.stringify({ x, y }));
-    // Local trail
     addTrailDot(x, y, true);
   });
 
@@ -512,7 +702,7 @@ function connectMQTT(code) {
     const x = +((e.clientX - rect.left) / rect.width * 100).toFixed(2);
     const y = +((e.clientY - rect.top) / rect.height * 100).toFixed(2);
     if (client) client.publish(`ph-liveshare/${code}/click`, JSON.stringify({ x, y, type: 'down' }));
-    showClickRipple(x, y, 'rgba(92, 110, 240, 0.5)'); // local visual feedback
+    showClickRipple(x, y, 'rgba(92, 110, 240, 0.5)');
   });
 
   window.addEventListener('mouseup', () => {
