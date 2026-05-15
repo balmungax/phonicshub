@@ -1,1 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Lesson: Comic Storytelling | Manolito | Comprehension & Creative Writing</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=Schoolbell&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            background: linear-gradient(145deg, #e9f0f5 0%, #d9e2ec 100%);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .presentation-container {
+            max-width: 1200px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 2.5rem;
+            box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.35), 0 2px 5px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        .slides-wrapper {
+            position: relative;
+            overflow: hidden;
+            background: #fefcf5;
+        }
+
+        .slides-container {
+            display: flex;
+            transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            will-change: transform;
+        }
+
+        .slide {
+            flex: 0 0 100%;
+            padding: 2rem 2rem 2.2rem 2rem;
+            background: #fefcf5;
+            min-height: 550px;
+            overflow-y: auto;
+        }
+
+        h2 {
+            font-size: 1.9rem;
+            margin-bottom: 1.2rem;
+            border-left: 7px solid #f4b942;
+            padding-left: 1rem;
+            color: #2c3e2f;
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 1rem 0 0.75rem 0;
+            color: #3a5e3f;
+        }
+
+        /* image panel for the wide comic */
+        .comic-image-panel {
+            background: #fff8e7;
+            border-radius: 1.8rem;
+            padding: 1rem;
+            box-shadow: 0 12px 22px -10px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e9d6a7;
+            text-align: center;
+        }
+
+        .comic-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 1.2rem;
+            display: block;
+            margin: 0 auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* dimensions hint: native 2170x725, we preserve aspect ratio */
+        .img-caption {
+            font-size: 0.8rem;
+            color: #7f6b3e;
+            margin-top: 0.6rem;
+            font-style: italic;
+        }
+
+        .quiz-card {
+            background: #f0f4fa;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.8rem;
+            margin: 1rem 0;
+        }
+        .question-item {
+            margin: 1.5rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+        .question-text {
+            font-weight: 700;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        .reveal-btn {
+            background: #2d5f3e;
+            border: none;
+            color: white;
+            font-size: 0.75rem;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+            margin-top: 0.6rem;
+        }
+        .reveal-btn:hover {
+            background: #1f452e;
+            transform: scale(0.97);
+        }
+        .answer {
+            background: #e9ecef;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            margin-top: 0.7rem;
+            font-size: 0.9rem;
+            display: none;
+            border-left: 4px solid #f4b942;
+        }
+
+        /* vocabulary table */
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 1.2rem;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin: 1rem 0;
+        }
+        .vocab-table th {
+            background: #3a6b47;
+            color: white;
+            padding: 12px 8px;
+            font-weight: 600;
+        }
+        .vocab-table td {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 10px 8px;
+            vertical-align: top;
+        }
+        .category-badge {
+            background: #fdebb3;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        /* story task area */
+        .story-prompt {
+            background: #fdf6e3;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            margin: 1rem 0;
+        }
+        textarea {
+            width: 100%;
+            border-radius: 1rem;
+            border: 1px solid #d4d9bf;
+            padding: 1rem;
+            font-family: 'Inter', monospace;
+            font-size: 0.95rem;
+            margin: 0.8rem 0;
+            resize: vertical;
+            background: #fffef7;
+        }
+        .story-helper {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1rem 0;
+        }
+        .helper-card {
+            background: white;
+            border-radius: 1.2rem;
+            padding: 0.6rem 1rem;
+            flex: 1;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+            border: 1px solid #e9e2ca;
+        }
+        .checklist {
+            background: #eef4e6;
+            border-radius: 1rem;
+            padding: 0.8rem 1.2rem;
+            margin-top: 0.6rem;
+            font-size: 0.9rem;
+        }
+        .checklist i {
+            color: #3a7e4c;
+            margin-right: 6px;
+        }
+
+        .nav-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 2rem;
+            background: #ffffffdd;
+            backdrop-filter: blur(2px);
+            border-top: 1px solid #ece3d0;
+        }
+        .nav-btn {
+            background: #f5e7d3;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            padding: 0.6rem 1.2rem;
+            border-radius: 3rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+            color: #2c4b32;
+        }
+        .nav-btn:hover {
+            background: #e9d9be;
+            transform: translateY(-2px);
+        }
+        .dot-group {
+            display: flex;
+            gap: 12px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            background: #cdd1c5;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dot.active {
+            background: #3a6b47;
+            width: 22px;
+            border-radius: 10px;
+        }
+        footer {
+            font-size: 0.7rem;
+            text-align: center;
+            padding: 0.8rem;
+            background: #f5f0e6;
+            color: #5b6e55;
+        }
+        @media (max-width: 680px) {
+            .slide { padding: 1.2rem; }
+            h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="presentation-container">
+    <div class="slides-wrapper">
+        <div class="slides-container" id="slidesContainer">
+            <!-- SLIDE 0: PICTURE (manolito.png) 2170*725 -->
+            <div class="slide">
+                <h2><i class="fas fa-image"></i> 🎭 The Comic Strip – Manolito</h2>
+                <div class="comic-image-panel">
+                    <img class="comic-img" src="manolito.png" alt="Manolito comic strip - teacher asks who doesn't understand, Manolito says: From September until now, NOTHING!" 
+                         style="width:100%; height:auto; max-width:100%; border-radius:1rem;" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x267?text=manolito.png+will+appear+here'; this.style.opacity='0.7';">
+                    <div class="img-caption">
+                        <i class="fas fa-comment-dots"></i> Original comic: “And he who does NOT understand, raise your hand. — Let's see, Manolito, what is it that you don't understand? — From September until now, NOTHING!”
+                    </div>
+                    <p style="margin-top: 0.5rem; font-size:0.85rem; background:#fff0ce; padding:0.3rem; border-radius:30px;">
+                    📸 Image dimensions: 2170 × 725 (wide panel). Manolito’s confession: a whole semester without understanding.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SLIDE 1: COMPREHENSION QUESTIONS -->
+            <div class="slide">
+                <h2><i class="fas fa-question-circle"></i> 📖 Check understanding</h2>
+                <div class="quiz-card">
+                    <div class="question-item">
+                        <div class="question-text"><i class="fas fa-hand-paper"></i> 1. What does the teacher ask the students to do if they don't understand?</div>
+                        <button class="reveal-btn" data-ans="ans1">Reveal answer</button>
+                        <div id="ans1" class="answer">The teacher says: “And he who does NOT understand, raise your hand.” He wants students to openly show their confusion.</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text"><i class="fas fa-calendar-alt"></i> 2. What does Manolito mean by “From September until now, nothing!”?</div>
+                        <button class="reveal-btn" data-ans="ans2">Reveal answer</button>
+                        <div id="ans2" class="answer">Manolito means he hasn’t understood ANYTHING in class since the school year started in September. He feels completely lost.</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text"><i class="fas fa-heart-broken"></i> 3. How do you think Manolito feels in this moment?</div>
+                        <button class="reveal-btn" data-ans="ans3">Reveal answer</button>
+                        <div id="ans3" class="answer">Manolito likely feels embarrassed, frustrated, scared, and maybe a bit brave for being honest. He feels overwhelmed and confused.</div>
+                    </div>
+                    <div class="question-item">
+                        <div class="question-text"><i class="fas fa-chalkboard-teacher"></i> 4. Why might the teacher be surprised or concerned?</div>
+                        <button class="reveal-btn" data-ans="ans4">Reveal answer</button>
+                        <div id="ans4" class="answer">Because Manolito hasn't understood anything for months — since September. The teacher realizes there is a serious learning gap.</div>
+                    </div>
+                </div>
+                <p style="background:#e2e9d6; padding:0.5rem 1rem; border-radius:2rem; font-size:0.85rem;"><i class="fas fa-users"></i> Pair discussion: If you were the teacher, what would you do next to help Manolito?</p>
+            </div>
+
+            <!-- SLIDE 2: VOCABULARY TABLE (ENGLISH / RUSSIAN) + CATEGORIES -->
+            <div class="slide">
+                <h2><i class="fas fa-language"></i> 📚 Story Vocabulary – English / Русский</h2>
+                <p>Use these words to describe <strong>character feelings, settings, actions</strong> in your story.</p>
+                <table class="vocab-table">
+                    <thead><tr><th>English</th><th>Русский (Russian)</th><th>Category</th></tr></thead>
+                    <tbody>
+                        <tr><td>Character / person</td><td>Персонаж / человек</td><td><span class="category-badge">Character</span></td></tr>
+                        <tr><td>Student / pupil</td><td>Ученик</td><td><span class="category-badge">Character</span></td></tr>
+                        <tr><td>Teacher</td><td>Учитель</td><td><span class="category-badge">Character</span></td></tr>
+                        <tr><td>Classmate / friend</td><td>Одноклассник / друг</td><td><span class="category-badge">Character</span></td></tr>
+                        <tr><td>Classroom</td><td>Классная комната</td><td><span class="category-badge">Setting</span></td></tr>
+                        <tr><td>School / library</td><td>Школа / библиотека</td><td><span class="category-badge">Setting</span></td></tr>
+                        <tr><td>Desk / blackboard</td><td>Парта / доска</td><td><span class="category-badge">Setting</span></td></tr>
+                        <tr><td>Confused</td><td>Сбитый с толку / запутанный</td><td><span class="category-badge">Feeling</span></td></tr>
+                        <tr><td>Frustrated</td><td>Расстроенный / разочарованный</td><td><span class="category-badge">Feeling</span></td></tr>
+                        <tr><td>Embarrassed</td><td>Смущённый</td><td><span class="category-badge">Feeling</span></td></tr>
+                        <tr><td>Relieved</td><td>Облегчённый</td><td><span class="category-badge">Feeling</span></td></tr>
+                        <tr><td>Determined</td><td>Решительный</td><td><span class="category-badge">Feeling</span></td></tr>
+                        <tr><td>To understand</td><td>Понимать</td><td><span class="category-badge">Action</span></td></tr>
+                        <tr><td>To raise hand</td><td>Поднять руку</td><td><span class="category-badge">Action</span></td></tr>
+                        <tr><td>Explanation / help</td><td>Объяснение / помощь</td><td><span class="category-badge">Key word</span></td></tr>
+                        <tr><td>To encourage</td><td>Подбадривать</td><td><span class="category-badge">Action</span></td></tr>
+                        <tr><td>Resolution / solution</td><td>Решение проблемы</td><td><span class="category-badge">Narrative</span></td></tr>
+                    </tbody>
+                </table>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px;">
+                    <span class="category-badge" style="background:#e0cfaa;">🧑‍🎓 Character ideas: Manolito, a kind teacher, a helpful friend</span>
+                    <span class="category-badge" style="background:#e0cfaa;">🏫 Settings: classroom, hallway, after-school study corner</span>
+                    <span class="category-badge" style="background:#e0cfaa;">😰 Feelings: confusion → hope → pride</span>
+                </div>
+            </div>
+
+            <!-- SLIDE 3: MAIN TASK – CREATE A STORY with specific questions -->
+            <div class="slide">
+                <h2><i class="fas fa-feather-alt"></i> ✍️ Creative Story Mission</h2>
+                <div class="story-prompt">
+                    <p><strong>🎯 Based on the comic strip, write a short story (150–300 words).</strong></p>
+                    <p>Your story <strong>must include</strong>:</p>
+                    <ul style="margin-left: 1.5rem; margin-bottom: 0.8rem;">
+                        <li>🔹 A main <strong>character</strong> (Manolito or a similar student).</li>
+                        <li>🔹 A clear <strong>setting</strong> (where & when the story takes place).</li>
+                        <li>🔹 The character's <strong>feelings</strong> (describe how they feel at the start, middle, and end).</li>
+                        <li>🔹 Use at least <strong>5 words from the vocabulary table</strong> (English or Russian).</li>
+                    </ul>
+                    <p><strong>📌 Answer these key questions in your story:</strong></p>
+                    <div class="checklist">
+                        <p><i class="fas fa-chalkboard-teacher"></i> <strong>Does the teacher help him?</strong> If yes, how? (extra lessons, kind words, different method?)</p>
+                        <p><i class="fas fa-users"></i> <strong>Does another student help?</strong> (a classmate, a tutor, a friend?)</p>
+                        <p><i class="fas fa-lightbulb"></i> <strong>Does the main character find a way to understand?</strong> What changes?</p>
+                        <p><i class="fas fa-flag-checkered"></i> <strong>Write the resolution.</strong> How does the problem end? Does Manolito finally understand something?</p>
+                    </div>
+                    <p><strong>💡 Example starter:</strong> <em>“Manolito felt frustrated and embarrassed after raising his hand. But the teacher, Mrs. Garcia, smiled and said, ‘It’s brave to admit confusion. Let’s find a solution together…’”</em></p>
+                </div>
+                <div class="story-helper">
+                    <div class="helper-card"><i class="fas fa-user-graduate"></i> <strong>Possible teacher help:</strong> one-on-one tutoring, visual aids, patience.</div>
+                    <div class="helper-card"><i class="fas fa-hand-holding-heart"></i> <strong>Possible peer help:</strong> study buddy, explaining in simple words, group work.</div>
+                    <div class="helper-card"><i class="fas fa-brain"></i> <strong>Resolution idea:</strong> Manolito masters a topic, feels relieved, and raises his hand again – but now to answer!</div>
+                </div>
+                <textarea id="storyTextArea" rows="6" placeholder="Write your story here... Use vocabulary from the table. Describe feelings: confused, determined, relieved. Include teacher/student help and a clear resolution. Example:&#10;&#10;From September until now, Manolito felt completely lost. When he raised his hand and admitted he understood nothing, his teacher didn’t scold him. Instead, she offered after-school help. His classmate Lena also shared her notes. Slowly, he began to understand math problems. By December, he solved an equation on the blackboard. He felt proud and relieved. The teacher’s support and his own determination changed everything!"></textarea>
+                <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 0.4rem;">
+                    <button id="copyStoryBtn" class="reveal-btn" style="background:#5d7b5f;"><i class="far fa-copy"></i> Copy story</button>
+                    <button id="clearStoryBtn" class="reveal-btn" style="background:#ab9e82;"><i class="fas fa-eraser"></i> Clear</button>
+                </div>
+                <p style="margin-top: 0.6rem; font-size:0.8rem; background:#fcf3da; padding:0.4rem; border-radius:1rem;"><i class="fas fa-star"></i> <strong>Extension:</strong> Share your story with a partner. Did the main character change from confused to confident? Highlight the vocabulary you used.</p>
+            </div>
+        </div>
+    </div>
+    <div class="nav-controls">
+        <button class="nav-btn" id="prevSlideBtn"><i class="fas fa-chevron-left"></i> Previous</button>
+        <div class="dot-group" id="dotGroup">
+            <div class="dot" data-slide="0"></div>
+            <div class="dot" data-slide="1"></div>
+            <div class="dot" data-slide="2"></div>
+            <div class="dot" data-slide="3"></div>
+        </div>
+        <button class="nav-btn" id="nextSlideBtn">Next <i class="fas fa-chevron-right"></i></button>
+    </div>
+    <footer>
+        🎓 Lesson plan: comic analysis → comprehension → vocabulary enrichment → creative storytelling (teacher/peer help & resolution) | Image: manolito.png (2170x725)
+    </footer>
+</div>
+
+<script>
+    // Slides navigation
+    const slidesContainer = document.getElementById('slidesContainer');
+    const prevBtn = document.getElementById('prevSlideBtn');
+    const nextBtn = document.getElementById('nextSlideBtn');
+    const dots = document.querySelectorAll('.dot');
+    let currentSlide = 0;
+    const totalSlides = document.querySelectorAll('.slide').length;
+
+    function updateSlidePosition() {
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+        dots.forEach((dot, idx) => {
+            if (idx === currentSlide) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    }
+
+    function goToSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= totalSlides) index = totalSlides - 1;
+        currentSlide = index;
+        updateSlidePosition();
+    }
+
+    prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+    nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+    dots.forEach((dot, idx) => {
+        dot.addEventListener('click', () => goToSlide(idx));
+    });
+    updateSlidePosition();
+
+    // reveal answers for comprehension (slide 1)
+    const revealButtons = document.querySelectorAll('.reveal-btn[data-ans]');
+    revealButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const ansId = btn.getAttribute('data-ans');
+            const answerDiv = document.getElementById(ansId);
+            if (answerDiv) {
+                if (answerDiv.style.display === 'none' || answerDiv.style.display === '') {
+                    answerDiv.style.display = 'block';
+                    btn.textContent = 'Hide answer';
+                } else {
+                    answerDiv.style.display = 'none';
+                    btn.textContent = 'Reveal answer';
+                }
+            }
+        });
+    });
+    // initial: all answers hidden
+    document.querySelectorAll('.answer').forEach(ans => ans.style.display = 'none');
+
+    // story textarea copy & clear
+    const storyTextarea = document.getElementById('storyTextArea');
+    const copyBtn = document.getElementById('copyStoryBtn');
+    const clearBtn = document.getElementById('clearStoryBtn');
+
+    copyBtn.addEventListener('click', () => {
+        if (storyTextarea.value.trim() !== "") {
+            navigator.clipboard.writeText(storyTextarea.value).then(() => {
+                alert("✅ Your story has been copied! Share it with classmates.");
+            }).catch(() => alert("Could not copy, but you can manually select text."));
+        } else {
+            alert("📖 Write your story first, then click Copy.");
+        }
+    });
+
+    clearBtn.addEventListener('click', () => {
+        if (confirm("Clear your story draft? All progress will be removed.")) {
+            storyTextarea.value = "";
+        }
+    });
+</script>
+</body>
+</html>
