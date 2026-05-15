@@ -86,7 +86,7 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 /* Cursor overlay — sits on top of iframe, invisible to user but captures mouse */
 #cursor-track {
   position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  z-index: 5; cursor: crosshair; opacity: 0;
+  z-index: 5; pointer-events: none; /* allow clicks to pass through to the iframe */
 }
 #cursor-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10; }
 
@@ -97,11 +97,29 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 .remote-cursor-dot {
   width: 14px; height: 14px; border-radius: 50%; background: #f43f5e;
   border: 2px solid white; box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+  transition: transform 0.15s ease;
+}
+.remote-cursor.clicking .remote-cursor-dot {
+  transform: scale(1.5);
 }
 .remote-cursor-label {
   position: absolute; left: 10px; top: 10px;
   background: #f43f5e; color: white; font-size: 11px; font-weight: 500;
   padding: 2px 7px; border-radius: 4px; white-space: nowrap;
+}
+
+/* Click ripple effect */
+.click-ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: ripple 0.5s ease-out forwards;
+  z-index: 15;
+}
+@keyframes ripple {
+  0% { width: 8px; height: 8px; opacity: 1; }
+  100% { width: 50px; height: 50px; opacity: 0; }
 }
 
 /* Iframe blocker notice */
@@ -114,6 +132,7 @@ body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display
 #iframe-notice p { font-size: 13px; color: #6b7280; line-height: 1.6; }
 #iframe-notice a { color: #4f46e5; font-weight: 500; }
 </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -192,6 +211,7 @@ const PAGES = [
 let client = null;
 let roomCode = '';
 let lastCursorAt = 0;
+let mouseDown = false;
 
 /* ─── Room setup ─── */
 function rng() { return Math.random().toString(36).substring(2, 8).toUpperCase(); }
@@ -230,6 +250,9 @@ function copyCode() {
 /* ─── Navigation ─── */
 function buildNav() {
   const nav = document.getElementById('nav');
+  // Prevent duplicate buttons if buildNav is ever called again
+  nav.querySelectorAll('.nav-btn').forEach(btn => btn.remove());
+
   PAGES.forEach(page => {
     const btn = document.createElement('button');
     btn.className = 'nav-btn';
@@ -269,6 +292,23 @@ function navigateTo(path, broadcast) {
   }
 }
 
+/* ─── Visual click helpers ─── */
+function showClickRipple(xPct, yPct, color) {
+  const overlay = document.getElementById('cursor-overlay');
+  const ripple = document.createElement('div');
+  ripple.className = 'click-ripple';
+  ripple.style.background = color || 'rgba(244, 63, 94, 0.4)';
+  const rect = overlay.getBoundingClientRect();
+  ripple.style.left = (xPct / 100 * rect.width) + 'px';
+  ripple.style.top = (yPct / 100 * rect.height) + 'px';
+  overlay.appendChild(ripple);
+  setTimeout(() => ripple.remove(), 500);
+}
+
+function showRemoteClick(xPct, yPct) {
+  showClickRipple(xPct, yPct, 'rgba(244, 63, 94, 0.6)');
+}
+
 /* ─── MQTT real-time sync ─── */
 function connectMQTT(code) {
   const dot = document.getElementById('conn-dot');
@@ -287,6 +327,7 @@ function connectMQTT(code) {
       `ph-liveshare/${code}/nav`,
       `ph-liveshare/${code}/cursor`,
       `ph-liveshare/${code}/presence`,
+      `ph-liveshare/${code}/click`,
     ];
     client.subscribe(topics, () => {
       client.publish(`ph-liveshare/${code}/presence`, JSON.stringify({ type: 'join' }));
@@ -302,6 +343,14 @@ function connectMQTT(code) {
         navigateTo(data.path, false);
       } else if (key === 'cursor') {
         showRemoteCursor(data.x, data.y);
+      } else if (key === 'click') {
+        const cursor = document.getElementById('remote-cursor');
+        if (data.type === 'down') {
+          if (data.x != null && data.y != null) showRemoteClick(data.x, data.y);
+          cursor.classList.add('clicking');
+        } else if (data.type === 'up') {
+          cursor.classList.remove('clicking');
+        }
       } else if (key === 'presence') {
         if (data.type === 'join') {
           partnerLabel.textContent = '🟢 Partner connected!';
@@ -324,21 +373,37 @@ function connectMQTT(code) {
     if (client) client.publish(`ph-liveshare/${code}/presence`, JSON.stringify({ type: 'leave' }));
   });
 
-  /* ─── Cursor tracking (over iframe) ─── */
-  const track = document.getElementById('cursor-track');
-  track.addEventListener('mousemove', e => {
+  /* ─── Cursor & Click tracking ─── */
+  const viewer = document.getElementById('viewer');
+
+  viewer.addEventListener('mousemove', e => {
     const now = Date.now();
     if (now - lastCursorAt < 60) return; // ~16 fps
     lastCursorAt = now;
-    const rect = track.getBoundingClientRect();
+    const rect = viewer.getBoundingClientRect();
     const x = +((e.clientX - rect.left) / rect.width * 100).toFixed(2);
     const y = +((e.clientY - rect.top) / rect.height * 100).toFixed(2);
     if (client) client.publish(`ph-liveshare/${code}/cursor`, JSON.stringify({ x, y }));
   });
 
-  // Hide remote cursor when mouse leaves
-  track.addEventListener('mouseleave', () => {
+  viewer.addEventListener('mouseleave', () => {
     if (client) client.publish(`ph-liveshare/${code}/cursor`, JSON.stringify({ x: -1, y: -1 }));
+  });
+
+  viewer.addEventListener('mousedown', e => {
+    mouseDown = true;
+    const rect = viewer.getBoundingClientRect();
+    const x = +((e.clientX - rect.left) / rect.width * 100).toFixed(2);
+    const y = +((e.clientY - rect.top) / rect.height * 100).toFixed(2);
+    if (client) client.publish(`ph-liveshare/${code}/click`, JSON.stringify({ x, y, type: 'down' }));
+    showClickRipple(x, y, 'rgba(92, 110, 240, 0.5)'); // local visual feedback
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (mouseDown) {
+      mouseDown = false;
+      if (client) client.publish(`ph-liveshare/${code}/click`, JSON.stringify({ type: 'up' }));
+    }
   });
 }
 
