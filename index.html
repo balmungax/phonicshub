@@ -3,232 +3,279 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Class 2C · Learning Hub</title>
+<title>2C · Learning Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-body{
-  font-family:'Nunito',sans-serif;
-  background:#f0eeff;
-  display:flex;flex-direction:column;
-  font-size:15px;
-}
+body{font-family:'Nunito',sans-serif;background:#f0eeff;display:flex;flex-direction:column}
+
 :root{
-  --en:#e8460a; --en-soft:#fff0eb; --en-mid:#ff6b35; --en-dark:#b53606;
-  --sci:#1a8a3c; --sci-soft:#ebfaef; --sci-mid:#28a84d; --sci-dark:#116129;
-  --math:#1460c8; --math-soft:#eaf1ff; --math-mid:#2575e8; --math-dark:#0d469a;
-  --art:#9c1fc4; --art-soft:#f8eaff; --art-mid:#b83ae0; --art-dark:#721090;
-  --header-h:60px; --sidebar-w:256px;
-  --white:#ffffff; --bg:#f0eeff; --border:#ddd8f5;
-  --text:#1a1535; --muted:#6b6589;
-  --active-bg:#fffbe6; --active-line:#fcc419;
-  --t:.22s cubic-bezier(.4,0,.2,1);
+  --en:#d94008; --en-s:#fff0eb; --en-m:#ff6b35; --en-d:#a83005;
+  --sci:#1a8a3c; --sci-s:#ebfaef; --sci-m:#28a84d; --sci-d:#116129;
+  --math:#1460c8; --math-s:#eaf1ff; --math-m:#2575e8; --math-d:#0d469a;
+  --art:#9c1fc4; --art-s:#f8eaff; --art-m:#b83ae0; --art-d:#721090;
+  --white:#fff; --bg:#f0eeff; --bdr:#ddd8f5; --text:#1a1535; --muted:#7068a0;
+  --active-bg:#fffbe6; --active-ln:#fcc419;
+  --sw:264px; --hh:56px;
+  --t:.25s cubic-bezier(.4,0,.2,1);
 }
 
-/* HEADER */
-.header{
-  height:var(--header-h);flex-shrink:0;
-  background:var(--white);
-  border-bottom:2.5px solid var(--border);
-  display:flex;align-items:center;
-  padding:0 1.1rem;gap:10px;
-  box-shadow:0 2px 14px rgba(60,40,120,.07);
-  z-index:10;
+/* ══ HEADER ══════════════════════════════════ */
+.hdr{
+  height:var(--hh);flex-shrink:0;
+  background:var(--white);border-bottom:2px solid var(--bdr);
+  display:flex;align-items:center;padding:0 1rem;gap:9px;
+  box-shadow:0 2px 12px rgba(60,40,120,.06);z-index:20;
 }
-.logo-badge{
-  width:40px;height:40px;border-radius:11px;
-  background:#fcc419;
+.fold-btn{
+  width:36px;height:36px;border-radius:9px;border:1.5px solid var(--bdr);
+  background:var(--white);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background var(--t),border-color var(--t);color:var(--muted);
+}
+.fold-btn:hover{background:var(--bg);border-color:#c4bce8;color:var(--text)}
+.fold-btn svg{width:16px;height:16px}
+.badge{
+  width:36px;height:36px;border-radius:9px;background:#fcc419;
   display:flex;align-items:center;justify-content:center;
-  font-family:'Baloo 2',cursive;font-weight:800;
-  font-size:19px;color:#1a1535;letter-spacing:-1px;
-  flex-shrink:0;
+  font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;
+  color:#1a1535;letter-spacing:-1px;flex-shrink:0;cursor:pointer;
 }
-.logo-text{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;color:var(--text);line-height:1}
-.logo-sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:1px}
-.hflex{flex:1}
-.hdate{font-size:12px;color:var(--muted);font-weight:700;background:var(--bg);border-radius:8px;padding:5px 12px;border:1.5px solid var(--border)}
-.hlinks{display:flex;gap:5px}
+.badge:hover{opacity:.88}
+.h1{flex:1}
+.hdate{font-size:11.5px;color:var(--muted);font-weight:700;
+  background:var(--bg);border-radius:7px;padding:4px 11px;border:1.5px solid var(--bdr)}
+.hlinks{display:flex;gap:4px}
 .hlink{
-  display:flex;align-items:center;gap:5px;
-  font-size:12px;font-weight:700;color:var(--muted);
-  text-decoration:none;padding:6px 12px;border-radius:9px;
-  border:1.5px solid var(--border);background:var(--white);
-  transition:background var(--t),color var(--t),border-color var(--t);
-  cursor:pointer;
+  display:flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;
+  color:var(--muted);text-decoration:none;padding:5px 11px;border-radius:8px;
+  border:1.5px solid var(--bdr);background:var(--white);
+  transition:background var(--t),color var(--t),border-color var(--t);cursor:pointer;
 }
 .hlink:hover{background:var(--bg);color:var(--text);border-color:#c4bce8}
 .hlink svg{width:13px;height:13px}
 
-/* WORKSPACE */
-.workspace{flex:1;display:grid;grid-template-columns:var(--sidebar-w) 1fr;overflow:hidden}
+/* ══ WORKSPACE ═══════════════════════════════ */
+.ws{flex:1;display:flex;overflow:hidden}
 
-/* SIDEBAR */
-.sidebar{
-  background:var(--white);
-  border-right:2.5px solid var(--border);
+/* ══ SIDEBAR ═════════════════════════════════ */
+.sb{
+  width:var(--sw);min-width:var(--sw);
+  background:var(--white);border-right:2px solid var(--bdr);
   overflow-y:auto;overflow-x:hidden;
+  transition:width var(--t),min-width var(--t);
   scrollbar-width:thin;scrollbar-color:#ddd transparent;
-  padding-bottom:2rem;
+  flex-shrink:0;
 }
-.sidebar::-webkit-scrollbar{width:4px}
-.sidebar::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
+.sb::-webkit-scrollbar{width:3px}
+.sb::-webkit-scrollbar-thumb{background:#ddd;border-radius:3px}
+.sb.closed{width:0;min-width:0}
 
-.subject{margin-bottom:2px}
-.subj-btn{
+/* SUBJECT block */
+.subj{overflow:hidden}
+.sj-btn{
   display:flex;align-items:center;gap:10px;
-  padding:.9rem 1rem .9rem 1.1rem;
-  cursor:pointer;position:relative;
-  transition:background var(--t);
-  user-select:none;
-  border:none;background:none;width:100%;text-align:left;
+  padding:.85rem 1rem .85rem 1.1rem;cursor:pointer;
+  position:relative;border:none;background:none;
+  width:100%;text-align:left;transition:background var(--t);
+  white-space:nowrap;
 }
-.subj-btn::before{
+.sj-btn::before{
   content:'';position:absolute;left:0;top:0;bottom:0;
   width:4px;border-radius:0 3px 3px 0;
-  transition:background var(--t);
 }
-.subj-btn:hover{background:rgba(0,0,0,.025)}
+.sj-btn:hover{background:rgba(0,0,0,.025)}
+.sj-ico{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;
+  justify-content:center;font-size:18px;flex-shrink:0;transition:transform var(--t)}
+.sj-btn:hover .sj-ico{transform:scale(1.1)}
+.sj-lbl{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--text);flex:1}
+.sj-cnt{font-size:10px;font-weight:800;border-radius:20px;padding:2px 7px}
+.chev{width:15px;height:15px;flex-shrink:0;transition:transform var(--t);opacity:.35}
+.subj.open>.sj-btn>.chev{transform:rotate(180deg)}
 
-.subj-icon{
-  width:36px;height:36px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:19px;flex-shrink:0;
-  transition:transform var(--t);
+/* per-subject colours */
+.en .sj-btn::before{background:var(--en)}.en .sj-ico{background:var(--en-s)}
+.en .sj-cnt{background:var(--en-s);color:var(--en-d)}.en.open>.sj-btn{background:var(--en-s)}
+.sci .sj-btn::before{background:var(--sci)}.sci .sj-ico{background:var(--sci-s)}
+.sci .sj-cnt{background:var(--sci-s);color:var(--sci-d)}.sci.open>.sj-btn{background:var(--sci-s)}
+.math .sj-btn::before{background:var(--math)}.math .sj-ico{background:var(--math-s)}
+.math .sj-cnt{background:var(--math-s);color:var(--math-d)}.math.open>.sj-btn{background:var(--math-s)}
+.art .sj-btn::before{background:var(--art)}.art .sj-ico{background:var(--art-s)}
+.art .sj-cnt{background:var(--art-s);color:var(--art-d)}.art.open>.sj-btn{background:var(--art-s)}
+
+/* top-level topic list */
+.tl{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.subj.open>.tl{max-height:2400px}
+
+/* SUBGROUP (English sections) */
+.sg{border-top:1px solid rgba(0,0,0,.04)}
+.sg-btn{
+  display:flex;align-items:center;gap:7px;
+  padding:.52rem 1rem .52rem 1.4rem;
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;
+  font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--muted);transition:color var(--t),background var(--t);white-space:nowrap;
 }
-.subj-btn:hover .subj-icon{transform:scale(1.08)}
-.subj-label{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--text);flex:1;line-height:1}
-.subj-count{font-size:11px;font-weight:800;border-radius:20px;padding:2px 8px}
-.chevron{width:16px;height:16px;flex-shrink:0;transition:transform var(--t);opacity:.4}
-.subject.open .chevron{transform:rotate(180deg)}
+.sg-btn:hover{color:var(--text);background:rgba(0,0,0,.025)}
+.sg-ico{font-size:13px}
+.sg-chev{width:13px;height:13px;margin-left:auto;opacity:.35;transition:transform var(--t);flex-shrink:0}
+.sg.open>.sg-btn>.sg-chev{transform:rotate(180deg)}
+.sg-items{overflow:hidden;max-height:0;transition:max-height .3s cubic-bezier(.4,0,.2,1)}
+.sg.open>.sg-items{max-height:600px}
 
-/* subject colours */
-.en .subj-btn::before{background:var(--en)}  .en .subj-icon{background:var(--en-soft)}
-.en .subj-count{background:var(--en-soft);color:var(--en-dark)}  .en.open .subj-btn{background:var(--en-soft)}
-.sci .subj-btn::before{background:var(--sci)}  .sci .subj-icon{background:var(--sci-soft)}
-.sci .subj-count{background:var(--sci-soft);color:var(--sci-dark)}  .sci.open .subj-btn{background:var(--sci-soft)}
-.math .subj-btn::before{background:var(--math)}  .math .subj-icon{background:var(--math-soft)}
-.math .subj-count{background:var(--math-soft);color:var(--math-dark)}  .math.open .subj-btn{background:var(--math-soft)}
-.art .subj-btn::before{background:var(--art)}  .art .subj-icon{background:var(--art-soft)}
-.art .subj-count{background:var(--art-soft);color:var(--art-dark)}  .art.open .subj-btn{background:var(--art-soft)}
-
-/* topic list */
-.tlist{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
-.subject.open .tlist{max-height:600px}
-
-.topic{
-  display:flex;align-items:center;gap:9px;
-  padding:.63rem 1rem .63rem 2.7rem;
-  cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);
+/* TOPIC rows (all depths) */
+.tp{
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  font-size:12.5px;font-weight:700;color:var(--muted);
   border-left:3px solid transparent;
   transition:background var(--t),color var(--t),border-color var(--t),transform var(--t);
-  user-select:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.topic:hover{background:var(--bg);color:var(--text);transform:translateX(3px)}
-.topic.active{background:var(--active-bg);color:var(--text);border-left-color:var(--active-line);transform:translateX(2px)}
-.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;opacity:.55;transition:opacity var(--t),transform var(--t)}
-.topic:hover .tdot,.topic.active .tdot{opacity:1;transform:scale(1.4)}
-.ttag{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.05em;border-radius:5px;padding:1px 6px;flex-shrink:0}
-.tnew{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:.08em;border-radius:5px;padding:2px 7px;background:#fff0eb;color:#b53606}
+.tp:hover{background:var(--bg);color:var(--text);transform:translateX(2px)}
+.tp.active{background:var(--active-bg);color:var(--text);border-left-color:var(--active-ln);transform:translateX(2px)}
+/* depth-1 (direct child of .tl, Science/Arts style) */
+.tp.d1{padding:.6rem 1rem .6rem 2.4rem}
+/* depth-2 (inside .sg-items) */
+.tp.d2{padding:.55rem 1rem .55rem 2.8rem}
+.tdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;opacity:.5;transition:opacity var(--t),transform var(--t)}
+.tp:hover .tdot,.tp.active .tdot{opacity:1;transform:scale(1.4)}
+.tnew{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:.06em;
+  border-radius:4px;padding:1px 6px;background:#fff0eb;color:#a83005;flex-shrink:0}
+.en .tdot,.en .tp .tdot{background:var(--en)}
+.sci .tdot{background:var(--sci)}.math .tdot{background:var(--math)}.art .tdot{background:var(--art)}
 
-.en  .tdot{background:var(--en)}    .en  .ttag{background:var(--en-soft);color:var(--en-dark)}
-.sci .tdot{background:var(--sci)}   .sci .ttag{background:var(--sci-soft);color:var(--sci-dark)}
-.math .tdot{background:var(--math)} .math .ttag{background:var(--math-soft);color:var(--math-dark)}
-.art .tdot{background:var(--art)}   .art .ttag{background:var(--art-soft);color:var(--art-dark)}
+/* UNIT rows (Maths) */
+.unit{border-top:1px solid rgba(0,0,0,.04)}
+.u-btn{
+  display:flex;align-items:center;gap:8px;
+  padding:.6rem 1rem .6rem 1.5rem;
+  cursor:pointer;border:none;background:none;width:100%;text-align:left;
+  transition:background var(--t);white-space:nowrap;
+}
+.u-btn:hover{background:var(--math-s)}
+.u-num{
+  font-size:10px;font-weight:900;border-radius:5px;
+  background:var(--math-s);color:var(--math-d);
+  padding:2px 6px;flex-shrink:0;letter-spacing:.04em;
+}
+.u-name{font-size:12.5px;font-weight:700;color:var(--text);flex:1;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.u-chev{width:13px;height:13px;opacity:.35;flex-shrink:0;transition:transform var(--t)}
+.unit.open>.u-btn>.u-chev{transform:rotate(180deg)}
+.unit.open>.u-btn{background:var(--math-s)}
+.u-items{overflow:hidden;max-height:0;transition:max-height .32s cubic-bezier(.4,0,.2,1)}
+.unit.open>.u-items{max-height:800px}
+.u-soon{font-size:11.5px;color:var(--muted);padding:.5rem 1rem .5rem 3rem;font-style:italic}
 
-.sdiv{height:1px;background:var(--border);margin:.25rem .9rem;opacity:.5}
+/* LESSON rows (inside unit) */
+.ls{
+  display:flex;align-items:center;gap:8px;
+  padding:.52rem 1rem .52rem 2rem;cursor:pointer;
+  font-size:12px;font-weight:700;color:var(--muted);
+  border-left:3px solid transparent;
+  transition:background var(--t),color var(--t),border-color var(--t),transform var(--t);
+}
+.ls:hover{background:var(--math-s);color:var(--text);transform:translateX(2px)}
+.ls.active{background:var(--active-bg);color:var(--text);border-left-color:var(--active-ln)}
+.lnum{
+  width:22px;height:22px;border-radius:5px;flex-shrink:0;
+  background:var(--math-s);color:var(--math-d);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:900;
+}
+.lopt{margin-left:auto;font-size:9px;font-weight:800;
+  background:#f5f3ff;color:var(--muted);border-radius:4px;padding:1px 5px;flex-shrink:0}
 
-/* CONTENT */
-.content{position:relative;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+.sdiv{height:1px;background:var(--bdr);margin:.2rem .8rem;opacity:.6}
+
+/* ══ CONTENT AREA ════════════════════════════ */
+.ct{flex:1;display:flex;flex-direction:column;background:var(--bg);overflow:hidden;min-width:0}
 
 /* breadcrumb */
 .bc{
-  height:40px;flex-shrink:0;
-  background:var(--white);border-bottom:1.5px solid var(--border);
-  display:flex;align-items:center;padding:0 1.2rem;gap:6px;
+  height:38px;flex-shrink:0;
+  background:var(--white);border-bottom:1.5px solid var(--bdr);
+  display:flex;align-items:center;padding:0 1.1rem;gap:5px;
   font-size:12px;font-weight:700;color:var(--muted);
 }
-.bc-home{cursor:pointer;display:flex;align-items:center;gap:4px;transition:color var(--t)}
-.bc-home:hover{color:var(--text)}
-.bc-sep{opacity:.35;font-size:11px}
-.bc-subj{display:flex;align-items:center;gap:5px;border-radius:6px;padding:2px 8px;font-size:11.5px}
-.bc-topic{color:var(--text)}
+.bc-h{cursor:pointer;display:flex;align-items:center;gap:4px;transition:color var(--t)}
+.bc-h:hover{color:var(--text)}
+.bc-sep{opacity:.3;font-size:11px}
+.bc-sj{display:flex;align-items:center;gap:4px;border-radius:5px;padding:2px 7px;font-size:11px}
+.bc-tp{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* loading bar */
+/* load bar */
 .lbar{
-  height:3px;
-  background:linear-gradient(90deg,#fcc419 0%,#ff6b35 25%,#1460c8 60%,#1a8a3c 100%);
-  background-size:300% 100%;
-  position:absolute;top:40px;left:0;right:0;z-index:5;
+  height:3px;position:absolute;top:38px;left:0;right:0;z-index:5;
+  background:linear-gradient(90deg,#fcc419,#ff6b35,#1460c8,#1a8a3c);
+  background-size:300%;animation:lb 1.4s linear infinite;
   opacity:0;transition:opacity .2s;
-  animation:lslide 1.4s linear infinite;
 }
 .lbar.on{opacity:1}
-@keyframes lslide{0%{background-position:100% 0}100%{background-position:-200% 0}}
+@keyframes lb{0%{background-position:100%}100%{background-position:-200%}}
 
 /* frame wrapper */
 .fw{flex:1;position:relative;overflow:hidden}
 .fw iframe{
   position:absolute;inset:0;width:100%;height:100%;border:none;
-  opacity:0;transform:translateX(20px);
+  opacity:0;transform:translateX(18px);
   transition:opacity .3s ease,transform .3s ease;
 }
 .fw iframe.vis{opacity:1;transform:translateX(0)}
 
-/* WELCOME */
-.welcome{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:2rem;gap:1.8rem;
-  transition:opacity .28s,transform .28s;
+/* welcome */
+.wlc{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;padding:2rem;gap:1.6rem;
+  transition:opacity .25s,transform .25s;
 }
-.welcome.gone{opacity:0;transform:scale(.97);pointer-events:none}
-.welcome-title h2{
-  font-family:'Baloo 2',cursive;
-  font-size:clamp(22px,3.5vw,36px);
+.wlc.gone{opacity:0;transform:scale(.97);pointer-events:none}
+.wlc h2{
+  font-family:'Baloo 2',cursive;font-size:clamp(22px,3.5vw,34px);
   font-weight:800;color:var(--text);text-align:center;line-height:1.15;
 }
-.welcome-title h2 em{font-style:italic;color:var(--en)}
-.welcome-title p{font-size:13.5px;color:var(--muted);text-align:center;margin-top:6px;font-weight:600}
+.wlc h2 em{font-style:italic;color:var(--en)}
+.wlc p{font-size:13px;color:var(--muted);text-align:center;font-weight:600}
 
-.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;width:100%;max-width:520px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:500px}
 .tile{
-  background:var(--white);border-radius:15px;padding:1.2rem 1.1rem;
-  border:2px solid var(--border);cursor:pointer;
+  background:var(--white);border-radius:14px;padding:1.1rem 1rem;
+  border:2px solid var(--bdr);cursor:pointer;
   transition:transform var(--t),box-shadow var(--t),border-color var(--t);
-  display:flex;align-items:center;gap:11px;
-  animation:fup .4s ease both;
+  display:flex;align-items:center;gap:10px;
+  animation:fu .4s ease both;
 }
-@keyframes fup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .tile:nth-child(1){animation-delay:.04s}.tile:nth-child(2){animation-delay:.09s}
 .tile:nth-child(3){animation-delay:.14s}.tile:nth-child(4){animation-delay:.19s}
-.tile:hover{transform:translateY(-4px)}
-.ticon{font-size:26px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tlabel{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:var(--text);line-height:1}
-.tsub{font-size:11px;color:var(--muted);font-weight:600;margin-top:3px}
-.ten{border-color:var(--en-soft)}.ten:hover{border-color:var(--en-mid);box-shadow:0 10px 26px rgba(232,70,10,.1)}.ten .ticon{background:var(--en-soft)}
-.tsci{border-color:var(--sci-soft)}.tsci:hover{border-color:var(--sci-mid);box-shadow:0 10px 26px rgba(26,138,60,.1)}.tsci .ticon{background:var(--sci-soft)}
-.tmath{border-color:var(--math-soft)}.tmath:hover{border-color:var(--math-mid);box-shadow:0 10px 26px rgba(20,96,200,.1)}.tmath .ticon{background:var(--math-soft)}
-.tart{border-color:var(--art-soft)}.tart:hover{border-color:var(--art-mid);box-shadow:0 10px 26px rgba(156,31,196,.1)}.tart .ticon{background:var(--art-soft)}
+.tile:hover{transform:translateY(-3px)}
+.tico{font-size:24px;width:44px;height:44px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tlbl{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--text);line-height:1}
+.tsb{font-size:11px;color:var(--muted);font-weight:600;margin-top:2px}
+.t-en{border-color:var(--en-s)}.t-en:hover{border-color:var(--en-m);box-shadow:0 8px 22px rgba(217,64,8,.1)}.t-en .tico{background:var(--en-s)}
+.t-sc{border-color:var(--sci-s)}.t-sc:hover{border-color:var(--sci-m);box-shadow:0 8px 22px rgba(26,138,60,.1)}.t-sc .tico{background:var(--sci-s)}
+.t-ma{border-color:var(--math-s)}.t-ma:hover{border-color:var(--math-m);box-shadow:0 8px 22px rgba(20,96,200,.1)}.t-ma .tico{background:var(--math-s)}
+.t-ar{border-color:var(--art-s)}.t-ar:hover{border-color:var(--art-m);box-shadow:0 8px 22px rgba(156,31,196,.1)}.t-ar .tico{background:var(--art-s)}
 
-/* COMING SOON */
-.cpanel{
+/* coming-soon panel */
+.cpan{
   position:absolute;inset:0;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;padding:3rem;text-align:center;
-  background:var(--bg);
-  opacity:0;transform:translateX(20px);
-  transition:opacity .3s ease,transform .3s ease;
-  pointer-events:none;
+  gap:12px;padding:3rem;text-align:center;background:var(--bg);
+  opacity:0;transform:translateX(18px);
+  transition:opacity .3s ease,transform .3s ease;pointer-events:none;
 }
-.cpanel.vis{opacity:1;transform:translateX(0);pointer-events:auto}
-.cemoji{font-size:54px;line-height:1}
-.ctitle{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--text)}
-.cdesc{font-size:13.5px;color:var(--muted);max-width:320px;font-weight:600;line-height:1.55}
-.cbadge{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:5px 15px;margin-top:4px}
+.cpan.vis{opacity:1;transform:translateX(0);pointer-events:auto}
+.c-em{font-size:50px;line-height:1}
+.c-ti{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:var(--text)}
+.c-de{font-size:13px;color:var(--muted);max-width:300px;font-weight:600;line-height:1.55}
+.c-bd{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  border-radius:20px;padding:5px 14px;margin-top:2px}
 
 @media(max-width:600px){
-  :root{--sidebar-w:220px}
+  :root{--sw:230px}
   .hdate{display:none}
   .hlink span{display:none}
 }
@@ -236,267 +283,366 @@ body{
 </head>
 <body>
 
-<header class="header">
-  <div class="logo-badge">Learning Everyday</div>
-  <div>
-    <div class="logo-text"></div>
-    <div class="logo-sub"></div>
-  </div>
-  <div class="hflex"></div>
+<!-- HEADER -->
+<header class="hdr">
+  <button class="fold-btn" onclick="toggleSb()" title="Toggle menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+    </svg>
+  </button>
+  <div class="badge" onclick="goHome()" title="Home">2C</div>
+  <div class="h1"></div>
   <div class="hdate" id="hdate">Today</div>
   <nav class="hlinks">
-    <a class="hlink" href="schedule.html" onclick="return navLink(event,this,'Schedule','📅')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    <a class="hlink" href="https://balmungax.github.io/phonicshub/schedule.html" onclick="return navLnk(event,this,'Schedule','📅')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       <span>Schedule</span>
     </a>
-    <a class="hlink" href="keyboard.html" onclick="return navLink(event,this,'Keyboard','⌨️')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
+    <a class="hlink" href="https://balmungax.github.io/phonicshub/keyboard.html" onclick="return navLnk(event,this,'Keyboard','⌨️')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
       <span>Keyboard</span>
     </a>
-    <a class="hlink" href="grammar.html" onclick="return navLink(event,this,'Checker','✔️')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    <a class="hlink" href="https://balmungax.github.io/phonicshub/grammar.html" onclick="return navLnk(event,this,'Checker','✔️')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       <span>Checker</span>
-    </a>
-    <a class="hlink" href="tracing.html" onclick="return navLink(event,this,'Trace','')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-      <span>Trace</span>
     </a>
   </nav>
 </header>
 
-<div class="workspace">
-  <aside class="sidebar">
+<!-- WORKSPACE -->
+<div class="ws">
 
-    <!-- ENGLISH -->
-    <div class="subject en open" id="en">
-      <button class="subj-btn" onclick="toggleSubj('en')">
-        <div class="subj-icon">📖</div>
-        <span class="subj-label">English</span>
-        <span class="subj-count">5</span>
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+  <!-- SIDEBAR -->
+  <aside class="sb" id="sb">
+
+    <!-- ── ENGLISH ───────────────────────────── -->
+    <div class="subj en open" id="en">
+      <button class="sj-btn" onclick="tSubj('en')">
+        <div class="sj-ico">📖</div>
+        <span class="sj-lbl">English</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="tlist">
-        <div class="topic" onclick="load('#','Nouns','English','📖','en')"><span class="tdot"></span>Nouns<span class="tnew">Soon</span></div>
-        <div class="topic" onclick="load('#','Adjectives','English','📖','en')"><span class="tdot"></span>Adjectives<span class="tnew">Soon</span></div>
-        <div class="topic" onclick="load('#','Verbs','English','📖','en')"><span class="tdot"></span>Verbs<span class="tnew">Soon</span></div>
-        <div class="topic" onclick="load('#','Readings','English','📖','en')"><span class="tdot"></span>Readings<span class="tnew">Soon</span></div>
-        <div class="topic" onclick="load('https://balmungax.github.io/phonicshub/build.html','Vocabulary','English','📖','en')"><span class="tdot"></span>Vocabulary</div>
+      <div class="tl">
+
+        <!-- Grammar -->
+        <div class="sg open" id="sg-gr">
+          <button class="sg-btn" onclick="tSg('sg-gr')">
+            <span class="sg-ico">✏️</span>Grammar
+            <svg class="sg-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sg-items">
+            <div class="tp d2 en" onclick="lp('#','Nouns','English','📖','en')"><span class="tdot"></span>Nouns<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Pronouns','English','📖','en')"><span class="tdot"></span>Pronouns<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Adjectives','English','📖','en')"><span class="tdot"></span>Adjectives<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Verbs & Tense','English','📖','en')"><span class="tdot"></span>Verbs &amp; Tense<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Conjunctions','English','📖','en')"><span class="tdot"></span>Conjunctions<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Punctuation & Sentences','English','📖','en')"><span class="tdot"></span>Punctuation &amp; Sentences<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Prepositions','English','📖','en')"><span class="tdot"></span>Prepositions<span class="tnew">Soon</span></div>
+          </div>
+        </div>
+
+        <!-- Reading -->
+        <div class="sg" id="sg-rd">
+          <button class="sg-btn" onclick="tSg('sg-rd')">
+            <span class="sg-ico">📚</span>Reading
+            <svg class="sg-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sg-items">
+            <div class="tp d2 en" onclick="lp('#','Phonics & Decoding','English','📖','en')"><span class="tdot"></span>Phonics &amp; Decoding<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Sight Words','English','📖','en')"><span class="tdot"></span>Sight Words<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Fiction Readings','English','📖','en')"><span class="tdot"></span>Fiction Readings<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Non-fiction Readings','English','📖','en')"><span class="tdot"></span>Non-fiction Readings<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Reading Comprehension','English','📖','en')"><span class="tdot"></span>Reading Comprehension<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Reading Fluency','English','📖','en')"><span class="tdot"></span>Reading Fluency<span class="tnew">Soon</span></div>
+          </div>
+        </div>
+
+        <!-- Writing -->
+        <div class="sg" id="sg-wr">
+          <button class="sg-btn" onclick="tSg('sg-wr')">
+            <span class="sg-ico">✍️</span>Writing
+            <svg class="sg-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sg-items">
+            <div class="tp d2 en" onclick="lp('#','Narrative Writing','English','📖','en')"><span class="tdot"></span>Narrative Writing<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Informative Writing','English','📖','en')"><span class="tdot"></span>Informative Writing<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Opinion Writing','English','📖','en')"><span class="tdot"></span>Opinion Writing<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Punctuation & Capitals','English','📖','en')"><span class="tdot"></span>Punctuation &amp; Capitals<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('https://balmungax.github.io/phonicshub/tracing.html','Handwriting & Tracing','English','📖','en')"><span class="tdot"></span>Handwriting &amp; Tracing</div>
+          </div>
+        </div>
+
+        <!-- Vocabulary -->
+        <div class="sg" id="sg-vo">
+          <button class="sg-btn" onclick="tSg('sg-vo')">
+            <span class="sg-ico">🔤</span>Vocabulary
+            <svg class="sg-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sg-items">
+            <div class="tp d2 en" onclick="lp('https://balmungax.github.io/phonicshub/build.html','Vocabulary Builder','English','📖','en')"><span class="tdot"></span>Vocabulary Builder</div>
+            <div class="tp d2 en" onclick="lp('https://balmungax.github.io/phonicshub/words2.html','Word Bank','English','📖','en')"><span class="tdot"></span>Word Bank</div>
+            <div class="tp d2 en" onclick="lp('#','Synonyms & Antonyms','English','📖','en')"><span class="tdot"></span>Synonyms &amp; Antonyms<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Compound Words','English','📖','en')"><span class="tdot"></span>Compound Words<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Prefixes & Suffixes','English','📖','en')"><span class="tdot"></span>Prefixes &amp; Suffixes<span class="tnew">Soon</span></div>
+          </div>
+        </div>
+
+        <!-- Speaking & Listening -->
+        <div class="sg" id="sg-sl">
+          <button class="sg-btn" onclick="tSg('sg-sl')">
+            <span class="sg-ico">🎤</span>Speaking &amp; Listening
+            <svg class="sg-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="sg-items">
+            <div class="tp d2 en" onclick="lp('#','Oral Presentations','English','📖','en')"><span class="tdot"></span>Oral Presentations<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Active Listening','English','📖','en')"><span class="tdot"></span>Active Listening<span class="tnew">Soon</span></div>
+            <div class="tp d2 en" onclick="lp('#','Storytelling','English','📖','en')"><span class="tdot"></span>Storytelling<span class="tnew">Soon</span></div>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="sdiv"></div>
 
-    <!-- SCIENCE -->
-    <div class="subject sci" id="sci">
-      <button class="subj-btn" onclick="toggleSubj('sci')">
-        <div class="subj-icon">🌍</div>
-        <span class="subj-label">Science</span>
-        <span class="subj-count">1</span>
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    <!-- ── SCIENCE ────────────────────────────── -->
+    <div class="subj sci" id="sci">
+      <button class="sj-btn" onclick="tSubj('sci')">
+        <div class="sj-ico">🌍</div>
+        <span class="sj-lbl">Science</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="tlist">
-        <div class="topic" onclick="load('#','Earth: Land Changing Shape','Science','🌍','sci')"><span class="tdot"></span>Earth: Land Changing Shape<span class="tnew">Soon</span></div>
+      <div class="tl">
+        <div class="tp d1 sci" onclick="lp('#','Earth: Land Changing Shape','Science','🌍','sci')"><span class="tdot"></span>Earth: Land Changing Shape<span class="tnew">Soon</span></div>
       </div>
     </div>
     <div class="sdiv"></div>
 
-    <!-- MATHS -->
-    <div class="subject math" id="math">
-      <button class="subj-btn" onclick="toggleSubj('math')">
-        <div class="subj-icon">🔢</div>
-        <span class="subj-label">Maths</span>
-        <span class="subj-count">7</span>
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    <!-- ── MATHS ──────────────────────────────── -->
+    <div class="subj math open" id="math">
+      <button class="sj-btn" onclick="tSubj('math')">
+        <div class="sj-ico">🔢</div>
+        <span class="sj-lbl">Maths</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="tlist">
-        <div class="topic" onclick="load('#','Addition &amp; Subtraction within 20','Maths','🔢','math')"><span class="tdot"></span>Addition &amp; Subtraction within 20<span class="ttag">2.OA</span></div>
-        <div class="topic" onclick="load('#','Place Value — Numbers to 1,000','Maths','🔢','math')"><span class="tdot"></span>Place Value — Numbers to 1,000<span class="ttag">2.NBT</span></div>
-        <div class="topic" onclick="load('#','Addition &amp; Subtraction within 100','Maths','🔢','math')"><span class="tdot"></span>Addition &amp; Subtraction within 100<span class="ttag">2.NBT</span></div>
-        <div class="topic" onclick="load('#','Measurement — Length','Maths','🔢','math')"><span class="tdot"></span>Measurement — Length<span class="ttag">2.MD</span></div>
-        <div class="topic" onclick="load('#','Shapes &amp; Geometry','Maths','🔢','math')"><span class="tdot"></span>Shapes &amp; Geometry<span class="ttag">2.G</span></div>
-        <div class="topic" onclick="load('#','Time &amp; Money','Maths','🔢','math')"><span class="tdot"></span>Time &amp; Money<span class="ttag">2.MD</span></div>
-        <div class="topic" onclick="load('https://balmungax.github.io/phonicshub/place.html','Data &amp; Graphs','Maths','🔢','math')"><span class="tdot"></span>Data &amp; Graphs<span class="ttag">2.MD</span></div>
+      <div class="tl">
+
+        <div class="unit" id="u1">
+          <button class="u-btn" onclick="tUnit('u1')"><span class="u-num">1</span><span class="u-name">Adding, Subtracting &amp; Working with Data</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <div class="unit" id="u2">
+          <button class="u-btn" onclick="tUnit('u2')"><span class="u-num">2</span><span class="u-name">Adding &amp; Subtracting within 100</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <div class="unit" id="u3">
+          <button class="u-btn" onclick="tUnit('u3')"><span class="u-num">3</span><span class="u-name">Measuring Length</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <div class="unit" id="u4">
+          <button class="u-btn" onclick="tUnit('u4')"><span class="u-num">4</span><span class="u-name">Addition &amp; Subtraction on the Number Line</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <div class="unit" id="u5">
+          <button class="u-btn" onclick="tUnit('u5')"><span class="u-num">5</span><span class="u-name">Numbers to 1,000</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <div class="unit" id="u6">
+          <button class="u-btn" onclick="tUnit('u6')"><span class="u-num">6</span><span class="u-name">Geometry, Time &amp; Money</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <div class="unit" id="u7">
+          <button class="u-btn" onclick="tUnit('u7')"><span class="u-num">7</span><span class="u-name">Adding &amp; Subtracting within 1,000</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
+        <!-- UNIT 8 — OPEN with all 14 lessons -->
+        <div class="unit open" id="u8">
+          <button class="u-btn" onclick="tUnit('u8')">
+            <span class="u-num">8</span>
+            <span class="u-name">Equal Groups</span>
+            <svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="u-items">
+            <div class="ls" onclick="lp('#','L1 · Can You Share?','Maths','🔢','math')"><span class="lnum">1</span>Can You Share?</div>
+            <div class="ls" onclick="lp('#','L2 · Partners Make Pairs','Maths','🔢','math')"><span class="lnum">2</span>Partners Make Pairs</div>
+            <div class="ls" onclick="lp('#','L3 · Is It Odd or Even?','Maths','🔢','math')"><span class="lnum">3</span>Is It Odd or Even?</div>
+            <div class="ls" onclick="lp('#','L4 · Decompose Even and Odd Numbers','Maths','🔢','math')"><span class="lnum">4</span>Decompose Even &amp; Odd Numbers</div>
+            <div class="ls" onclick="lp('#','L5 · Patterns with Even and Odd Numbers','Maths','🔢','math')"><span class="lnum">5</span>Patterns with Even &amp; Odd<span class="lopt">Optional</span></div>
+            <div class="ls" onclick="lp('#','L6 · Center Day 1','Maths','🔢','math')"><span class="lnum">6</span>Center Day 1<span class="lopt">Optional</span></div>
+            <div class="ls" onclick="lp('#','L7 · What Is an Array?','Maths','🔢','math')"><span class="lnum">7</span>What Is an Array?</div>
+            <div class="ls" onclick="lp('#','L8 · Count Columns and Objects in Columns','Maths','🔢','math')"><span class="lnum">8</span>Count Columns &amp; Objects</div>
+            <div class="ls" onclick="lp('#','L9 · A Sum of Equal Addends','Maths','🔢','math')"><span class="lnum">9</span>A Sum of Equal Addends</div>
+            <div class="ls" onclick="lp('#','L10 · Write Expressions and Equations','Maths','🔢','math')"><span class="lnum">10</span>Write Expressions &amp; Equations</div>
+            <div class="ls" onclick="lp('#','L11 · Arrays and Rectangles','Maths','🔢','math')"><span class="lnum">11</span>Arrays and Rectangles</div>
+            <div class="ls" onclick="lp('#','L12 · Partition Rectangles into Squares','Maths','🔢','math')"><span class="lnum">12</span>Partition Rectangles into Squares</div>
+            <div class="ls" onclick="lp('#','L13 · Center Day 2','Maths','🔢','math')"><span class="lnum">13</span>Center Day 2<span class="lopt">Optional</span></div>
+            <div class="ls" onclick="lp('#','L14 · A Band Concert','Maths','🔢','math')"><span class="lnum">14</span>A Band Concert<span class="lopt">Optional</span></div>
+          </div>
+        </div>
+
+        <div class="unit" id="u9">
+          <button class="u-btn" onclick="tUnit('u9')"><span class="u-num">9</span><span class="u-name">Putting It All Together</span><svg class="u-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></button>
+          <div class="u-items"><div class="u-soon">Topics coming soon…</div></div>
+        </div>
+
       </div>
     </div>
     <div class="sdiv"></div>
 
-    <!-- ARTS -->
-    <div class="subject art" id="art">
-      <button class="subj-btn" onclick="toggleSubj('art')">
-        <div class="subj-icon">🎨</div>
-        <span class="subj-label">Arts</span>
-        <span class="subj-count">?</span>
-        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+    <!-- ── ARTS ───────────────────────────────── -->
+    <div class="subj art" id="art">
+      <button class="sj-btn" onclick="tSubj('art')">
+        <div class="sj-ico">🎨</div>
+        <span class="sj-lbl">Arts</span>
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </button>
-      <div class="tlist">
-        <div class="topic" style="opacity:.55;cursor:default"><span class="tdot"></span>Lessons coming soon…</div>
+      <div class="tl">
+        <div class="tp d1" style="opacity:.55;cursor:default"><span class="tdot" style="background:var(--art)"></span>Lessons coming soon…</div>
       </div>
     </div>
 
   </aside>
 
-  <main class="content">
-
-    <!-- breadcrumb -->
+  <!-- CONTENT -->
+  <main class="ct">
     <div class="bc" id="bc">
-      <span class="bc-home" onclick="goHome()">
+      <span class="bc-h" onclick="goHome()">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         Home
       </span>
-      <span class="bc-sep" id="bcs1" style="display:none">›</span>
-      <span class="bc-subj" id="bcs" style="display:none"></span>
-      <span class="bc-sep" id="bcs2" style="display:none">›</span>
-      <span class="bc-topic" id="bct" style="display:none"></span>
+      <span class="bc-sep" id="bs1" style="display:none">›</span>
+      <span class="bc-sj" id="bsj" style="display:none"></span>
+      <span class="bc-sep" id="bs2" style="display:none">›</span>
+      <span class="bc-tp" id="btp" style="display:none"></span>
     </div>
 
-    <!-- loading bar -->
     <div class="lbar" id="lbar"></div>
 
-    <!-- frame wrapper -->
     <div class="fw" id="fw">
-
       <!-- welcome -->
-      <div class="welcome" id="welcome">
-        <div class="welcome-title">
+      <div class="wlc" id="wlc">
+        <div>
           <h2>Hello! Ready to <em>learn?</em> 🌟</h2>
           <p>Pick a subject from the left, or tap a card below.</p>
         </div>
         <div class="tiles">
-          <div class="tile ten"  onclick="openSubj('en')">  <div class="ticon">📖</div><div><div class="tlabel">English</div><div class="tsub">5 topics</div></div></div>
-          <div class="tile tsci" onclick="openSubj('sci')"> <div class="ticon">🌍</div><div><div class="tlabel">Science</div><div class="tsub">1 topic</div></div></div>
-          <div class="tile tmath" onclick="openSubj('math')"><div class="ticon">🔢</div><div><div class="tlabel">Maths</div><div class="tsub">7 topics</div></div></div>
-          <div class="tile tart" onclick="openSubj('art')"> <div class="ticon">🎨</div><div><div class="tlabel">Arts</div><div class="tsub">Coming soon</div></div></div>
+          <div class="tile t-en" onclick="openSj('en')">  <div class="tico">📖</div><div><div class="tlbl">English</div><div class="tsb">Grammar · Reading · Writing</div></div></div>
+          <div class="tile t-sc" onclick="openSj('sci')"> <div class="tico">🌍</div><div><div class="tlbl">Science</div><div class="tsb">1 topic</div></div></div>
+          <div class="tile t-ma" onclick="openSj('math')"><div class="tico">🔢</div><div><div class="tlbl">Maths</div><div class="tsb">9 units</div></div></div>
+          <div class="tile t-ar" onclick="openSj('art')"> <div class="tico">🎨</div><div><div class="tlbl">Arts</div><div class="tsb">Coming soon</div></div></div>
         </div>
       </div>
 
       <!-- iframe -->
-      <iframe id="lframe" title="Lesson" src="about:blank"></iframe>
+      <iframe id="lf" title="Lesson" src="about:blank"></iframe>
 
-      <!-- coming soon panel -->
-      <div class="cpanel" id="cpanel">
-        <div class="cemoji" id="cemoji">📚</div>
-        <div class="ctitle" id="ctitle">Coming soon!</div>
-        <div class="cdesc" id="cdesc">This lesson is being built. Check back soon!</div>
-        <span class="cbadge" id="cbadge">🚧 In Progress</span>
+      <!-- coming-soon -->
+      <div class="cpan" id="cpan">
+        <div class="c-em" id="cem">📚</div>
+        <div class="c-ti" id="cti">Coming soon!</div>
+        <div class="c-de" id="cde">This lesson is being built. Check back soon!</div>
+        <span class="c-bd" id="cbd">🚧 In Progress</span>
       </div>
-
     </div>
   </main>
 </div>
 
 <script>
-/* colours for breadcrumb */
-const SC={
-  en:  {bg:'var(--en-soft)',  c:'var(--en-dark)'},
-  sci: {bg:'var(--sci-soft)', c:'var(--sci-dark)'},
-  math:{bg:'var(--math-soft)',c:'var(--math-dark)'},
-  art: {bg:'var(--art-soft)', c:'var(--art-dark)'},
-};
-const SCbadge={
-  en:  {bg:'#fff0eb',c:'#b53606'},
-  sci: {bg:'#ebfaef',c:'#116129'},
-  math:{bg:'#eaf1ff',c:'#0d469a'},
-  art: {bg:'#f8eaff',c:'#721090'},
-};
-
 /* date */
-const D=new Date();
-const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-const mons=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-document.getElementById('hdate').textContent=days[D.getDay()]+' · '+mons[D.getMonth()]+' '+D.getDate();
+const D=new Date(),DY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],
+  MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+document.getElementById('hdate').textContent=DY[D.getDay()]+' · '+MN[D.getMonth()]+' '+D.getDate();
 
-/* toggle subject in sidebar */
-function toggleSubj(id){document.getElementById(id).classList.toggle('open')}
-function openSubj(id){
+/* sidebar fold */
+function toggleSb(){document.getElementById('sb').classList.toggle('closed')}
+
+/* subject toggle */
+function tSubj(id){document.getElementById(id).classList.toggle('open')}
+function openSj(id){
+  const sb=document.getElementById('sb');
+  sb.classList.remove('closed');
   const el=document.getElementById(id);
   el.classList.add('open');
   el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-/* breadcrumb helpers */
-function showBc(subjName,subjIcon,subjKey,topicName){
-  const bcs1=document.getElementById('bcs1');
-  const bcs=document.getElementById('bcs');
-  const bcs2=document.getElementById('bcs2');
-  const bct=document.getElementById('bct');
-  if(!subjName){bcs1.style.display=bcs.style.display=bcs2.style.display=bct.style.display='none';return}
-  const col=SC[subjKey]||{bg:'#eee',c:'#333'};
-  bcs.textContent=subjIcon+' '+subjName;
-  bcs.style.cssText='display:inline-flex;background:'+col.bg+';color:'+col.c;
-  bcs1.style.display='';
-  if(topicName){bct.textContent=topicName;bcs2.style.display='';bct.style.display=''}
-  else{bcs2.style.display=bct.style.display='none'}
+/* subgroup toggle */
+function tSg(id){document.getElementById(id).classList.toggle('open')}
+
+/* unit toggle */
+function tUnit(id){document.getElementById(id).classList.toggle('open')}
+
+/* breadcrumb */
+const SC={en:{bg:'var(--en-s)',c:'var(--en-d)'},sci:{bg:'var(--sci-s)',c:'var(--sci-d)'},math:{bg:'var(--math-s)',c:'var(--math-d)'},art:{bg:'var(--art-s)',c:'var(--art-d)'}};
+const BC2={en:{bg:'#fff0eb',c:'#a83005'},sci:{bg:'#ebfaef',c:'#116129'},math:{bg:'#eaf1ff',c:'#0d469a'},art:{bg:'#f8eaff',c:'#721090'}};
+function showBc(sn,si,sk,tn){
+  const s1=document.getElementById('bs1'),sj=document.getElementById('bsj'),
+    s2=document.getElementById('bs2'),tp=document.getElementById('btp');
+  if(!sn){s1.style.display=sj.style.display=s2.style.display=tp.style.display='none';return}
+  const c=SC[sk]||{bg:'#eee',c:'#333'};
+  sj.textContent=si+' '+sn;
+  sj.style.cssText='display:inline-flex;background:'+c.bg+';color:'+c.c;
+  s1.style.display='';
+  if(tn){tp.textContent=tn;s2.style.display='';tp.style.display=''}
+  else{s2.style.display=tp.style.display='none'}
 }
 
-/* main load function */
-function load(url,topic,subject,icon,subjectKey){
-  document.querySelectorAll('.topic.active').forEach(t=>t.classList.remove('active'));
+/* main load */
+function lp(url,topic,subject,icon,sk){
+  document.querySelectorAll('.tp.active,.ls.active').forEach(e=>e.classList.remove('active'));
   event.currentTarget.classList.add('active');
-  showBc(subject,icon,subjectKey,topic.replace(/&amp;/g,'&'));
-
-  const iframe=document.getElementById('lframe');
-  const welcome=document.getElementById('welcome');
-  const cpanel=document.getElementById('cpanel');
-  const lbar=document.getElementById('lbar');
-
-  welcome.classList.add('gone');
-  cpanel.classList.remove('vis');
-  iframe.classList.remove('vis');
-
+  showBc(subject,icon,sk,topic);
+  const ifr=document.getElementById('lf'),wlc=document.getElementById('wlc'),
+    cpan=document.getElementById('cpan'),lbar=document.getElementById('lbar');
+  wlc.classList.add('gone');cpan.classList.remove('vis');ifr.classList.remove('vis');
   if(url==='#'){
     lbar.classList.remove('on');
-    const col=SCbadge[subjectKey]||{bg:'#eee',c:'#333'};
-    document.getElementById('cemoji').textContent=icon;
-    document.getElementById('ctitle').textContent=topic.replace(/&amp;/g,'&');
-    document.getElementById('cdesc').textContent='This lesson is being prepared. Come back soon!';
-    const cb=document.getElementById('cbadge');
-    cb.textContent='🚧 In Progress';
-    cb.style.cssText='background:'+col.bg+';color:'+col.c;
-    requestAnimationFrame(()=>cpanel.classList.add('vis'));
+    const col=BC2[sk]||{bg:'#eee',c:'#333'};
+    document.getElementById('cem').textContent=icon;
+    document.getElementById('cti').textContent=topic;
+    document.getElementById('cde').textContent='This lesson is being prepared. Check back soon!';
+    const cb=document.getElementById('cbd');
+    cb.textContent='🚧 In Progress';cb.style.cssText='background:'+col.bg+';color:'+col.c;
+    requestAnimationFrame(()=>cpan.classList.add('vis'));
     return;
   }
-
   lbar.classList.add('on');
-  iframe.onload=()=>{lbar.classList.remove('on');requestAnimationFrame(()=>iframe.classList.add('vis'))};
-  iframe.src=url;
+  ifr.onload=()=>{lbar.classList.remove('on');requestAnimationFrame(()=>ifr.classList.add('vis'))};
+  ifr.src=url;
 }
 
-/* nav link (header buttons) */
-function navLink(e,el,label,icon){
+/* nav header links */
+function navLnk(e,el,label,icon){
   e.preventDefault();
-  document.querySelectorAll('.topic.active').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tp.active,.ls.active').forEach(t=>t.classList.remove('active'));
   showBc(null);
-  const bcs1=document.getElementById('bcs1');
-  const bcs=document.getElementById('bcs');
-  bcs.textContent=icon+' '+label;
-  bcs.style.cssText='display:inline-flex;background:var(--bg);color:var(--text)';
-  bcs1.style.display='';
-
-  const iframe=document.getElementById('lframe');
-  const welcome=document.getElementById('welcome');
-  const cpanel=document.getElementById('cpanel');
-  const lbar=document.getElementById('lbar');
-
-  welcome.classList.add('gone');
-  cpanel.classList.remove('vis');
-  iframe.classList.remove('vis');
+  const bsj=document.getElementById('bsj'),bs1=document.getElementById('bs1');
+  bsj.textContent=icon+' '+label;
+  bsj.style.cssText='display:inline-flex;background:var(--bg);color:var(--text)';
+  bs1.style.display='';
+  const ifr=document.getElementById('lf'),wlc=document.getElementById('wlc'),
+    cpan=document.getElementById('cpan'),lbar=document.getElementById('lbar');
+  wlc.classList.add('gone');cpan.classList.remove('vis');ifr.classList.remove('vis');
   lbar.classList.add('on');
-  iframe.onload=()=>{lbar.classList.remove('on');requestAnimationFrame(()=>iframe.classList.add('vis'))};
-  iframe.src=el.href;
+  ifr.onload=()=>{lbar.classList.remove('on');requestAnimationFrame(()=>ifr.classList.add('vis'))};
+  ifr.src=el.href;
   return false;
 }
 
 /* go home */
 function goHome(){
-  document.querySelectorAll('.topic.active').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tp.active,.ls.active').forEach(e=>e.classList.remove('active'));
   showBc(null);
-  const iframe=document.getElementById('lframe');
-  const cpanel=document.getElementById('cpanel');
-  const lbar=document.getElementById('lbar');
-  cpanel.classList.remove('vis');
-  iframe.classList.remove('vis');
-  lbar.classList.remove('on');
-  document.getElementById('welcome').classList.remove('gone');
-  iframe.src='about:blank';
+  const ifr=document.getElementById('lf'),cpan=document.getElementById('cpan'),lbar=document.getElementById('lbar');
+  cpan.classList.remove('vis');ifr.classList.remove('vis');lbar.classList.remove('on');
+  document.getElementById('wlc').classList.remove('gone');
+  ifr.src='about:blank';
 }
 </script>
 </body>
