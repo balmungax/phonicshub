@@ -1,631 +1,499 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>2C</title>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Class 2C · Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet"/>
 <style>
-:root {
-    --accent: #ff9d00;
-    --accent2: #ffc400;
-    --menu-w: 270px;
-    --menu-w-sm: 74px;
-    --radius: 14px;
-    --transition: 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:'Nunito',sans-serif;
+  background:#f0eeff;
+  display:flex;flex-direction:column;
+  font-size:15px;
+}
+:root{
+  --en:#e8460a; --en-soft:#fff0eb; --en-mid:#ff6b35; --en-dark:#b53606;
+  --sci:#1a8a3c; --sci-soft:#ebfaef; --sci-mid:#28a84d; --sci-dark:#116129;
+  --math:#1460c8; --math-soft:#eaf1ff; --math-mid:#2575e8; --math-dark:#0d469a;
+  --art:#9c1fc4; --art-soft:#f8eaff; --art-mid:#b83ae0; --art-dark:#721090;
+  --header-h:60px; --sidebar-w:256px;
+  --white:#ffffff; --bg:#f0eeff; --border:#ddd8f5;
+  --text:#1a1535; --muted:#6b6589;
+  --active-bg:#fffbe6; --active-line:#fcc419;
+  --t:.22s cubic-bezier(.4,0,.2,1);
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-    height: 100%;
-    overflow: hidden;
+/* HEADER */
+.header{
+  height:var(--header-h);flex-shrink:0;
+  background:var(--white);
+  border-bottom:2.5px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 1.1rem;gap:10px;
+  box-shadow:0 2px 14px rgba(60,40,120,.07);
+  z-index:10;
 }
-
-body {
-    display: flex;
-    height: 100vh;
-    font-family: 'Nunito', sans-serif;
-    background: #eef4fb;
+.logo-badge{
+  width:40px;height:40px;border-radius:11px;
+  background:#fcc419;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Baloo 2',cursive;font-weight:800;
+  font-size:19px;color:#1a1535;letter-spacing:-1px;
+  flex-shrink:0;
 }
-
-/* ═══════════════════════════════
-   SIDEBAR
-═══════════════════════════════ */
-#menu {
-    width: var(--menu-w);
-    min-width: var(--menu-w);
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    background: #1a2540;
-    position: relative;
-    z-index: 100;
-    transition: width var(--transition), min-width var(--transition);
-    overflow: hidden; /* NO scroll ever */
-    flex-shrink: 0;
+.logo-text{font-family:'Baloo 2',cursive;font-size:17px;font-weight:700;color:var(--text);line-height:1}
+.logo-sub{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:1px}
+.hflex{flex:1}
+.hdate{font-size:12px;color:var(--muted);font-weight:700;background:var(--bg);border-radius:8px;padding:5px 12px;border:1.5px solid var(--border)}
+.hlinks{display:flex;gap:5px}
+.hlink{
+  display:flex;align-items:center;gap:5px;
+  font-size:12px;font-weight:700;color:var(--muted);
+  text-decoration:none;padding:6px 12px;border-radius:9px;
+  border:1.5px solid var(--border);background:var(--white);
+  transition:background var(--t),color var(--t),border-color var(--t);
+  cursor:pointer;
 }
+.hlink:hover{background:var(--bg);color:var(--text);border-color:#c4bce8}
+.hlink svg{width:13px;height:13px}
 
-/* Rainbow top accent */
-#menu::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #ff9d00, #ffd000, #4ec76a, #3d8fe0, #a855f7);
-    z-index: 10;
-    flex-shrink: 0;
+/* WORKSPACE */
+.workspace{flex:1;display:grid;grid-template-columns:var(--sidebar-w) 1fr;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{
+  background:var(--white);
+  border-right:2.5px solid var(--border);
+  overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:#ddd transparent;
+  padding-bottom:2rem;
 }
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:#ddd;border-radius:4px}
 
-/* Subtle grid texture */
-#menu::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
-    background-size: 20px 20px;
-    pointer-events: none;
-    z-index: 0;
+.subject{margin-bottom:2px}
+.subj-btn{
+  display:flex;align-items:center;gap:10px;
+  padding:.9rem 1rem .9rem 1.1rem;
+  cursor:pointer;position:relative;
+  transition:background var(--t);
+  user-select:none;
+  border:none;background:none;width:100%;text-align:left;
 }
-
-#menu.contracted {
-    width: var(--menu-w-sm);
-    min-width: var(--menu-w-sm);
+.subj-btn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:4px;border-radius:0 3px 3px 0;
+  transition:background var(--t);
 }
+.subj-btn:hover{background:rgba(0,0,0,.025)}
 
-/* ── HEADER ── */
-.menu-header {
-    display: flex;
-    align-items: center;
-    padding: 18px 16px 14px;
-    gap: 12px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-    overflow: hidden;
+.subj-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:19px;flex-shrink:0;
+  transition:transform var(--t);
 }
+.subj-btn:hover .subj-icon{transform:scale(1.08)}
+.subj-label{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:var(--text);flex:1;line-height:1}
+.subj-count{font-size:11px;font-weight:800;border-radius:20px;padding:2px 8px}
+.chevron{width:16px;height:16px;flex-shrink:0;transition:transform var(--t);opacity:.4}
+.subject.open .chevron{transform:rotate(180deg)}
 
-.logo-badge {
-    width: 42px;
-    height: 42px;
-    min-width: 42px;
-    background: linear-gradient(135deg, var(--accent), var(--accent2));
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.1rem;
-    color: #1a2540;
-    font-weight: 900;
-    box-shadow: 0 4px 14px rgba(255,157,0,0.35);
-    flex-shrink: 0;
-    letter-spacing: -0.5px;
+/* subject colours */
+.en .subj-btn::before{background:var(--en)}  .en .subj-icon{background:var(--en-soft)}
+.en .subj-count{background:var(--en-soft);color:var(--en-dark)}  .en.open .subj-btn{background:var(--en-soft)}
+.sci .subj-btn::before{background:var(--sci)}  .sci .subj-icon{background:var(--sci-soft)}
+.sci .subj-count{background:var(--sci-soft);color:var(--sci-dark)}  .sci.open .subj-btn{background:var(--sci-soft)}
+.math .subj-btn::before{background:var(--math)}  .math .subj-icon{background:var(--math-soft)}
+.math .subj-count{background:var(--math-soft);color:var(--math-dark)}  .math.open .subj-btn{background:var(--math-soft)}
+.art .subj-btn::before{background:var(--art)}  .art .subj-icon{background:var(--art-soft)}
+.art .subj-count{background:var(--art-soft);color:var(--art-dark)}  .art.open .subj-btn{background:var(--art-soft)}
+
+/* topic list */
+.tlist{overflow:hidden;max-height:0;transition:max-height .35s cubic-bezier(.4,0,.2,1)}
+.subject.open .tlist{max-height:600px}
+
+.topic{
+  display:flex;align-items:center;gap:9px;
+  padding:.63rem 1rem .63rem 2.7rem;
+  cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);
+  border-left:3px solid transparent;
+  transition:background var(--t),color var(--t),border-color var(--t),transform var(--t);
+  user-select:none;
 }
+.topic:hover{background:var(--bg);color:var(--text);transform:translateX(3px)}
+.topic.active{background:var(--active-bg);color:var(--text);border-left-color:var(--active-line);transform:translateX(2px)}
+.tdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;opacity:.55;transition:opacity var(--t),transform var(--t)}
+.topic:hover .tdot,.topic.active .tdot{opacity:1;transform:scale(1.4)}
+.ttag{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.05em;border-radius:5px;padding:1px 6px;flex-shrink:0}
+.tnew{margin-left:auto;font-size:9px;font-weight:800;letter-spacing:.08em;border-radius:5px;padding:2px 7px;background:#fff0eb;color:#b53606}
 
-.header-text {
-    overflow: hidden;
-    white-space: nowrap;
-    transition: opacity var(--transition), width var(--transition);
+.en  .tdot{background:var(--en)}    .en  .ttag{background:var(--en-soft);color:var(--en-dark)}
+.sci .tdot{background:var(--sci)}   .sci .ttag{background:var(--sci-soft);color:var(--sci-dark)}
+.math .tdot{background:var(--math)} .math .ttag{background:var(--math-soft);color:var(--math-dark)}
+.art .tdot{background:var(--art)}   .art .ttag{background:var(--art-soft);color:var(--art-dark)}
+
+.sdiv{height:1px;background:var(--border);margin:.25rem .9rem;opacity:.5}
+
+/* CONTENT */
+.content{position:relative;display:flex;flex-direction:column;background:var(--bg);overflow:hidden}
+
+/* breadcrumb */
+.bc{
+  height:40px;flex-shrink:0;
+  background:var(--white);border-bottom:1.5px solid var(--border);
+  display:flex;align-items:center;padding:0 1.2rem;gap:6px;
+  font-size:12px;font-weight:700;color:var(--muted);
 }
+.bc-home{cursor:pointer;display:flex;align-items:center;gap:4px;transition:color var(--t)}
+.bc-home:hover{color:var(--text)}
+.bc-sep{opacity:.35;font-size:11px}
+.bc-subj{display:flex;align-items:center;gap:5px;border-radius:6px;padding:2px 8px;font-size:11.5px}
+.bc-topic{color:var(--text)}
 
-.header-text h1 {
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.3rem;
-    color: #ffffff;
-    letter-spacing: 0.5px;
-    line-height: 1;
-    margin-bottom: 2px;
+/* loading bar */
+.lbar{
+  height:3px;
+  background:linear-gradient(90deg,#fcc419 0%,#ff6b35 25%,#1460c8 60%,#1a8a3c 100%);
+  background-size:300% 100%;
+  position:absolute;top:40px;left:0;right:0;z-index:5;
+  opacity:0;transition:opacity .2s;
+  animation:lslide 1.4s linear infinite;
 }
+.lbar.on{opacity:1}
+@keyframes lslide{0%{background-position:100% 0}100%{background-position:-200% 0}}
 
-.header-text p {
-    font-size: 0.72rem;
-    color: rgba(255,255,255,0.4);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
+/* frame wrapper */
+.fw{flex:1;position:relative;overflow:hidden}
+.fw iframe{
+  position:absolute;inset:0;width:100%;height:100%;border:none;
+  opacity:0;transform:translateX(20px);
+  transition:opacity .3s ease,transform .3s ease;
 }
+.fw iframe.vis{opacity:1;transform:translateX(0)}
 
-#menu.contracted .header-text {
-    opacity: 0;
-    width: 0;
+/* WELCOME */
+.welcome{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:2rem;gap:1.8rem;
+  transition:opacity .28s,transform .28s;
 }
-
-/* ── TOGGLE ── */
-#toggle-container {
-    padding: 10px 14px 8px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
+.welcome.gone{opacity:0;transform:scale(.97);pointer-events:none}
+.welcome-title h2{
+  font-family:'Baloo 2',cursive;
+  font-size:clamp(22px,3.5vw,36px);
+  font-weight:800;color:var(--text);text-align:center;line-height:1.15;
 }
+.welcome-title h2 em{font-style:italic;color:var(--en)}
+.welcome-title p{font-size:13.5px;color:var(--muted);text-align:center;margin-top:6px;font-weight:600}
 
-#toggle-btn {
-    width: 100%;
-    height: 38px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 10px;
-    color: rgba(255,255,255,0.7);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 800;
-    letter-spacing: 0.3px;
-    transition: all 0.2s ease;
-    touch-action: manipulation;
-    overflow: hidden;
-    white-space: nowrap;
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;width:100%;max-width:520px}
+.tile{
+  background:var(--white);border-radius:15px;padding:1.2rem 1.1rem;
+  border:2px solid var(--border);cursor:pointer;
+  transition:transform var(--t),box-shadow var(--t),border-color var(--t);
+  display:flex;align-items:center;gap:11px;
+  animation:fup .4s ease both;
 }
+@keyframes fup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.tile:nth-child(1){animation-delay:.04s}.tile:nth-child(2){animation-delay:.09s}
+.tile:nth-child(3){animation-delay:.14s}.tile:nth-child(4){animation-delay:.19s}
+.tile:hover{transform:translateY(-4px)}
+.ticon{font-size:26px;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tlabel{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:var(--text);line-height:1}
+.tsub{font-size:11px;color:var(--muted);font-weight:600;margin-top:3px}
+.ten{border-color:var(--en-soft)}.ten:hover{border-color:var(--en-mid);box-shadow:0 10px 26px rgba(232,70,10,.1)}.ten .ticon{background:var(--en-soft)}
+.tsci{border-color:var(--sci-soft)}.tsci:hover{border-color:var(--sci-mid);box-shadow:0 10px 26px rgba(26,138,60,.1)}.tsci .ticon{background:var(--sci-soft)}
+.tmath{border-color:var(--math-soft)}.tmath:hover{border-color:var(--math-mid);box-shadow:0 10px 26px rgba(20,96,200,.1)}.tmath .ticon{background:var(--math-soft)}
+.tart{border-color:var(--art-soft)}.tart:hover{border-color:var(--art-mid);box-shadow:0 10px 26px rgba(156,31,196,.1)}.tart .ticon{background:var(--art-soft)}
 
-#toggle-btn:hover {
-    background: rgba(255,157,0,0.15);
-    border-color: rgba(255,157,0,0.4);
-    color: var(--accent);
+/* COMING SOON */
+.cpanel{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;padding:3rem;text-align:center;
+  background:var(--bg);
+  opacity:0;transform:translateX(20px);
+  transition:opacity .3s ease,transform .3s ease;
+  pointer-events:none;
 }
+.cpanel.vis{opacity:1;transform:translateX(0);pointer-events:auto}
+.cemoji{font-size:54px;line-height:1}
+.ctitle{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:var(--text)}
+.cdesc{font-size:13.5px;color:var(--muted);max-width:320px;font-weight:600;line-height:1.55}
+.cbadge{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;border-radius:20px;padding:5px 15px;margin-top:4px}
 
-.toggle-icon {
-    font-size: 1rem;
-    flex-shrink: 0;
-    transition: transform 0.38s ease;
-}
-
-#menu.contracted .toggle-icon {
-    transform: rotate(180deg);
-}
-
-.toggle-label {
-    transition: opacity var(--transition), width var(--transition);
-    overflow: hidden;
-}
-
-#menu.contracted .toggle-label {
-    opacity: 0;
-    width: 0;
-}
-
-/* ── SECTION LABEL ── */
-.section-label {
-    padding: 8px 18px 4px;
-    font-size: 0.6rem;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1.2px;
-    color: rgba(255,255,255,0.25);
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-    white-space: nowrap;
-    overflow: hidden;
-    transition: opacity var(--transition);
-}
-
-#menu.contracted .section-label {
-    opacity: 0;
-}
-
-/* ── MENU ITEMS ── */
-.menu-items-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 4px 10px 10px;
-    gap: 3px;
-    position: relative;
-    z-index: 2;
-    min-height: 0;
-    overflow: hidden; /* never scroll */
-}
-
-.menu-link {
-    display: flex;
-    align-items: center;
-    gap: 0;
-    padding: 0 12px;
-    border-radius: 11px;
-    text-decoration: none;
-    color: rgba(255,255,255,0.6);
-    font-weight: 700;
-    font-size: 0.88rem;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-    white-space: nowrap;
-    border: 1px solid transparent;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-    /* KEY: each item grows equally — no scroll needed */
-    flex: 1;
-    min-height: 0;
-    animation: slideIn 0.35s ease both;
-}
-
-/* Left accent bar */
-.menu-link::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 20%; bottom: 20%;
-    width: 3px;
-    border-radius: 0 3px 3px 0;
-    background: currentColor;
-    transform: scaleY(0);
-    transition: transform 0.25s ease;
-}
-
-.menu-link:hover::before,
-.menu-link.active::before {
-    transform: scaleY(1);
-}
-
-.menu-link:hover {
-    background: rgba(255,255,255,0.07);
-    color: #ffffff;
-    border-color: rgba(255,255,255,0.08);
-}
-
-.menu-link.active {
-    background: rgba(255,255,255,0.1);
-    color: #ffffff;
-    border-color: rgba(255,255,255,0.12);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.2);
-}
-
-.link-icon {
-    font-size: 1.2rem;
-    min-width: 38px;
-    text-align: center;
-    flex-shrink: 0;
-    filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
-    transition: transform 0.2s ease;
-}
-
-.menu-link:hover .link-icon,
-.menu-link.active .link-icon {
-    transform: scale(1.15);
-}
-
-.link-text {
-    overflow: hidden;
-    transition: opacity var(--transition), max-width var(--transition);
-    max-width: 200px;
-    opacity: 1;
-    font-size: 0.88rem;
-    font-weight: 700;
-}
-
-#menu.contracted .link-text {
-    opacity: 0;
-    max-width: 0;
-}
-
-/* Active dot */
-.link-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    margin-left: auto;
-    flex-shrink: 0;
-    box-shadow: 0 0 6px currentColor;
-    opacity: 0;
-    transition: opacity 0.2s;
-}
-
-.menu-link.active .link-dot { opacity: 1; }
-#menu.contracted .link-dot  { display: none; }
-
-/* Tooltip when contracted */
-#menu.contracted .menu-link::after {
-    content: attr(data-tooltip);
-    position: absolute;
-    left: calc(100% + 10px);
-    top: 50%;
-    transform: translateY(-50%) translateX(-6px);
-    background: #1a2540;
-    color: white;
-    padding: 7px 14px;
-    border-radius: 9px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    white-space: nowrap;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition: all 0.2s ease;
-    z-index: 999;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    border: 1px solid rgba(255,157,0,0.4);
-}
-
-#menu.contracted .menu-link:hover::after {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(-50%) translateX(0);
-}
-
-/* Per-item accent colors */
-.btn-schedule { color: #4ade80; }
-.btn-keyboard { color: #60a5fa; }
-.btn-plants   { color: #34d399; }
-.btn-vocab    { color: #fb923c; }
-.btn-math     { color: #c084fc; }
-.btn-trans    { color: #94a3b8; }
-.btn-words    { color: #2dd4bf; }
-.btn-grammar  { color: #f87171; }
-.btn-goal     { color: #fbbf24; }
-.btn-puzzle   { color: #22d3ee; }
-.btn-games    { color: #f472b6; }
-
-/* ── FOOTER ── */
-.menu-footer {
-    padding: 10px 14px 14px;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 2;
-    border-top: 1px solid rgba(255,255,255,0.06);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    overflow: hidden;
-}
-
-.footer-avatar {
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
-    background: linear-gradient(135deg, #4ade80, #3d8fe0);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1rem;
-    flex-shrink: 0;
-}
-
-.footer-text {
-    overflow: hidden;
-    transition: opacity var(--transition);
-}
-
-.footer-text p {
-    font-size: 0.72rem;
-    font-weight: 800;
-    color: rgba(255,255,255,0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    white-space: nowrap;
-}
-
-.footer-text span {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: rgba(255,255,255,0.3);
-    white-space: nowrap;
-}
-
-#menu.contracted .footer-text { opacity: 0; }
-
-/* ═══════════════════════════════
-   CONTENT
-═══════════════════════════════ */
-#content-wrapper {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    height: 100vh;
-    background: #eef4fb;
-}
-
-#content-frame {
-    flex-grow: 1;
-    border: none;
-    width: 100%;
-    height: 100%;
-    display: block;
-    overflow: auto;
-    -webkit-overflow-scrolling: touch;
-    background: #ffffff;
-    border-radius: 20px 0 0 20px;
-    box-shadow: -8px 0 40px rgba(0,0,0,0.08);
-}
-
-/* ═══════════════════════════════
-   ANIMATIONS
-═══════════════════════════════ */
-@keyframes slideIn {
-    from { opacity: 0; transform: translateX(-12px); }
-    to   { opacity: 1; transform: translateX(0); }
-}
-
-.menu-link:nth-child(1)  { animation-delay: 0.04s; }
-.menu-link:nth-child(2)  { animation-delay: 0.08s; }
-.menu-link:nth-child(3)  { animation-delay: 0.12s; }
-.menu-link:nth-child(4)  { animation-delay: 0.16s; }
-.menu-link:nth-child(5)  { animation-delay: 0.20s; }
-.menu-link:nth-child(6)  { animation-delay: 0.24s; }
-.menu-link:nth-child(7)  { animation-delay: 0.28s; }
-.menu-link:nth-child(8)  { animation-delay: 0.32s; }
-.menu-link:nth-child(9)  { animation-delay: 0.36s; }
-.menu-link:nth-child(10) { animation-delay: 0.40s; }
-.menu-link:nth-child(11) { animation-delay: 0.44s; }
-
-@keyframes ripple {
-    from { transform: scale(0); opacity: 0.3; }
-    to   { transform: scale(3); opacity: 0; }
-}
-.ripple-el {
-    position: absolute;
-    border-radius: 50%;
-    width: 50px; height: 50px;
-    background: rgba(255,255,255,0.25);
-    animation: ripple 0.5s ease-out forwards;
-    pointer-events: none;
-    margin-left: -25px;
-    margin-top: -25px;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    :root { --menu-w: 74px; }
-    #menu:not(.contracted) { width: 74px; min-width: 74px; }
+@media(max-width:600px){
+  :root{--sidebar-w:220px}
+  .hdate{display:none}
+  .hlink span{display:none}
 }
 </style>
 </head>
-
 <body>
 
-<nav id="menu">
-    <div class="menu-header">
-        <div class="logo-badge">2C</div>
-        <div class="header-text">
-            <h1>Class 2C</h1>
-            <p>Learning Hub</p>
+<header class="header">
+  <div class="logo-badge">2C</div>
+  <div>
+    <div class="logo-text">Class 2C</div>
+    <div class="logo-sub">Learning Hub</div>
+  </div>
+  <div class="hflex"></div>
+  <div class="hdate" id="hdate">Today</div>
+  <nav class="hlinks">
+    <a class="hlink" href="https://balmungax.github.io/phonicshub/schedule.html" onclick="return navLink(event,this,'Schedule','📅')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <span>Schedule</span>
+    </a>
+    <a class="hlink" href="https://balmungax.github.io/phonicshub/keyboard.html" onclick="return navLink(event,this,'Keyboard','⌨️')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M8 14h8"/></svg>
+      <span>Keyboard</span>
+    </a>
+    <a class="hlink" href="https://balmungax.github.io/phonicshub/grammar.html" onclick="return navLink(event,this,'Checker','✔️')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>Checker</span>
+    </a>
+  </nav>
+</header>
+
+<div class="workspace">
+  <aside class="sidebar">
+
+    <!-- ENGLISH -->
+    <div class="subject en open" id="en">
+      <button class="subj-btn" onclick="toggleSubj('en')">
+        <div class="subj-icon">📖</div>
+        <span class="subj-label">English</span>
+        <span class="subj-count">5</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="tlist">
+        <div class="topic" onclick="load('#','Nouns','English','📖','en')"><span class="tdot"></span>Nouns<span class="tnew">Soon</span></div>
+        <div class="topic" onclick="load('#','Adjectives','English','📖','en')"><span class="tdot"></span>Adjectives<span class="tnew">Soon</span></div>
+        <div class="topic" onclick="load('#','Verbs','English','📖','en')"><span class="tdot"></span>Verbs<span class="tnew">Soon</span></div>
+        <div class="topic" onclick="load('#','Readings','English','📖','en')"><span class="tdot"></span>Readings<span class="tnew">Soon</span></div>
+        <div class="topic" onclick="load('https://balmungax.github.io/phonicshub/build.html','Vocabulary','English','📖','en')"><span class="tdot"></span>Vocabulary</div>
+      </div>
+    </div>
+    <div class="sdiv"></div>
+
+    <!-- SCIENCE -->
+    <div class="subject sci" id="sci">
+      <button class="subj-btn" onclick="toggleSubj('sci')">
+        <div class="subj-icon">🌍</div>
+        <span class="subj-label">Science</span>
+        <span class="subj-count">1</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="tlist">
+        <div class="topic" onclick="load('#','Earth: Land Changing Shape','Science','🌍','sci')"><span class="tdot"></span>Earth: Land Changing Shape<span class="tnew">Soon</span></div>
+      </div>
+    </div>
+    <div class="sdiv"></div>
+
+    <!-- MATHS -->
+    <div class="subject math" id="math">
+      <button class="subj-btn" onclick="toggleSubj('math')">
+        <div class="subj-icon">🔢</div>
+        <span class="subj-label">Maths</span>
+        <span class="subj-count">7</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="tlist">
+        <div class="topic" onclick="load('#','Addition &amp; Subtraction within 20','Maths','🔢','math')"><span class="tdot"></span>Addition &amp; Subtraction within 20<span class="ttag">2.OA</span></div>
+        <div class="topic" onclick="load('#','Place Value — Numbers to 1,000','Maths','🔢','math')"><span class="tdot"></span>Place Value — Numbers to 1,000<span class="ttag">2.NBT</span></div>
+        <div class="topic" onclick="load('#','Addition &amp; Subtraction within 100','Maths','🔢','math')"><span class="tdot"></span>Addition &amp; Subtraction within 100<span class="ttag">2.NBT</span></div>
+        <div class="topic" onclick="load('#','Measurement — Length','Maths','🔢','math')"><span class="tdot"></span>Measurement — Length<span class="ttag">2.MD</span></div>
+        <div class="topic" onclick="load('#','Shapes &amp; Geometry','Maths','🔢','math')"><span class="tdot"></span>Shapes &amp; Geometry<span class="ttag">2.G</span></div>
+        <div class="topic" onclick="load('#','Time &amp; Money','Maths','🔢','math')"><span class="tdot"></span>Time &amp; Money<span class="ttag">2.MD</span></div>
+        <div class="topic" onclick="load('https://balmungax.github.io/phonicshub/place.html','Data &amp; Graphs','Maths','🔢','math')"><span class="tdot"></span>Data &amp; Graphs<span class="ttag">2.MD</span></div>
+      </div>
+    </div>
+    <div class="sdiv"></div>
+
+    <!-- ARTS -->
+    <div class="subject art" id="art">
+      <button class="subj-btn" onclick="toggleSubj('art')">
+        <div class="subj-icon">🎨</div>
+        <span class="subj-label">Arts</span>
+        <span class="subj-count">?</span>
+        <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="tlist">
+        <div class="topic" style="opacity:.55;cursor:default"><span class="tdot"></span>Lessons coming soon…</div>
+      </div>
+    </div>
+
+  </aside>
+
+  <main class="content">
+
+    <!-- breadcrumb -->
+    <div class="bc" id="bc">
+      <span class="bc-home" onclick="goHome()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </span>
+      <span class="bc-sep" id="bcs1" style="display:none">›</span>
+      <span class="bc-subj" id="bcs" style="display:none"></span>
+      <span class="bc-sep" id="bcs2" style="display:none">›</span>
+      <span class="bc-topic" id="bct" style="display:none"></span>
+    </div>
+
+    <!-- loading bar -->
+    <div class="lbar" id="lbar"></div>
+
+    <!-- frame wrapper -->
+    <div class="fw" id="fw">
+
+      <!-- welcome -->
+      <div class="welcome" id="welcome">
+        <div class="welcome-title">
+          <h2>Hello! Ready to <em>learn?</em> 🌟</h2>
+          <p>Pick a subject from the left, or tap a card below.</p>
         </div>
-    </div>
-
-    <div id="toggle-container">
-        <button id="toggle-btn" onclick="toggleMenu()" aria-label="Toggle menu">
-            <span class="toggle-icon">◀</span>
-            <span class="toggle-label">Collapse</span>
-        </button>
-    </div>
-
-    <div class="section-label">Navigation</div>
-
-    <div class="menu-items-container">
-        <a href="schedule.html" target="content-view" class="menu-link btn-schedule active" data-tooltip="Schedule">
-            <span class="link-icon">📅</span>
-            <span class="link-text">Schedule</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="keyboard.html" target="content-view" class="menu-link btn-keyboard" data-tooltip="Keyboard">
-            <span class="link-icon">⌨️</span>
-            <span class="link-text">Keyboard</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="recycle2.html" target="content-view" class="menu-link btn-plants" data-tooltip="Project">
-            <span class="link-icon">🌱</span>
-            <span class="link-text">Project</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="build.html" target="content-view" class="menu-link btn-vocab" data-tooltip="Vocabulary">
-            <span class="link-icon">📚</span>
-            <span class="link-text">Vocabulary</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="place.html" target="content-view" class="menu-link btn-math" data-tooltip="Subtraction">
-            <span class="link-icon">➖</span>
-            <span class="link-text">Subtraction</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="tracing.html" target="content-view" class="menu-link btn-trans" data-tooltip="Tracing">
-            <span class="link-icon">✍️</span>
-            <span class="link-text">Tracing</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="words2.html" target="content-view" class="menu-link btn-words" data-tooltip="Word Bank">
-            <span class="link-icon">🗂️</span>
-            <span class="link-text">Word Bank</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="grammar.html" target="content-view" class="menu-link btn-grammar" data-tooltip="Checker">
-            <span class="link-icon">✔️</span>
-            <span class="link-text">Checker</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="goal.html" target="content-view" class="menu-link btn-goal" data-tooltip="Weekly Goal">
-            <span class="link-icon">🎯</span>
-            <span class="link-text">Weekly Goal</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="puzzle.html" target="content-view" class="menu-link btn-puzzle" data-tooltip="Puzzle">
-            <span class="link-icon">🧩</span>
-            <span class="link-text">Puzzle</span>
-            <span class="link-dot"></span>
-        </a>
-        <a href="games.html" target="content-view" class="menu-link btn-games" data-tooltip="Games">
-            <span class="link-icon">🎮</span>
-            <span class="link-text">Games</span>
-            <span class="link-dot"></span>
-        </a>
-    </div>
-
-    <div class="menu-footer">
-        <div class="footer-avatar">🏫</div>
-        <div class="footer-text">
-            <p>Classroom</p>
-            <span>Interactive Board</span>
+        <div class="tiles">
+          <div class="tile ten"  onclick="openSubj('en')">  <div class="ticon">📖</div><div><div class="tlabel">English</div><div class="tsub">5 topics</div></div></div>
+          <div class="tile tsci" onclick="openSubj('sci')"> <div class="ticon">🌍</div><div><div class="tlabel">Science</div><div class="tsub">1 topic</div></div></div>
+          <div class="tile tmath" onclick="openSubj('math')"><div class="ticon">🔢</div><div><div class="tlabel">Maths</div><div class="tsub">7 topics</div></div></div>
+          <div class="tile tart" onclick="openSubj('art')"> <div class="ticon">🎨</div><div><div class="tlabel">Arts</div><div class="tsub">Coming soon</div></div></div>
         </div>
-    </div>
-</nav>
+      </div>
 
-<div id="content-wrapper">
-    <iframe name="content-view" id="content-frame" src="schedule.html" title="Classroom Content"></iframe>
+      <!-- iframe -->
+      <iframe id="lframe" title="Lesson" src="about:blank"></iframe>
+
+      <!-- coming soon panel -->
+      <div class="cpanel" id="cpanel">
+        <div class="cemoji" id="cemoji">📚</div>
+        <div class="ctitle" id="ctitle">Coming soon!</div>
+        <div class="cdesc" id="cdesc">This lesson is being built. Check back soon!</div>
+        <span class="cbadge" id="cbadge">🚧 In Progress</span>
+      </div>
+
+    </div>
+  </main>
 </div>
 
 <script>
-function toggleMenu() {
-    const menu  = document.getElementById('menu');
-    const btn   = document.getElementById('toggle-btn');
-    const label = btn.querySelector('.toggle-label');
-    menu.classList.toggle('contracted');
-    const contracted = menu.classList.contains('contracted');
-    btn.setAttribute('aria-label', contracted ? 'Expand menu' : 'Collapse menu');
-    if (label) label.textContent = contracted ? 'Expand' : 'Collapse';
+/* colours for breadcrumb */
+const SC={
+  en:  {bg:'var(--en-soft)',  c:'var(--en-dark)'},
+  sci: {bg:'var(--sci-soft)', c:'var(--sci-dark)'},
+  math:{bg:'var(--math-soft)',c:'var(--math-dark)'},
+  art: {bg:'var(--art-soft)', c:'var(--art-dark)'},
+};
+const SCbadge={
+  en:  {bg:'#fff0eb',c:'#b53606'},
+  sci: {bg:'#ebfaef',c:'#116129'},
+  math:{bg:'#eaf1ff',c:'#0d469a'},
+  art: {bg:'#f8eaff',c:'#721090'},
+};
+
+/* date */
+const D=new Date();
+const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const mons=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+document.getElementById('hdate').textContent=days[D.getDay()]+' · '+mons[D.getMonth()]+' '+D.getDate();
+
+/* toggle subject in sidebar */
+function toggleSubj(id){document.getElementById(id).classList.toggle('open')}
+function openSubj(id){
+  const el=document.getElementById(id);
+  el.classList.add('open');
+  el.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 
-function addRipple(e, el) {
-    const r = document.createElement('span');
-    r.classList.add('ripple-el');
-    const rect = el.getBoundingClientRect();
-    const x = (e.clientX ?? e.touches?.[0]?.clientX ?? rect.left + rect.width / 2) - rect.left;
-    const y = (e.clientY ?? e.touches?.[0]?.clientY ?? rect.top + rect.height / 2) - rect.top;
-    r.style.left = x + 'px';
-    r.style.top  = y + 'px';
-    el.appendChild(r);
-    setTimeout(() => r.remove(), 550);
+/* breadcrumb helpers */
+function showBc(subjName,subjIcon,subjKey,topicName){
+  const bcs1=document.getElementById('bcs1');
+  const bcs=document.getElementById('bcs');
+  const bcs2=document.getElementById('bcs2');
+  const bct=document.getElementById('bct');
+  if(!subjName){bcs1.style.display=bcs.style.display=bcs2.style.display=bct.style.display='none';return}
+  const col=SC[subjKey]||{bg:'#eee',c:'#333'};
+  bcs.textContent=subjIcon+' '+subjName;
+  bcs.style.cssText='display:inline-flex;background:'+col.bg+';color:'+col.c;
+  bcs1.style.display='';
+  if(topicName){bct.textContent=topicName;bcs2.style.display='';bct.style.display=''}
+  else{bcs2.style.display=bct.style.display='none'}
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const links = document.querySelectorAll('.menu-link');
-    const frame = document.getElementById('content-frame');
-    const menu  = document.getElementById('menu');
+/* main load function */
+function load(url,topic,subject,icon,subjectKey){
+  document.querySelectorAll('.topic.active').forEach(t=>t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  showBc(subject,icon,subjectKey,topic.replace(/&amp;/g,'&'));
 
-    frame.addEventListener('load', function () {
-        try { frame.contentWindow.scrollTo(0, 0); } catch(e) {}
-        const cur = frame.src.split('/').pop();
-        links.forEach(l => {
-            l.classList.toggle('active', l.getAttribute('href') === cur);
-        });
-    });
+  const iframe=document.getElementById('lframe');
+  const welcome=document.getElementById('welcome');
+  const cpanel=document.getElementById('cpanel');
+  const lbar=document.getElementById('lbar');
 
-    links.forEach(link => {
-        link.addEventListener('touchstart', e => addRipple(e, link), { passive: true });
-        link.addEventListener('click', function (e) {
-            addRipple(e, this);
-            links.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-            try { frame.contentWindow.scrollTo(0, 0); } catch(e) {}
-        });
-    });
+  welcome.classList.add('gone');
+  cpanel.classList.remove('vis');
+  iframe.classList.remove('vis');
 
-    document.addEventListener('keydown', e => {
-        if (e.ctrlKey && e.key === 'm') { e.preventDefault(); toggleMenu(); }
-    });
+  if(url==='#'){
+    lbar.classList.remove('on');
+    const col=SCbadge[subjectKey]||{bg:'#eee',c:'#333'};
+    document.getElementById('cemoji').textContent=icon;
+    document.getElementById('ctitle').textContent=topic.replace(/&amp;/g,'&');
+    document.getElementById('cdesc').textContent='This lesson is being prepared. Come back soon!';
+    const cb=document.getElementById('cbadge');
+    cb.textContent='🚧 In Progress';
+    cb.style.cssText='background:'+col.bg+';color:'+col.c;
+    requestAnimationFrame(()=>cpanel.classList.add('vis'));
+    return;
+  }
 
-    function checkSize() {
-        if (window.innerWidth < 900 && !menu.classList.contains('contracted')) toggleMenu();
-    }
-    checkSize();
-    window.addEventListener('resize', checkSize);
-});
+  lbar.classList.add('on');
+  iframe.onload=()=>{lbar.classList.remove('on');requestAnimationFrame(()=>iframe.classList.add('vis'))};
+  iframe.src=url;
+}
+
+/* nav link (header buttons) */
+function navLink(e,el,label,icon){
+  e.preventDefault();
+  document.querySelectorAll('.topic.active').forEach(t=>t.classList.remove('active'));
+  showBc(null);
+  const bcs1=document.getElementById('bcs1');
+  const bcs=document.getElementById('bcs');
+  bcs.textContent=icon+' '+label;
+  bcs.style.cssText='display:inline-flex;background:var(--bg);color:var(--text)';
+  bcs1.style.display='';
+
+  const iframe=document.getElementById('lframe');
+  const welcome=document.getElementById('welcome');
+  const cpanel=document.getElementById('cpanel');
+  const lbar=document.getElementById('lbar');
+
+  welcome.classList.add('gone');
+  cpanel.classList.remove('vis');
+  iframe.classList.remove('vis');
+  lbar.classList.add('on');
+  iframe.onload=()=>{lbar.classList.remove('on');requestAnimationFrame(()=>iframe.classList.add('vis'))};
+  iframe.src=el.href;
+  return false;
+}
+
+/* go home */
+function goHome(){
+  document.querySelectorAll('.topic.active').forEach(t=>t.classList.remove('active'));
+  showBc(null);
+  const iframe=document.getElementById('lframe');
+  const cpanel=document.getElementById('cpanel');
+  const lbar=document.getElementById('lbar');
+  cpanel.classList.remove('vis');
+  iframe.classList.remove('vis');
+  lbar.classList.remove('on');
+  document.getElementById('welcome').classList.remove('gone');
+  iframe.src='about:blank';
+}
 </script>
-
 </body>
 </html>
