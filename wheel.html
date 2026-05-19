@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Spin the Wheel</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            background: white;
+            font-family: 'Segoe UI', 'Poppins', system-ui, -apple-system, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+        }
+
+        .wheel-app {
+            max-width: 1300px;
+            width: 100%;
+            background: white;
+            border-radius: 48px;
+            padding: 24px 32px 40px 32px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            text-align: center;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+            font-size: 1.9rem;
+            letter-spacing: -0.3px;
+            color: #2c3e2f;
+        }
+
+        .sub {
+            text-align: center;
+            color: #5a6e5a;
+            margin-top: -6px;
+            margin-bottom: 32px;
+            font-size: 0.9rem;
+        }
+
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .wheel-col {
+            flex: 1.5;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .canvas-container {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            border-radius: 50%;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.15), 0 0 0 6px #f9e7c2, 0 0 0 12px #e0b87a;
+            background: #f9f3e6;
+            width: 100%;
+            height: auto;
+            max-width: 480px;
+        }
+
+        /* pointer on the RIGHT side of the wheel */
+        .pointer {
+            position: absolute;
+            top: 50%;
+            right: -28px;
+            transform: translateY(-50%);
+            width: 0;
+            height: 0;
+            border-top: 22px solid transparent;
+            border-bottom: 22px solid transparent;
+            border-left: 38px solid #ffb84d;
+            filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+            z-index: 10;
+            pointer-events: none;
+        }
+        .pointer::after {
+            content: "▶";
+            position: absolute;
+            left: -32px;
+            top: -17px;
+            font-size: 26px;
+            color: #5a3a1a;
+        }
+
+        /* simple word panel – only a blank textarea, no extra text */
+        .words-panel {
+            flex: 1;
+            min-width: 280px;
+            background: #fefcf7;
+            border-radius: 40px;
+            padding: 24px 28px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+            border: 1px solid #eee6d8;
+        }
+
+        .words-panel label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #4a5b3e;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        textarea {
+            width: 100%;
+            background: white;
+            border: 1px solid #ddd2be;
+            border-radius: 28px;
+            padding: 16px 20px;
+            font-family: 'Segoe UI', monospace;
+            font-size: 1rem;
+            resize: vertical;
+            outline: none;
+            font-weight: 500;
+            color: #2e3b27;
+            line-height: 1.4;
+            transition: 0.1s;
+        }
+
+        textarea:focus {
+            border-color: #ffb347;
+            box-shadow: 0 0 0 3px rgba(255, 180, 71, 0.2);
+        }
+
+        /* minimal badge for word count */
+        .word-count {
+            text-align: right;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #9b8e74;
+        }
+
+        /* toast – only shows the selected word, no extra labels */
+        .toast-message {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) scale(0.92);
+            background: #2e3b27;
+            backdrop-filter: blur(12px);
+            color: #fff3cf;
+            padding: 14px 32px;
+            border-radius: 60px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border-left: 6px solid #ffc107;
+            border-right: 6px solid #ffc107;
+            pointer-events: none;
+            white-space: nowrap;
+            font-family: monospace;
+        }
+        .toast-message.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1);
+        }
+
+        @media (max-width: 760px) {
+            .wheel-app { padding: 20px; }
+            .toast-message { font-size: 1.2rem; padding: 10px 20px; white-space: normal; max-width: 85vw; }
+            .pointer { right: -20px; border-left: 28px solid #ffb84d; border-top: 16px solid transparent; border-bottom: 16px solid transparent; }
+            .pointer::after { font-size: 18px; left: -24px; top: -12px; }
+        }
+    </style>
+</head>
+<body>
+<div class="wheel-app">
+    <h1>🌀 SPIN THE WHEEL</h1>
+    <div class="sub">click the center · add words below</div>
+
+    <div class="dashboard">
+        <div class="wheel-col">
+            <div class="canvas-container" id="wheelArea">
+                <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                <div class="pointer"></div>
+            </div>
+        </div>
+
+        <!-- completely blank textarea – no placeholder, no extra text -->
+        <div class="words-panel">
+            <label>📝 your words</label>
+            <textarea id="wordsInput" rows="5"></textarea>
+            <div class="word-count" id="wordCounter">0</div>
+        </div>
+    </div>
+</div>
+
+<div id="winnerToast" class="toast-message"></div>
+
+<script>
+    (function(){
+        // DOM elements
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const wheelArea = document.getElementById('wheelArea');
+        const wordsTextarea = document.getElementById('wordsInput');
+        const wordCounterSpan = document.getElementById('wordCounter');
+        const toastEl = document.getElementById('winnerToast');
+
+        // wheel state
+        let segments = [];
+        let startAngles = [];
+        let endAngles = [];
+        let colors = [];
+        let currentRotation = 0;
+        let animationId = null;
+        let isSpinning = false;
+
+        const PI = Math.PI;
+        const TAU = PI * 2;
+        const centerX = 250, centerY = 250;
+        const radius = 218;
+        const textRadius = 168;
+        // pointer on the RIGHT side (angle = 0 radians)
+        const pointerAngle = 0;
+
+        // color generator (vibrant)
+        function getColor(index, total) {
+            const hue = (index * 37 + 180) % 360;
+            const sat = 65 + (index % 25);
+            const light = 58 + (index % 18);
+            return `hsl(${hue}, ${sat}%, ${light}%)`;
+        }
+
+        function rebuildGeometry() {
+            const len = segments.length;
+            if (len === 0) {
+                startAngles = [];
+                endAngles = [];
+                colors = [];
+                return;
+            }
+            const step = TAU / len;
+            startAngles = [];
+            endAngles = [];
+            colors = [];
+            for (let i = 0; i < len; i++) {
+                startAngles.push(i * step);
+                endAngles.push((i + 1) * step);
+                colors.push(getColor(i, len));
+            }
+        }
+
+        // draw the center button with only ONE icon (circular arrows)
+        function drawCenterButton() {
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 48, 0, TAU);
+            ctx.fillStyle = "#FFF2DE";
+            ctx.fill();
+            ctx.strokeStyle = "#C99444";
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 34, 0, TAU);
+            ctx.fillStyle = "#FADE9C";
+            ctx.fill();
+            // single spin icon
+            ctx.fillStyle = "#5C401F";
+            ctx.font = "bold 42px 'Segoe UI', system-ui";
+            ctx.fillText("⟳", centerX-23, centerY+14);
+        }
+
+        function drawWheel() {
+            ctx.clearRect(0, 0, 500, 500);
+            if (segments.length === 0) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, TAU);
+                ctx.fillStyle = "#f2ede3";
+                ctx.fill();
+                ctx.strokeStyle = "#d4bc92";
+                ctx.lineWidth = 4;
+                ctx.stroke();
+                ctx.fillStyle = "#ab9a78";
+                ctx.font = "bold 20px 'Segoe UI'";
+                ctx.fillText("📝", centerX-12, centerY-12);
+                ctx.font = "14px system-ui";
+                ctx.fillStyle = "#8e7b5a";
+                ctx.fillText("add words", centerX-44, centerY+22);
+                ctx.fillText("in the box", centerX-40, centerY+48);
+                drawCenterButton();
+                return;
+            }
+
+            const n = segments.length;
+            for (let i = 0; i < n; i++) {
+                let start = startAngles[i] + currentRotation;
+                let end = endAngles[i] + currentRotation;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, start, end);
+                ctx.lineTo(centerX, centerY);
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.strokeStyle = "#FFF6E8";
+                ctx.lineWidth = 2.5;
+                ctx.stroke();
+            }
+
+            // draw text on segments
+            ctx.save();
+            ctx.font = "bold 14px 'Segoe UI', 'Poppins'";
+            for (let i = 0; i < n; i++) {
+                let midAngle = startAngles[i] + (endAngles[i] - startAngles[i])/2;
+                let drawAngle = midAngle + currentRotation;
+                const x = centerX + Math.cos(drawAngle) * textRadius;
+                const y = centerY + Math.sin(drawAngle) * textRadius;
+                let textRot = drawAngle;
+                if (drawAngle % TAU > PI/2 && drawAngle % TAU < 3*PI/2) textRot += PI;
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(textRot);
+                let word = segments[i];
+                let display = word.length > 13 ? word.slice(0,11)+"…" : word;
+                ctx.fillStyle = "#251E10";
+                ctx.font = "bold 13px 'Segoe UI', system-ui";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.fillText(display, 0, 0);
+                ctx.restore();
+            }
+            ctx.restore();
+
+            drawCenterButton();
+        }
+
+        // get winner based on pointer angle (0 = right side)
+        function getCurrentWinner() {
+            if (segments.length === 0) return null;
+            let rawAngle = (pointerAngle + currentRotation) % TAU;
+            if (rawAngle < 0) rawAngle += TAU;
+            for (let i = 0; i < segments.length; i++) {
+                if (rawAngle >= startAngles[i] && rawAngle < endAngles[i]) {
+                    return segments[i];
+                }
+            }
+            return segments[0];
+        }
+
+        // toast: show ONLY the word (no "WINNER" prefix)
+        let toastTimeout = null;
+        function showToastMessage(word) {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastEl.textContent = word;
+            toastEl.classList.add('show');
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, 2200);
+        }
+
+        function startSpin() {
+            if (isSpinning) return;
+            if (segments.length === 0) {
+                showToastMessage("✨ add words first");
+                return;
+            }
+            if (segments.length === 1) {
+                const onlyWord = segments[0];
+                showToastMessage(onlyWord);
+                let origRot = currentRotation;
+                let step = 0;
+                const miniBounce = () => {
+                    step++;
+                    currentRotation = origRot + Math.sin(step * 0.4) * 0.07;
+                    drawWheel();
+                    if (step < 18) requestAnimationFrame(miniBounce);
+                    else {
+                        currentRotation = origRot;
+                        drawWheel();
+                    }
+                };
+                requestAnimationFrame(miniBounce);
+                return;
+            }
+
+            const fullTurns = 9 + Math.floor(Math.random() * 14);
+            const extraRad = Math.random() * TAU;
+            const targetRotation = currentRotation + (fullTurns * TAU) + extraRad;
+            const startRotation = currentRotation;
+            const duration = 1600;
+            const startTime = performance.now();
+            isSpinning = true;
+            wheelArea.style.cursor = "wait";
+
+            function animateSpin(now) {
+                const elapsed = now - startTime;
+                let t = Math.min(1, elapsed / duration);
+                const easeOut = 1 - Math.pow(1 - t, 3);
+                const newRot = startRotation + (targetRotation - startRotation) * easeOut;
+                currentRotation = newRot % TAU;
+                drawWheel();
+                if (t < 1) {
+                    animationId = requestAnimationFrame(animateSpin);
+                } else {
+                    currentRotation = targetRotation % TAU;
+                    drawWheel();
+                    const winner = getCurrentWinner();
+                    if (winner) showToastMessage(winner);
+                    isSpinning = false;
+                    animationId = null;
+                    wheelArea.style.cursor = "pointer";
+                }
+            }
+            if (animationId) cancelAnimationFrame(animationId);
+            animationId = requestAnimationFrame(animateSpin);
+        }
+
+        function updateWordsFromTextarea() {
+            let raw = wordsTextarea.value;
+            if (raw.trim() === "") {
+                segments = [];
+                fullRefresh();
+                wordCounterSpan.innerText = "0";
+                return;
+            }
+            let parts = raw.split(/[,\n]+/);
+            let wordList = [];
+            for (let p of parts) {
+                let cleaned = p.trim();
+                if (cleaned !== "") {
+                    if (cleaned.length > 30) cleaned = cleaned.slice(0, 28);
+                    wordList.push(cleaned);
+                }
+            }
+            if (wordList.length > 54) {
+                showToastMessage(`⚠️ ${wordList.length} words (max ~50)`);
+                if (wordList.length > 58) wordList = wordList.slice(0, 54);
+            }
+            segments = wordList;
+            fullRefresh();
+            wordCounterSpan.innerText = `${segments.length}`;
+        }
+
+        function fullRefresh() {
+            if (isSpinning) {
+                if (animationId) cancelAnimationFrame(animationId);
+                isSpinning = false;
+                wheelArea.style.cursor = "pointer";
+            }
+            currentRotation = 0;
+            rebuildGeometry();
+            drawWheel();
+        }
+
+        // event binding
+        wheelArea.addEventListener('click', (e) => {
+            if (!isSpinning) startSpin();
+        });
+        wordsTextarea.addEventListener('input', updateWordsFromTextarea);
+
+        // initialize: empty textarea, empty wheel
+        wordsTextarea.value = "";
+        segments = [];
+        fullRefresh();
+        wordCounterSpan.innerText = "0";
+        wheelArea.style.cursor = "pointer";
+
+        window.addEventListener('resize', () => drawWheel());
+    })();
+</script>
+</body>
+</html>
