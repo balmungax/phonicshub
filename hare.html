@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Hare and the Hedgehog</title>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- PAGE 1 -->
+    <section class="page active" id="page1">
+
+        <h1>🐇 The Hare and the Hedgehog 🦔</h1>
+
+        <p class="intro">
+            Vocabulary and Story Practice
+        </p>
+
+        <button onclick="nextPage()">Start</button>
+    </section>
+
+    <!-- PAGE 2 -->
+    <section class="page" id="page2">
+
+        <h2>📚 Vocabulary Words</h2>
+
+        <div class="vocab-grid">
+
+            <div class="card">
+                <h3>hare</h3>
+                <p class="russian">заяц</p>
+            </div>
+
+            <div class="card">
+                <h3>hedgehog</h3>
+                <p class="russian">ёж</p>
+            </div>
+
+            <div class="card">
+                <h3>brag</h3>
+                <p class="russian">хвастаться</p>
+            </div>
+
+            <div class="card">
+                <h3>trick</h3>
+                <p class="russian">хитрость</p>
+            </div>
+
+            <div class="card">
+                <h3>race</h3>
+                <p class="russian">гонка</p>
+            </div>
+
+            <div class="card">
+                <h3>clever</h3>
+                <p class="russian">умный</p>
+            </div>
+
+            <div class="card">
+                <h3>fence</h3>
+                <p class="russian">забор</p>
+            </div>
+
+            <div class="card">
+                <h3>hill</h3>
+                <p class="russian">холм</p>
+            </div>
+
+            <div class="card">
+                <h3>map</h3>
+                <p class="russian">карта</p>
+            </div>
+
+            <div class="card">
+                <h3>voice</h3>
+                <p class="russian">голос</p>
+            </div>
+
+        </div>
+
+        <button onclick="nextPage()">Next</button>
+
+    </section>
+
+    <!-- PAGE 3 -->
+    <section class="page" id="page3">
+
+        <h2>✏️ Missing Words</h2>
+
+        <div class="question">
+            1. The hare liked to ______ about how fast he was.
+            <input type="text" id="q1">
+        </div>
+
+        <div class="question">
+            2. The hedgehog made a clever ______.
+            <input type="text" id="q2">
+        </div>
+
+        <div class="question">
+            3. The race started near the ______.
+            <input type="text" id="q3">
+        </div>
+
+        <div class="question">
+            4. The hedgehog's wife used a deep ______.
+            <input type="text" id="q4">
+        </div>
+
+        <button onclick="checkPage3()">Check</button>
+
+        <div id="result3"></div>
+
+        <button onclick="nextPage()">Next</button>
+
+    </section>
+
+    <!-- PAGE 4 -->
+    <section class="page" id="page4">
+
+        <h2>🔤 Spelling Practice</h2>
+
+        <div class="question">
+            Animal with spikes:
+            <input type="text" id="s1">
+        </div>
+
+        <div class="question">
+            A smart idea:
+            <input type="text" id="s2">
+        </div>
+
+        <div class="question">
+            To run fast against someone:
+            <input type="text" id="s3">
+        </div>
+
+        <button onclick="checkPage4()">Check</button>
+
+        <div id="result4"></div>
+
+        <button onclick="nextPage()">Next</button>
+
+    </section>
+
+    <!-- PAGE 5 -->
+    <section class="page" id="page5">
+
+        <h2>🔗 Match the Word</h2>
+
+        <div class="match">
+
+            <p>hare</p>
+
+            <select id="m1">
+                <option value="">Choose</option>
+                <option value="rabbit">An animal like a rabbit</option>
+                <option value="wood">Made of wood</option>
+            </select>
+
+        </div>
+
+        <div class="match">
+
+            <p>clever</p>
+
+            <select id="m2">
+                <option value="">Choose</option>
+                <option value="smart">Smart</option>
+                <option value="sad">Very sad</option>
+            </select>
+
+        </div>
+
+        <div class="match">
+
+            <p>stern</p>
+
+            <select id="m3">
+                <option value="">Choose</option>
+                <option value="strict">Strict voice</option>
+                <option value="soft">Soft and quiet</option>
+            </select>
+
+        </div>
+
+        <button onclick="checkPage5()">Check</button>
+
+        <div id="result5"></div>
+
+        <button onclick="nextPage()">Next</button>
+
+    </section>
+
+    <!-- PAGE 6 -->
+    <section class="page" id="page6">
+
+        <h2>🧠 Story Recall</h2>
+
+        <div class="question">
+            1. Why was the hedgehog upset with the hare?
+            <textarea id="r1"></textarea>
+        </div>
+
+        <div class="question">
+            2. What did the hedgehog's wife do?
+            <textarea id="r2"></textarea>
+        </div>
+
+        <div class="question">
+            3. Why did the hare lose?
+            <textarea id="r3"></textarea>
+        </div>
+
+        <button onclick="showRecallMessage()">Done</button>
+
+        <div id="recallMessage"></div>
+
+        <button onclick="nextPage()">Next</button>
+
+    </section>
+
+    <!-- PAGE 7 -->
+    <section class="page" id="page7">
+
+        <h2>📖 Put the Events in Order</h2>
+
+        <ol>
+            <li>The hare bragged.</li>
+            <li>The hedgehog made a plan.</li>
+            <li>The wife waited by the house.</li>
+            <li>The hare ran back and forth.</li>
+            <li>The hare became tired.</li>
+        </ol>
+
+        <p>
+            Which event happened FIRST?
+        </p>
+
+        <input type="text" id="order1">
+
+        <button onclick="checkOrder()">Check</button>
+
+        <div id="orderResult"></div>
+
+        <button onclick="nextPage()">Finish</button>
+
+    </section>
+
+    <!-- PAGE 8 -->
+    <section class="page" id="page8">
+
+        <h1>🎉 Great Job!</h1>
+
+        <h2>Your Score:</h2>
+
+        <div id="finalScore">0</div>
+
+        <p>
+            You finished all the activities!
+        </p>
+
+    </section>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
