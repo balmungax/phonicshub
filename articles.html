@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Article Adventure | A An The &amp; Zero</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --font: 'Century Gothic', 'Nunito', Futura, 'AppleGothic', Tahoma, sans-serif;
+  --primary: #4ECDC4;
+  --secondary: #FF6B6B;
+  --accent: #FFE66D;
+  --dark: #2C3E50;
+  --light: #F0F4F8;
+  --a-color: #FF9F43;
+  --an-color: #C56BF0;
+  --the-color: #54A0FF;
+  --zero-color: #1DD1A1;
+  --white: #fff;
+  --shadow: 0 6px 24px rgba(0,0,0,0.09);
+  --radius: 18px;
+  --l1: #1DD1A1;
+  --l2: #FF9F43;
+  --l3: #FF6B6B;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: var(--font);
+  background: var(--light);
+  color: var(--dark);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+nav {
+  position: sticky; top: 0;
+  background: white;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  z-index: 200;
+  padding: 0.9rem 2rem;
+}
+.nav-inner {
+  max-width: 1100px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo { font-size: 1.3rem; font-weight: 900; color: var(--primary); }
+.nav-progress-wrap { display: flex; align-items: center; gap: 0.8rem; }
+.nav-progress-label { font-size: 0.85rem; font-weight: 700; color: #666; }
+.overall-bar { width: 140px; height: 10px; background: #e0e0e0; border-radius: 5px; overflow: hidden; }
+.overall-fill { height: 100%; background: linear-gradient(90deg,var(--l1),var(--l2),var(--l3)); width: 0%; transition: width .5s; }
+.overall-pct { font-size: 0.85rem; font-weight: 800; color: var(--dark); min-width: 38px; }
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  color: white; text-align: center; padding: 3.5rem 2rem;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: "📚 ✏️ 🎓 🔤"; position: absolute;
+  font-size: 2.5rem; opacity: .12;
+  animation: drift 20s linear infinite;
+  top: 20%; left: -5%;
+}
+@keyframes drift { from{transform:translateX(0)} to{transform:translateX(110vw)} }
+.hero-badge {
+  display: inline-block; background: rgba(255,255,255,.2);
+  padding: .35rem 1.2rem; border-radius: 50px; font-size: .82rem; margin-bottom: 1rem;
+}
+.hero h1 { font-size: 2.8rem; font-weight: 900; margin-bottom: .6rem; }
+.hero p { font-size: 1.15rem; opacity: .92; max-width: 580px; margin: 0 auto; }
+
+/* ── LEVEL SELECTOR ── */
+.level-selector { max-width: 1100px; margin: 2.5rem auto; padding: 0 2rem; }
+.level-selector > h2 { text-align: center; font-size: 1.5rem; font-weight: 900; margin-bottom: 1.5rem; }
+.level-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 1.5rem; }
+.level-card {
+  background: white; border-radius: var(--radius);
+  padding: 1.8rem; text-align: center; cursor: pointer;
+  transition: all .3s; box-shadow: var(--shadow);
+  border: 3px solid transparent; position: relative; overflow: hidden;
+}
+.level-card::after { content:''; position:absolute; top:0; left:0; right:0; height:6px; }
+.lc-1::after { background: var(--l1); }
+.lc-2::after { background: var(--l2); }
+.lc-3::after { background: var(--l3); }
+.level-card:not(.locked):hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.14); }
+.level-card.active.lc-1 { border-color: var(--l1); }
+.level-card.active.lc-2 { border-color: var(--l2); }
+.level-card.active.lc-3 { border-color: var(--l3); }
+.level-card.locked { opacity: .52; cursor: not-allowed; filter: grayscale(55%); }
+.lc-icon { font-size: 2.4rem; margin-bottom: .6rem; }
+.lc-badge {
+  display: inline-block; padding: .28rem .9rem; border-radius: 50px;
+  font-size: .72rem; font-weight: 900; text-transform: uppercase; letter-spacing: .5px;
+  color: white; margin-bottom: .4rem;
+}
+.lc-1 .lc-badge { background: var(--l1); }
+.lc-2 .lc-badge { background: var(--l2); }
+.lc-3 .lc-badge { background: var(--l3); }
+.lc-title { font-size: 1.25rem; font-weight: 900; margin-bottom: .2rem; }
+.lc-desc { font-size: .88rem; color: #666; margin-bottom: 1rem; }
+.lc-stars { font-size: 1.5rem; letter-spacing: 3px; margin-bottom: .6rem; }
+.lc-bar-wrap { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }
+.lc-bar { height: 100%; border-radius: 4px; width: 0%; transition: width .6s; }
+.lc-1 .lc-bar { background: var(--l1); }
+.lc-2 .lc-bar { background: var(--l2); }
+.lc-3 .lc-bar { background: var(--l3); }
+.lc-score-txt { font-size: .8rem; color: #888; margin-top: .3rem; }
+.lock-hint { font-size: .82rem; color: #999; margin-top: .5rem; font-style: italic; }
+
+/* ── LEVEL CONTENT WRAPPER ── */
+.level-content { max-width: 1100px; margin: 0 auto; padding: 0 2rem 3rem; display: none; }
+.level-content.active { display: block; animation: fadeIn .4s; }
+
+@keyframes fadeIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── LEVEL HEADER BAR ── */
+.lv-header {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 1.4rem 2rem; border-radius: var(--radius); color: white; margin-bottom: 2rem;
+}
+.lv-header.lh-1 { background: linear-gradient(135deg,#1DD1A1,#0abf8f); }
+.lv-header.lh-2 { background: linear-gradient(135deg,#FF9F43,#e08028); }
+.lv-header.lh-3 { background: linear-gradient(135deg,#FF6B6B,#e04545); }
+.lv-header-icon { font-size: 2.5rem; }
+.lv-header h2 { font-size: 1.7rem; font-weight: 900; }
+.lv-header p { font-size: .95rem; opacity: .88; margin-top: .2rem; }
+.lv-header-score { margin-left: auto; background: rgba(255,255,255,.25); padding: .5rem 1.2rem; border-radius: 50px; font-weight: 800; font-size: 1rem; white-space: nowrap; }
+
+/* ── THEORY BLOCK ── */
+.theory { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
+.theory h3 { font-size: 1.45rem; font-weight: 900; margin-bottom: 1rem; }
+.section-intro { background: #f0f4f8; padding: 1.1rem 1.4rem; border-radius: 12px; border-left: 5px solid var(--primary); margin-bottom: 1.3rem; font-size: .98rem; }
+.theory-cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1.1rem; margin-top: 1.3rem; }
+.tc {
+  padding: 1.4rem; border-radius: 14px; color: white;
+}
+.tc h4 { font-size: 1.9rem; font-weight: 900; margin-bottom: .3rem; }
+.tc p { font-size: .88rem; opacity: .92; }
+.tc .ex { margin-top: .7rem; background: rgba(255,255,255,.22); padding: .5rem .9rem; border-radius: 8px; font-size: .9rem; font-style: italic; }
+.tc-a { background: var(--a-color); }
+.tc-an { background: var(--an-color); }
+.tc-the { background: var(--the-color); }
+.tc-zero { background: var(--zero-color); }
+.sound-rule { display: flex; align-items: flex-start; gap: 1rem; background: #f8f9fa; padding: 1.1rem 1.4rem; border-radius: 12px; margin: .7rem 0; }
+.sr-icon { font-size: 1.9rem; min-width: 48px; text-align: center; }
+
+/* ── EXERCISE CONTAINER ── */
+.ex-box { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow); }
+.ex-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.3rem; flex-wrap: wrap; gap: .8rem; }
+.ex-title { font-size: 1.2rem; font-weight: 900; }
+.score-badge { background: var(--accent); padding: .35rem .9rem; border-radius: 50px; font-weight: 900; font-size: .9rem; }
+.ex-sub { font-size: .98rem; margin-bottom: 1rem; }
+.hint-txt { color: #888; font-size: .82rem; font-style: italic; margin-bottom: .3rem; }
+
+/* ── QUESTION BOX ── */
+.q-box { background: #f8f9fa; border-radius: 12px; padding: 1.2rem 1.4rem; margin: 1rem 0; transition: all .3s; border: 2px solid transparent; }
+.q-box.correct { background: #d4edda; border-color: var(--zero-color); }
+.q-box.incorrect { background: #f8d7da; border-color: var(--secondary); }
+.q-text { font-size: 1.12rem; margin-bottom: .9rem; line-height: 1.9; }
+.blank { display: inline-block; min-width: 65px; border-bottom: 3px solid var(--dark); text-align: center; font-weight: 900; color: var(--the-color); padding: 0 4px; }
+.options { display: flex; gap: .7rem; flex-wrap: wrap; }
+.opt-btn {
+  padding: .45rem 1.2rem; border: 2px solid var(--dark);
+  background: white; border-radius: 50px; cursor: pointer;
+  font-size: .98rem; font-weight: 800; font-family: var(--font);
+  transition: all .18s;
+}
+.opt-btn:hover:not(:disabled) { background: var(--primary); color: white; border-color: var(--primary); transform: scale(1.06); }
+.opt-btn.correct-btn { background: var(--zero-color)!important; color: white!important; border-color: var(--zero-color)!important; }
+.opt-btn.wrong-btn { background: var(--secondary)!important; color: white!important; border-color: var(--secondary)!important; }
+.opt-btn:disabled { cursor: default; }
+.feedback { margin-top: .7rem; padding: .7rem .9rem; border-radius: 8px; display: none; font-size: .92rem; }
+.feedback.show { display: block; }
+.fb-ok { background: #d4edda; color: #155724; }
+.fb-no { background: #f8d7da; color: #721c24; }
+
+/* ── SORT GAME ── */
+.sort-game { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; margin: 1.4rem 0; }
+.sort-col { background: #f8f9fa; border-radius: 14px; padding: 1.2rem; min-height: 240px; border: 3px dashed #ccc; }
+.sort-col h4 { text-align: center; padding: .4rem .8rem; border-radius: 9px; color: white; margin-bottom: .8rem; font-size: 1rem; font-weight: 800; }
+.sc-a h4 { background: var(--a-color); }
+.sc-an h4 { background: var(--an-color); }
+.word-bank { display: flex; flex-wrap: wrap; gap: .7rem; justify-content: center; margin-top: 1rem; }
+.word-chip {
+  background: white; padding: .65rem 1.1rem; border-radius: 10px;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.07); transition: all .18s;
+  border: 2px solid transparent;
+}
+.word-chip:hover { border-color: var(--primary); transform: scale(1.03); }
+.chip-ok { border-color: var(--zero-color)!important; background: #d4edda!important; cursor: default!important; }
+.chip-no { border-color: var(--secondary)!important; background: #f8d7da!important; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+/* ── STORY ── */
+.story-box { background: white; border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; box-shadow: var(--shadow); font-size: 1.1rem; line-height: 2; }
+.story-line { padding: .8rem 1.1rem; background: #f8f9fa; border-radius: 10px; margin: .5rem 0; }
+.tt { position: relative; border-bottom: 2px dotted var(--secondary); cursor: help; font-weight: 800; }
+.tt-tip {
+  visibility: hidden; opacity: 0; width: 240px; background: var(--dark); color: white;
+  text-align: center; padding: 9px 12px; border-radius: 10px; position: absolute;
+  z-index: 999; bottom: 130%; left: 50%; margin-left: -120px; transition: opacity .25s;
+  font-size: .82rem; line-height: 1.4; font-weight: 400; pointer-events: none;
+}
+.tt-tip .ru { color: var(--accent); font-style: italic; display: block; margin-top: 3px; }
+.tt:hover .tt-tip { visibility: visible; opacity: 1; }
+
+/* ── MISTAKE CARDS ── */
+.mistake-card { background: white; border-radius: 14px; padding: 1.2rem 1.5rem; margin: 1rem 0; box-shadow: var(--shadow); border-left: 5px solid var(--secondary); }
+.mistake-card h4 { margin-bottom: .4rem; }
+.wrong { color: var(--secondary); text-decoration: line-through; font-weight: 800; }
+.right { color: var(--zero-color); font-weight: 800; }
+
+/* ── LEVEL COMPLETE BANNER ── */
+.lv-complete {
+  display: none; text-align: center; padding: 2rem; border-radius: var(--radius);
+  margin: 2rem 0; background: linear-gradient(135deg,#f6d365,#fda085);
+}
+.lv-complete.show { display: block; animation: fadeIn .5s; }
+.lv-complete h3 { font-size: 1.9rem; font-weight: 900; color: white; }
+.lv-complete p { color: rgba(255,255,255,.9); font-size: 1rem; margin-top: .3rem; }
+.banner-stars { font-size: 2.4rem; margin: .6rem 0; letter-spacing: 4px; }
+.next-level-btn {
+  margin-top: 1rem; padding: .75rem 2rem; background: white; border: none;
+  border-radius: 50px; font-size: 1.05rem; font-weight: 900; font-family: var(--font);
+  cursor: pointer; transition: all .2s; color: var(--dark);
+}
+.next-level-btn:hover { transform: scale(1.06); box-shadow: 0 4px 16px rgba(0,0,0,.15); }
+
+/* ── CHEAT SHEET ── */
+.cheat-sheet {
+  background: linear-gradient(135deg,#667eea,#764ba2);
+  color: white; border-radius: var(--radius); padding: 2rem;
+  max-width: 1100px; margin: 0 auto 2rem; box-shadow: var(--shadow);
+}
+.cheat-sheet h2 { text-align: center; font-size: 1.5rem; font-weight: 900; margin-bottom: .3rem; }
+.cheat-sheet > p { text-align: center; opacity: .85; font-size: .9rem; margin-bottom: 1rem; }
+.cheat-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 1.1rem; }
+.cheat-item { background: rgba(255,255,255,.15); padding: 1.2rem; border-radius: 14px; }
+.cheat-item h4 { font-size: 1.5rem; font-weight: 900; margin-bottom: .3rem; }
+.cheat-item p { font-size: .88rem; line-height: 1.7; }
+.cheat-item .ex-words { font-size: .8rem; opacity: .78; margin-top: .4rem; font-style: italic; }
+
+/* ── HIGHLIGHTS ── */
+.ha  { color: var(--a-color);  font-weight: 800; }
+.han { color: var(--an-color); font-weight: 800; }
+.hth { color: var(--the-color);font-weight: 800; }
+.hz  { color: var(--zero-color);font-weight: 800; text-decoration: underline wavy; }
+
+/* ── FOOTER ── */
+footer { background: var(--dark); color: white; text-align: center; padding: 2rem; }
+footer p { opacity: .8; margin-top: .3rem; font-size: .88rem; }
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px) {
+  .hero h1 { font-size: 2rem; }
+  .sort-game { grid-template-columns: 1fr; }
+  .lv-header { flex-wrap: wrap; }
+  .lv-header-score { margin-left: 0; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <div class="logo">📚 Article Adventure</div>
+    <div class="nav-progress-wrap">
+      <span class="nav-progress-label">Total Progress</span>
+      <div class="overall-bar"><div class="overall-fill" id="overallFill"></div></div>
+      <span class="overall-pct" id="overallPct">0%</span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge"></div>
+  <h1>The Article<br>Adventure</h1>
+  <p>Master <strong>a</strong>, <strong>an</strong>, <strong>the</strong> and the zero article — level by level!</p>
+</header>
+
+<!-- LEVEL SELECTOR -->
+<div class="level-selector">
+  <h2>Choose Your Level</h2>
+  <div class="level-cards">
+
+    <div class="level-card lc-1 active" id="lcard-1" onclick="switchLevel(1)">
+      <div class="lc-icon">🌱</div>
+      <div class="lc-badge">Level 1</div>
+      <div class="lc-title">Beginner</div>
+      <div class="lc-desc">A vs An — Sound Rules</div>
+      <div class="lc-stars" id="lc-stars-1">☆☆☆</div>
+      <div class="lc-bar-wrap lc-1"><div class="lc-bar" id="lc-bar-1"></div></div>
+      <div class="lc-score-txt" id="lc-score-1">0 / 20 answered</div>
+    </div>
+
+    <div class="level-card lc-2 locked" id="lcard-2" onclick="switchLevel(2)">
+      <div class="lc-icon">⭐</div>
+      <div class="lc-badge">Level 2</div>
+      <div class="lc-title">Intermediate</div>
+      <div class="lc-desc">The, A/An &amp; Zero Article</div>
+      <div class="lc-stars" id="lc-stars-2">🔒 Locked</div>
+      <div class="lc-bar-wrap lc-2"><div class="lc-bar" id="lc-bar-2"></div></div>
+      <div class="lc-score-txt" id="lc-score-2">Finish Level 1 (60%) to unlock</div>
+    </div>
+
+    <div class="level-card lc-3 locked" id="lcard-3" onclick="switchLevel(3)">
+      <div class="lc-icon">🏆</div>
+      <div class="lc-badge">Level 3</div>
+      <div class="lc-title">Advanced</div>
+      <div class="lc-desc">Tricky Sounds &amp; Common Mistakes</div>
+      <div class="lc-stars" id="lc-stars-3">🔒 Locked</div>
+      <div class="lc-bar-wrap lc-3"><div class="lc-bar" id="lc-bar-3"></div></div>
+      <div class="lc-score-txt" id="lc-score-3">Finish Level 2 (60%) to unlock</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LEVEL 1 CONTENT
+════════════════════════════════ -->
+<div class="level-content active" id="level-1">
+  <div class="lv-header lh-1">
+    <div class="lv-header-icon">🌱</div>
+    <div>
+      <h2>Level 1 — Beginner</h2>
+      <p>Learn the difference between <strong>A</strong> and <strong>An</strong> using the sound rule!</p>
+    </div>
+    <div class="lv-header-score" id="lv1-score-display">Score: 0 / 20</div>
+  </div>
+
+  <!-- THEORY -->
+  <div class="theory">
+    <h3>📖 The Rule: A or An?</h3>
+    <div class="section-intro">
+      Both <strong class="ha">A</strong> and <strong class="han">An</strong> are <em>indefinite articles</em> — they mean "any one" or "one of many". The choice depends on the <strong>SOUND</strong> of the next word, not the letter!
+      <br><em style="color:#777;font-size:.9rem;">Оба слова (a и an) — неопределённые артикли. Они означают "какой-то, один из многих". Выбор зависит от ЗВУКА следующего слова!</em>
+    </div>
+    <div class="theory-cards">
+      <div class="tc tc-a">
+        <h4>A</h4>
+        <p>Before <strong>consonant</strong> sounds<br>(before согласных звуков)</p>
+        <div class="ex">a <strong>c</strong>at · a <strong>d</strong>og · a <strong>b</strong>all<br>a <strong>h</strong>ouse · a <strong>un</strong>iversity</div>
+      </div>
+      <div class="tc tc-an">
+        <h4>An</h4>
+        <p>Before <strong>vowel</strong> sounds: a e i o u<br>(before гласных звуков)</p>
+        <div class="ex">an <strong>a</strong>pple · an <strong>e</strong>gg<br>an <strong>i</strong>gloo · an <strong>h</strong>our ← silent h!</div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <div class="sound-rule">
+        <div class="sr-icon">🎵</div>
+        <div><strong>Sound = first sound you HEAR, not the first letter!</strong><br>
+        "university" starts with <em>u</em> but sounds like <em>/juː/</em> → use <strong class="ha">a</strong> university<br>
+        "hour" starts with <em>h</em> but sounds like <em>/aʊ/</em> → use <strong class="han">an</strong> hour</div>
+      </div>
+      <div class="sound-rule">
+        <div class="sr-icon">💡</div>
+        <div><strong>When to use A / An:</strong><br>
+        • First time you mention something: <em>"I see <strong class="ha">a</strong> cat."</em><br>
+        • Jobs / professions: <em>"She is <strong class="han">an</strong> artist."</em><br>
+        • One of a group: <em>"He is <strong class="ha">a</strong> student."</em></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCISE 1: Sound Click -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🔊 Activity 1: Click A or An!</div>
+      <div class="score-badge" id="score-ex1">0 / 10</div>
+    </div>
+    <p class="ex-sub">Choose the correct article based on the <strong>first sound</strong> of each word. Remember — sound, not spelling!</p>
+    <div id="ex1-container"></div>
+  </div>
+
+  <!-- EXERCISE 2: Sort Game -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🗂️ Activity 2: Sort into A or An!</div>
+      <div class="score-badge" id="score-ex2">0 / 10</div>
+    </div>
+    <p class="ex-sub">Click a word, then click <strong>A</strong> or <strong>An</strong> to sort it into the right column.</p>
+    <div class="sort-game">
+      <div class="sort-col sc-a">
+        <h4>A (consonant sound)</h4>
+        <div id="sort-col-a"></div>
+      </div>
+      <div class="sort-col sc-an">
+        <h4>An (vowel sound)</h4>
+        <div id="sort-col-an"></div>
+      </div>
+    </div>
+    <div class="word-bank" id="sort-word-bank"></div>
+  </div>
+
+  <!-- LEVEL 1 COMPLETE BANNER -->
+  <div class="lv-complete" id="lv1-complete">
+    <div class="banner-stars" id="lv1-banner-stars"></div>
+    <h3 id="lv1-banner-title">Level 1 Complete!</h3>
+    <p id="lv1-banner-msg"></p>
+    <button class="next-level-btn" onclick="goToLevel(2)" id="lv1-next-btn" style="display:none;">
+      Go to Level 2 →
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LEVEL 2 CONTENT
+════════════════════════════════ -->
+<div class="level-content" id="level-2">
+  <div class="lv-header lh-2">
+    <div class="lv-header-icon">⭐</div>
+    <div>
+      <h2>Level 2 — Intermediate</h2>
+      <p>Master <strong>The</strong>, <strong>A/An</strong> in context, and the <strong>Zero Article</strong>!</p>
+    </div>
+    <div class="lv-header-score" id="lv2-score-display">Score: 0 / 18</div>
+  </div>
+
+  <!-- THEORY -->
+  <div class="theory">
+    <h3>📖 Three More Rules</h3>
+    <div class="section-intro">
+      Now we learn when to use <strong class="hth">the</strong> (pointing to something specific) and when to use <strong class="hz">nothing at all</strong> (the zero article)!
+      <br><em style="color:#777;font-size:.9rem;">Теперь учим когда использовать the (указываем на что-то конкретное) и когда артикль вообще не нужен!</em>
+    </div>
+    <div class="theory-cards">
+      <div class="tc tc-a">
+        <h4>A / An</h4>
+        <p>First mention — any one thing<br><em style="opacity:.85">Первое упоминание</em></p>
+        <div class="ex">I saw <strong>a</strong> cat. (any cat)</div>
+      </div>
+      <div class="tc tc-the">
+        <h4>The</h4>
+        <p>Known thing — both know which<br><em style="opacity:.85">Конкретная вещь</em></p>
+        <div class="ex"><strong>The</strong> cat is sleeping. (that cat!)</div>
+      </div>
+      <div class="tc tc-zero">
+        <h4>— Zero</h4>
+        <p>General — all things in general<br><em style="opacity:.85">Вещи вообще</em></p>
+        <div class="ex"><strong>—</strong> Cats are cute. / I like — milk.</div>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem;">
+      <div class="sound-rule">
+        <div class="sr-icon">🎯</div>
+        <div><strong>When to use THE:</strong><br>
+        • Already mentioned: "I bought <span class="ha">a</span> bike. <span class="hth">The</span> bike is red." (we know which bike!)<br>
+        • Unique things: <span class="hth">the</span> sun, <span class="hth">the</span> moon, <span class="hth">the</span> Earth<br>
+        • Both people know it: "Close <span class="hth">the</span> door, please." (you can see the door!)</div>
+      </div>
+      <div class="sound-rule">
+        <div class="sr-icon">🚫</div>
+        <div><strong>When to use ZERO article (nothing!):</strong><br>
+        • General plurals: <span class="hz">—</span> Dogs are friendly. (all dogs in the world!)<br>
+        • Uncountable nouns in general: I like <span class="hz">—</span> milk / <span class="hz">—</span> music<br>
+        • Country &amp; city names: <span class="hz">—</span> Russia, <span class="hz">—</span> Moscow (but: <span class="hth">the</span> USA, <span class="hth">the</span> UK!)<br>
+        • Meals, sports, languages: <span class="hz">—</span> breakfast, <span class="hz">—</span> football, <span class="hz">—</span> English</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STORY: Tim and the Zoo -->
+  <div class="story-box">
+    <h3 style="margin-bottom:1rem;font-size:1.3rem;font-weight:900;">📖 Story: Tim and the Zoo</h3>
+    <p style="margin-bottom:1rem;font-size:.95rem;color:#555;">Hover over the coloured articles to see <em>why</em> they are used!</p>
+    <div class="story-line">
+      Tim went to
+      <span class="tt hth">the zoo<span class="tt-tip">The zoo — Tim knows which zoo: his city zoo!<span class="ru">The zoo — конкретный зоопарк в его городе</span></span></span>.
+    </div>
+    <div class="story-line">
+      He saw
+      <span class="tt ha">a lion<span class="tt-tip">A lion — first time we hear about this lion!<span class="ru">A lion — первый раз слышим о льве</span></span></span>.
+      <span class="tt hth">The lion<span class="tt-tip">The lion — now we know which lion (the same one).<span class="ru">The lion — теперь знаем, о каком льве речь</span></span></span> was sleeping.
+    </div>
+    <div class="story-line">
+      Then Tim saw
+      <span class="tt han">an elephant<span class="tt-tip">An elephant — first mention, vowel sound /e/!<span class="ru">An elephant — первый раз, гласный звук /э/</span></span></span>.
+      He liked
+      <span class="tt hth">the elephant<span class="tt-tip">The elephant — we know which one now!<span class="ru">The elephant — уже знаем, о каком слоне речь</span></span></span> very much.
+    </div>
+    <div class="story-line">
+      Tim's sister likes <span class="hz">—</span> animals. (zero article — animals in <em>general</em>, all animals!)
+    </div>
+    <div class="story-line">
+      Tim was <span class="tt ha">a happy boy<span class="tt-tip">A happy boy — one happy boy among many!<span class="ru">A happy boy — счастливый мальчик (один из многих)</span></span></span> that day!
+    </div>
+  </div>
+
+  <!-- EXERCISE 3: Andrew's House -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🏠 Activity 3: Andrew's House</div>
+      <div class="score-badge" id="score-ex3">0 / 10</div>
+    </div>
+    <p class="ex-sub">Fill in the gaps with <strong>a</strong>, <strong>an</strong>, <strong>the</strong>, or <strong>—</strong> (no article).</p>
+    <div id="ex3-container"></div>
+  </div>
+
+  <!-- EXERCISE 4: Context The vs A/An -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🎯 Activity 4: The or A/An?</div>
+      <div class="score-badge" id="score-ex4">0 / 8</div>
+    </div>
+    <p class="ex-sub">Choose the correct article based on context. Read the <em>hint</em> carefully!</p>
+    <div id="ex4-container"></div>
+  </div>
+
+  <!-- LEVEL 2 COMPLETE BANNER -->
+  <div class="lv-complete" id="lv2-complete">
+    <div class="banner-stars" id="lv2-banner-stars"></div>
+    <h3 id="lv2-banner-title">Level 2 Complete!</h3>
+    <p id="lv2-banner-msg"></p>
+    <button class="next-level-btn" onclick="goToLevel(3)" id="lv2-next-btn" style="display:none;">
+      Go to Level 3 →
+    </button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     LEVEL 3 CONTENT
+════════════════════════════════ -->
+<div class="level-content" id="level-3">
+  <div class="lv-header lh-3">
+    <div class="lv-header-icon">🏆</div>
+    <div>
+      <h2>Level 3 — Advanced</h2>
+      <p>Tackle <strong>tricky sounds</strong>, fix <strong>common mistakes</strong>, and become an Article Detective!</p>
+    </div>
+    <div class="lv-header-score" id="lv3-score-display">Score: 0 / 19</div>
+  </div>
+
+  <!-- THEORY -->
+  <div class="theory">
+    <h3>📖 Tricky Cases &amp; Common Mistakes</h3>
+    <div class="section-intro">
+      Some words look like they should use <em>a</em> but actually need <em>an</em> — and vice versa! The sound is what matters, not the letter. Also: Russian speakers often make specific mistakes with articles!
+    </div>
+    <div class="sound-rule">
+      <div class="sr-icon">⚠️</div>
+      <div><strong>Tricky A words (look like they need "an" but don't!):</strong><br>
+      <span class="ha">a</span> university (/juː/ — starts with "y" sound) •
+      <span class="ha">a</span> European (/j/) •
+      <span class="ha">a</span> one-eyed cat (/w/) •
+      <span class="ha">a</span> unicorn (/j/)</div>
+    </div>
+    <div class="sound-rule">
+      <div class="sr-icon">⚠️</div>
+      <div><strong>Tricky AN words (look like they need "a" but don't!):</strong><br>
+      <span class="han">an</span> hour (/aʊ/ — h is silent!) •
+      <span class="han">an</span> honest boy (h silent) •
+      <span class="han">an</span> FBI agent (/ef/ — F sounds like "ef") •
+      <span class="han">an</span> x-ray (/eks/)</div>
+    </div>
+
+    <!-- Common Mistakes -->
+    <h4 style="margin:1.5rem 0 .8rem;font-size:1.15rem;">⚠️ Most Common Mistakes for Russian Speakers</h4>
+    <div class="mistake-card">
+      <h4>❌ Mistake 1: Forgetting "the"</h4>
+      <p>Wrong: <span class="wrong">I saw movie yesterday.</span></p>
+      <p>Right: <span class="right">I saw <strong>the</strong> movie yesterday.</span> (or <strong>a</strong> movie)</p>
+      <p><em style="font-size:.88rem">В русском нет артиклей, поэтому мы часто забываем их!</em></p>
+    </div>
+    <div class="mistake-card">
+      <h4>❌ Mistake 2: Using "the" for all things in general</h4>
+      <p>Wrong: <span class="wrong">The dogs are friendly animals.</span> (meaning all dogs)</p>
+      <p>Right: <span class="right"><strong>—</strong> Dogs are friendly animals.</span></p>
+      <p><em style="font-size:.88rem">Когда говорим о всех животных в целом — без артикля!</em></p>
+    </div>
+    <div class="mistake-card">
+      <h4>❌ Mistake 3: "The" with country names</h4>
+      <p>Wrong: <span class="wrong">I live in the Russia.</span></p>
+      <p>Right: <span class="right">I live in <strong>—</strong> Russia.</span> (but: the USA, the UK, the Netherlands)</p>
+    </div>
+  </div>
+
+  <!-- EXERCISE 5: Tricky Sounds -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🧪 Activity 5: Tricky Sound Words</div>
+      <div class="score-badge" id="score-ex5">0 / 8</div>
+    </div>
+    <p class="ex-sub">Choose <strong>a</strong> or <strong>an</strong> based on the first <em>sound</em>, not the letter — some of these are sneaky!</p>
+    <div id="ex5-container"></div>
+  </div>
+
+  <!-- EXERCISE 6: Fix Mistakes -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🔧 Activity 6: Fix the Sentence!</div>
+      <div class="score-badge" id="score-ex6">0 / 5</div>
+    </div>
+    <p class="ex-sub">One sentence is wrong. Click the <strong>correct</strong> version!</p>
+    <div id="ex6-container"></div>
+  </div>
+
+  <!-- EXERCISE 7: Article Detective -->
+  <div class="ex-box">
+    <div class="ex-header">
+      <div class="ex-title">🔍 Activity 7: Article Detective</div>
+      <div class="score-badge" id="score-ex7">0 / 6</div>
+    </div>
+    <p class="ex-sub">Find the correct sentence! One uses the wrong article or forgets one entirely.</p>
+    <div id="ex7-container"></div>
+  </div>
+
+  <!-- LEVEL 3 COMPLETE BANNER -->
+  <div class="lv-complete" id="lv3-complete">
+    <div class="banner-stars" id="lv3-banner-stars"></div>
+    <h3 id="lv3-banner-title">🏆 You Are an Article Master!</h3>
+    <p id="lv3-banner-msg"></p>
+  </div>
+</div>
+
+<!-- ── CHEAT SHEET (always visible) ── -->
+<div class="cheat-sheet" style="padding:2rem; margin: 0 2rem 2rem; max-width:1100px; margin:0 auto 3rem;">
+  <h2>🎓 Cheat Sheet — Quick Reference</h2>
+  <p>Print this in your brain! / Запомни эту таблицу!</p>
+  <div class="cheat-grid">
+    <div class="cheat-item">
+      <h4>A</h4>
+      <p>• Consonant sound<br>• First mention<br>• One of many<br>• Jobs, professions</p>
+      <div class="ex-words">a cat · a dog · a house · a university</div>
+    </div>
+    <div class="cheat-item">
+      <h4>An</h4>
+      <p>• Vowel sound (a e i o u)<br>• First mention<br>• One of many<br>• Silent-h words!</p>
+      <div class="ex-words">an apple · an egg · an hour · an FBI agent</div>
+    </div>
+    <div class="cheat-item">
+      <h4>The</h4>
+      <p>• Known to both of us<br>• Unique things<br>• Second mention<br>• Specific one</p>
+      <div class="ex-words">the sun · the door (we see it) · the book (we know it)</div>
+    </div>
+    <div class="cheat-item">
+      <h4>— Zero</h4>
+      <p>• General plurals<br>• Uncountable nouns<br>• Country/city names<br>• Meals, sports, languages</p>
+      <div class="ex-words">Cats · milk · Russia · breakfast · football · English</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>📚 2026 phonicshub</p>
+  <p>...</p>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════
+   DATA
+══════════════════════════════════════════ */
+
+// Level 1 – Exercise 1: Sound Click (A or An?)
+const ex1Data = [
+  {word:'apple',   answer:'an', hint:'apple — vowel sound /æ/', ru:'яблоко'},
+  {word:'ball',    answer:'a',  hint:'ball — consonant /b/', ru:'мяч'},
+  {word:'igloo',   answer:'an', hint:'igloo — vowel /ɪ/', ru:'иглу'},
+  {word:'dog',     answer:'a',  hint:'dog — consonant /d/', ru:'собака'},
+  {word:'egg',     answer:'an', hint:'egg — vowel /e/', ru:'яйцо'},
+  {word:'horse',   answer:'a',  hint:'horse — consonant /h/', ru:'лошадь'},
+  {word:'orange',  answer:'an', hint:'orange — vowel /ɒ/', ru:'апельсин'},
+  {word:'cat',     answer:'a',  hint:'cat — consonant /k/', ru:'кошка'},
+  {word:'elephant',answer:'an', hint:'elephant — vowel /e/', ru:'слон'},
+  {word:'door',    answer:'a',  hint:'door — consonant /d/', ru:'дверь'}
+];
+
+// Level 1 – Exercise 2: Sort Game
+const ex2Data = [
+  {word:'igloo',   answer:'an', ru:'иглу'},
+  {word:'person',  answer:'a',  ru:'человек'},
+  {word:'rabbit',  answer:'a',  ru:'кролик'},
+  {word:'artist',  answer:'an', ru:'художник — /ɑː/'},
+  {word:'island',  answer:'an', ru:'остров — silent i!'},
+  {word:'tomato',  answer:'a',  ru:'помидор'},
+  {word:'umbrella',answer:'an', ru:'зонт — /ʌ/'},
+  {word:'bird',    answer:'a',  ru:'птица'},
+  {word:'office',  answer:'an', ru:'офис — /ɒ/'},
+  {word:'lake',    answer:'a',  ru:'озеро'}
+];
+
+// Level 2 – Exercise 3: Andrew's House
+const ex3Data = [
+  {text:'I live in ___ beautiful house next to ___ beach.',
+   answers:['a','the'], hint:'First mention: a house. Known specific beach: the beach.', ru:'Я живу в красивом доме рядом с пляжем.'},
+  {text:'We have ___ beautiful garden. ___ garden is full of flowers.',
+   answers:['a','The'], hint:'First mention = a. Second mention = The (we know it now).', ru:'У нас есть красивый сад. Этот сад полон цветов.'},
+  {text:'I love spending time in ___ garden.',
+   answers:['the'], hint:'We already know which garden — their garden.', ru:'Я люблю проводить время в этом саду.'},
+  {text:'There is ___ amazing room for watching films.',
+   answers:['an'], hint:'amazing — vowel sound /ə/, so use AN.', ru:'Там есть удивительная комната для просмотра фильмов.'},
+  {text:'I read ___ book every night. ___ book I am reading now is really exciting.',
+   answers:['a','The'], hint:'First mention = a book. Second specific mention = The book.', ru:'Я читаю книгу каждый вечер. Книга, которую я читаю сейчас, очень захватывающая.'},
+  {text:'My sister prefers ___ living room.',
+   answers:['the'], hint:'Specific room in their house — both know which one.', ru:'Моя сестра предпочитает гостиную.'},
+  {text:'She is ___ artist!',
+   answers:['an'], hint:'artist starts with vowel /ɑː/. Profession = a/an.', ru:'Она художница!'},
+  {text:'She is drawing ___ picture of ___ flowers in the garden.',
+   answers:['a','the'], hint:'First mention: a picture. Specific known flowers: the flowers.', ru:'Она рисует картину цветов в саду.'},
+  {text:'We have ___ garage full of old boxes.',
+   answers:['a'], hint:'First mention, consonant sound — a garage.', ru:'У нас есть гараж, полный старых коробок.'},
+  {text:'I love looking in ___ boxes and remembering old times!',
+   answers:['the'], hint:'We already know these boxes — the boxes in the garage.', ru:'Я люблю смотреть в эти коробки и вспоминать прошлое!'}
+];
+
+// Level 2 – Exercise 4: Context
+const ex4Data = [
+  {text:'I see ___ elephant in the street! (first time)',  answer:'an', hint:'First mention + vowel /e/', ru:'an elephant — первый раз видим, гласный звук', options:['a','an','the']},
+  {text:'___ elephant is eating bananas. (now we know which one)', answer:'the', hint:'Second mention — we know which elephant.', ru:'the elephant — уже знаем, о каком слоне', options:['a','an','the']},
+  {text:'I want ___ new bicycle for my birthday. (any new one)', answer:'a', hint:'First mention, consonant /n/, means any bicycle.', ru:'a new bicycle — любой новый велосипед', options:['a','an','the']},
+  {text:'Where is ___ bicycle I got last year? (you know which one)', answer:'the', hint:'Specific bicycle that we both know.', ru:'the bicycle — конкретный велосипед', options:['a','an','the']},
+  {text:'___ sun is shining today. (there is only one sun!)', answer:'the', hint:'Unique object — only one in the world!', ru:'the sun — единственное солнце', options:['a','an','the']},
+  {text:'She is ___ honest girl. (the h is silent here!)', answer:'an', hint:'honest — h is silent, starts with vowel sound /ɒ/.', ru:'an honest — h не произносится, гласный звук!', options:['a','an','the']},
+  {text:'We go to ___ school every day. (as students)', answer:'—', hint:'As students going to study — zero article!', ru:'go to school — как ученики, без артикля', options:['a','the','—']},
+  {text:'___ dogs are friendly. (all dogs everywhere)', answer:'—', hint:'General statement about ALL dogs — zero article!', ru:'Dogs — все собаки вообще, без артикля', options:['a','the','—']}
+];
+
+// Level 3 – Exercise 5: Tricky Sounds
+const ex5Data = [
+  {word:'hour',         answer:'an', hint:'The H is silent! Sounds like /aʊ/', ru:'час'},
+  {word:'honest',       answer:'an', hint:'The H is silent! Sounds like /ɒ/', ru:'честный'},
+  {word:'European',     answer:'a',  hint:'Sounds like /j/ — "yoo-ro-pee-an". Consonant!', ru:'европейский'},
+  {word:'university',   answer:'a',  hint:'Sounds like /j/ — "you-ni-ver-si-ty". Consonant!', ru:'университет'},
+  {word:'unicorn',      answer:'a',  hint:'Sounds like /j/ — "you-ni-corn". Consonant!', ru:'единорог'},
+  {word:'FBI agent',    answer:'an', hint:'F is pronounced "ef" — starts with vowel sound /e/!', ru:'агент ФБР'},
+  {word:'x-ray',        answer:'an', hint:'X is pronounced "ex" — starts with vowel sound /e/!', ru:'рентген'},
+  {word:'one-eyed cat', answer:'a',  hint:'ONE sounds like /w/ — "wun". Consonant sound!', ru:'одноглазый кот'}
+];
+
+// Level 3 – Exercise 6: Fix Mistakes
+const ex6Data = [
+  {
+    options:['Can I have a orange juice?','Can I have an orange juice?','Can I have the orange juice?'],
+    correct:'Can I have an orange juice?',
+    ru:'orange начинается на гласный /ɒ/ → an'
+  },
+  {
+    options:['She wants to become the doctor.','She wants to become a doctor.','She wants to become an doctor.'],
+    correct:'She wants to become a doctor.',
+    ru:'Профессия = a. doctor начинается на согласный /d/ → a'
+  },
+  {
+    options:['We need an new pen.','We need a new pen.','We need the new pen.'],
+    correct:'We need a new pen.',
+    ru:'new начинается на согласный /n/ → a'
+  },
+  {
+    options:['It is raining. Take a umbrella!','It is raining. Take the umbrella!','It is raining. Take an umbrella!'],
+    correct:'It is raining. Take an umbrella!',
+    ru:'umbrella начинается на гласный /ʌ/ → an'
+  },
+  {
+    options:['I want to visit the Russia.','I want to visit a Russia.','I want to visit Russia.'],
+    correct:'I want to visit Russia.',
+    ru:'Названия стран — без артикля! (кроме the USA/UK)'
+  }
+];
+
+// Level 3 – Exercise 7: Article Detective
+const ex7Data = [
+  {correct:'I go to school every day.',        wrong:'I go to the school every day.', ru:'Как ученик — без артикля!'},
+  {correct:'The sun is really hot today.',     wrong:'A sun is really hot today.',     ru:'Солнце единственное → the sun'},
+  {correct:'He bought a new phone.',           wrong:'He bought the new phone.',       ru:'Первое упоминание → a new phone'},
+  {correct:'We live in Russia.',               wrong:'We live in the Russia.',         ru:'Страны без артикля → Russia'},
+  {correct:'I like eating breakfast at 8.',    wrong:'I like eating the breakfast at 8.', ru:'Breakfast (обед вообще) → без артикля'},
+  {correct:'She is a teacher.',                wrong:'She is the teacher.',            ru:'Профессия, не конкретный учитель → a teacher'}
+];
+
+/* ══════════════════════════════════════════
+   LEVEL STATE
+══════════════════════════════════════════ */
+const levelState = {
+  1: {score:0, answered:0, total:20, unlocked:true,  completed:false, stars:0, threshold:12},
+  2: {score:0, answered:0, total:18, unlocked:false, completed:false, stars:0, threshold:11},
+  3: {score:0, answered:0, total:19, unlocked:false, completed:false, stars:0, threshold:0}
+};
+
+let currentLevel = 1;
+
+function calcStars(score, total) {
+  const pct = score / total;
+  if (pct >= 0.95) return 3;
+  if (pct >= 0.80) return 2;
+  if (pct >= 0.60) return 1;
+  return 0;
+}
+
+function starDisplay(n, total) {
+  const filled = '⭐'.repeat(n);
+  const empty  = '☆'.repeat(total - n);
+  return filled + empty;
+}
+
+function updateLevelCard(lv) {
+  const s = levelState[lv];
+  const bar  = document.getElementById(`lc-bar-${lv}`);
+  const stars = document.getElementById(`lc-stars-${lv}`);
+  const scoreTxt = document.getElementById(`lc-score-${lv}`);
+  const card = document.getElementById(`lcard-${lv}`);
+
+  const pct = s.total > 0 ? Math.round((s.answered / s.total) * 100) : 0;
+  bar.style.width = pct + '%';
+  scoreTxt.textContent = `${s.score} / ${s.total} correct`;
+
+  if (s.unlocked && s.answered > 0) {
+    stars.textContent = starDisplay(s.stars, 3);
+  }
+  if (!s.unlocked) {
+    card.classList.add('locked');
+  } else {
+    card.classList.remove('locked');
+    if (s.stars === 0 && s.answered === 0) stars.textContent = '☆☆☆';
+  }
+}
+
+function updateOverallProgress() {
+  let totalAnswered = 0, totalQ = 0;
+  for (let l = 1; l <= 3; l++) {
+    totalAnswered += levelState[l].answered;
+    totalQ += levelState[l].total;
+  }
+  const pct = totalQ > 0 ? Math.round((totalAnswered / totalQ) * 100) : 0;
+  document.getElementById('overallFill').style.width = pct + '%';
+  document.getElementById('overallPct').textContent = pct + '%';
+}
+
+function recordAnswer(level, correct) {
+  const s = levelState[level];
+  s.answered++;
+  if (correct) s.score++;
+  s.stars = calcStars(s.score, s.answered);
+
+  // Update level header score
+  document.getElementById(`lv${level}-score-display`).textContent = `Score: ${s.score} / ${s.total}`;
+
+  updateLevelCard(level);
+  updateOverallProgress();
+  checkLevelComplete(level);
+}
+
+function checkLevelComplete(level) {
+  const s = levelState[level];
+  if (s.answered < s.total) return;
+  if (s.completed) return;
+  s.completed = true;
+
+  const pct = s.score / s.total;
+  const stars = calcStars(s.score, s.total);
+
+  const starStr = starDisplay(stars, 3);
+  let msg = '';
+  if (stars === 3) msg = `Amazing! Perfect score! You got ${s.score}/${s.total}! 🎉`;
+  else if (stars === 2) msg = `Great job! ${s.score}/${s.total} correct. Well done!`;
+  else if (stars === 1) msg = `Good effort! ${s.score}/${s.total} correct. You passed!`;
+  else msg = `${s.score}/${s.total} correct. Almost there! Review the rules and try again.`;
+
+  document.getElementById(`lv${level}-banner-stars`).textContent = starStr;
+  document.getElementById(`lv${level}-banner-msg`).textContent = msg;
+  document.getElementById(`lv${level}-complete`).classList.add('show');
+
+  // Unlock next level if threshold met
+  if (level < 3 && pct >= 0.6 && !levelState[level + 1].unlocked) {
+    levelState[level + 1].unlocked = true;
+    updateLevelCard(level + 1);
+    document.getElementById(`lc-stars-${level + 1}`).textContent = '☆☆☆';
+    document.getElementById(`lc-score-${level + 1}`).textContent = '0 / ' + levelState[level + 1].total + ' correct';
+    const nextBtn = document.getElementById(`lv${level}-next-btn`);
+    if (nextBtn) nextBtn.style.display = 'inline-block';
+  }
+  updateLevelCard(level);
+}
+
+function switchLevel(lv) {
+  if (!levelState[lv].unlocked) return;
+  currentLevel = lv;
+  document.querySelectorAll('.level-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.level-card').forEach(el => el.classList.remove('active'));
+  document.getElementById(`level-${lv}`).classList.add('active');
+  document.getElementById(`lcard-${lv}`).classList.add('active');
+  document.getElementById(`level-${lv}`).scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function goToLevel(lv) {
+  switchLevel(lv);
+}
+
+/* ══════════════════════════════════════════
+   EXERCISE BUILDERS
+══════════════════════════════════════════ */
+
+// Generic A/An click
+function buildClickExercise(data, containerId, scoreId, level, exPrefix) {
+  const container = document.getElementById(containerId);
+  data.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-box';
+    div.id = `${exPrefix}-q-${i}`;
+    div.innerHTML = `
+      <div class="q-text"><strong>${i+1}.</strong> ___ <strong>${item.word}</strong> <span style="color:#888;font-size:.88rem;">(${item.ru})</span></div>
+      <p class="hint-txt">💡 ${item.hint}</p>
+      <div class="options">
+        <button class="opt-btn" onclick="checkAorAn('${exPrefix}',${i},'a',this,${level},'${scoreId}')">A</button>
+        <button class="opt-btn" onclick="checkAorAn('${exPrefix}',${i},'an',this,${level},'${scoreId}')">An</button>
+      </div>
+      <div class="feedback" id="${exPrefix}-fb-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+
+// Store data reference by prefix
+const prefixData = {};
+
+function checkAorAn(prefix, idx, answer, btn, level, scoreId) {
+  const item = prefixData[prefix][idx];
+  const box = document.getElementById(`${prefix}-q-${idx}`);
+  if (box.classList.contains('answered')) return;
+  box.classList.add('answered');
+
+  const btns = box.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(`${prefix}-fb-${idx}`);
+
+  const correct = answer === item.answer;
+  btn.classList.add(correct ? 'correct-btn' : 'wrong-btn');
+  if (!correct) btns.forEach(b => { if (b.textContent.toLowerCase() === item.answer) b.classList.add('correct-btn'); });
+
+  fb.className = `feedback show ${correct ? 'fb-ok' : 'fb-no'}`;
+  fb.innerHTML = correct
+    ? `✅ Correct! "${item.answer} ${item.word}" — ${item.answer === 'an' ? 'vowel sound!' : 'consonant sound!'}`
+    : `❌ Wrong. It's "<strong>${item.answer} ${item.word}</strong>". ${item.hint}`;
+
+  box.classList.add(correct ? 'correct' : 'incorrect');
+  recordAnswer(level, correct);
+
+  const total = prefixData[prefix].length;
+  const scored = [...document.querySelectorAll(`[id^="${prefix}-q-"]`)].filter(el => el.classList.contains('answered')).length;
+  const pts = [...document.querySelectorAll(`[id^="${prefix}-q-"]`)].filter(el => el.classList.contains('correct')).length;
+  document.getElementById(scoreId).textContent = `${pts} / ${total}`;
+}
+
+// Sort game
+let sortScores = {};
+let sortAnswered = {};
+
+function buildSortGame(data, bankId, aColId, anColId, scoreId, level) {
+  const bank = document.getElementById(bankId);
+  sortScores[bankId] = 0;
+  sortAnswered[bankId] = 0;
+  data.forEach((item, i) => {
+    const chip = document.createElement('div');
+    chip.className = 'word-chip';
+    chip.id = `sort-chip-${bankId}-${i}`;
+    chip.innerHTML = `${item.word} <small style="color:#888;font-size:.78rem;">(${item.ru})</small>`;
+    chip.onclick = () => openSortOptions(bankId, i, item, aColId, anColId, scoreId, level, chip);
+    bank.appendChild(chip);
+  });
+}
+
+function openSortOptions(bankId, i, item, aColId, anColId, scoreId, level, chip) {
+  if (chip.classList.contains('chip-ok')) return;
+  document.querySelectorAll('.sort-opt-row').forEach(el => el.remove());
+  const row = document.createElement('div');
+  row.className = 'sort-opt-row options';
+  row.style.cssText = 'margin-top:.5rem;';
+  row.innerHTML = `
+    <button class="opt-btn" onclick="doSort('${bankId}',${i},'a','${item.answer}','${item.word}','${item.ru}','${aColId}','${anColId}','${scoreId}',${level},this)">A</button>
+    <button class="opt-btn" onclick="doSort('${bankId}',${i},'an','${item.answer}','${item.word}','${item.ru}','${aColId}','${anColId}','${scoreId}',${level},this)">An</button>`;
+  chip.appendChild(row);
+}
+
+function doSort(bankId, i, chosen, correct, word, ru, aColId, anColId, scoreId, level, btn) {
+  const chip = document.getElementById(`sort-chip-${bankId}-${i}`);
+  const row = chip.querySelector('.sort-opt-row');
+  if (row) row.remove();
+
+  if (chosen === correct) {
+    chip.classList.add('chip-ok');
+    chip.onclick = null;
+    chip.innerHTML = `${word} ✅ <small style="color:#155724;font-size:.8rem;">Correct!</small>`;
+    sortScores[bankId]++;
+  } else {
+    chip.classList.add('chip-no');
+    chip.style.animation = 'shake .4s';
+    setTimeout(() => {
+      chip.classList.remove('chip-no');
+      chip.style.animation = '';
+      chip.innerHTML = `${word} <small style="color:#888;font-size:.78rem;">(${ru})</small>`;
+      chip.onclick = () => openSortOptions(bankId, i, {answer:correct}, aColId, anColId, scoreId, level, chip);
+    }, 900);
+    return; // don't count answered yet
+  }
+
+  sortAnswered[bankId]++;
+  document.getElementById(scoreId).textContent = `${sortScores[bankId]} / ${prefixData['ex2sort'].length}`;
+  recordAnswer(level, true);
+}
+
+// Andrew's House (multiple answers per sentence — accepts any one)
+let ex3Scores = 0;
+function buildEx3(data, containerId, scoreId, level) {
+  const container = document.getElementById(containerId);
+  data.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-box';
+    div.id = `ex3-q-${i}`;
+    const textWithBlank = q.text.replace(/___/g, `<span class="blank" id="ex3-blank-${i}">?</span>`);
+    div.innerHTML = `
+      <div class="q-text"><strong>${i+1}.</strong> ${textWithBlank}</div>
+      <p class="hint-txt">💡 ${q.hint}</p>
+      <div class="options">
+        ${['a','an','the','—'].map(o => `<button class="opt-btn" onclick="checkEx3(${i},'${o}',this,${level},'${scoreId}')">${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="ex3-fb-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+
+function checkEx3(idx, answer, btn, level, scoreId) {
+  const q = ex3Data[idx];
+  const box = document.getElementById(`ex3-q-${idx}`);
+  if (box.classList.contains('answered')) return;
+  box.classList.add('answered');
+
+  const btns = box.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const blank = document.getElementById(`ex3-blank-${idx}`);
+  const fb = document.getElementById(`ex3-fb-${idx}`);
+
+  blank.textContent = answer;
+  const correct = q.answers.includes(answer.toLowerCase());
+  btn.classList.add(correct ? 'correct-btn' : 'wrong-btn');
+
+  if (!correct) btns.forEach(b => { if (q.answers.includes(b.textContent.toLowerCase())) b.classList.add('correct-btn'); });
+
+  fb.className = `feedback show ${correct ? 'fb-ok' : 'fb-no'}`;
+  fb.innerHTML = correct
+    ? `✅ Correct! <em style="color:#555">${q.ru}</em>`
+    : `❌ Correct answer: <strong>${q.answers.join(' or ')}</strong>. <em style="color:#555">${q.ru}</em>`;
+
+  box.classList.add(correct ? 'correct' : 'incorrect');
+  ex3Scores += correct ? 1 : 0;
+  const total = ex3Data.length;
+  document.getElementById(scoreId).textContent = `${ex3Scores} / ${total}`;
+  recordAnswer(level, correct);
+}
+
+// Context exercise (generic)
+function buildContextEx(data, containerId, scoreId, level, prefix) {
+  prefixData[prefix] = data;
+  const container = document.getElementById(containerId);
+  data.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-box';
+    div.id = `${prefix}-q-${i}`;
+    div.innerHTML = `
+      <div class="q-text"><strong>${i+1}.</strong> ${q.text}</div>
+      <p class="hint-txt">💡 ${q.hint}</p>
+      <div class="options">
+        ${q.options.map(o => `<button class="opt-btn" onclick="checkContext('${prefix}',${i},'${o}',this,${level},'${scoreId}')">${o}</button>`).join('')}
+      </div>
+      <div class="feedback" id="${prefix}-fb-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+
+const contextScores = {};
+function checkContext(prefix, idx, answer, btn, level, scoreId) {
+  if (!contextScores[prefix]) contextScores[prefix] = 0;
+  const q = prefixData[prefix][idx];
+  const box = document.getElementById(`${prefix}-q-${idx}`);
+  if (box.classList.contains('answered')) return;
+  box.classList.add('answered');
+
+  const btns = box.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(`${prefix}-fb-${idx}`);
+
+  const correct = answer === q.answer;
+  btn.classList.add(correct ? 'correct-btn' : 'wrong-btn');
+  if (!correct) btns.forEach(b => { if (b.textContent === q.answer) b.classList.add('correct-btn'); });
+
+  fb.className = `feedback show ${correct ? 'fb-ok' : 'fb-no'}`;
+  fb.innerHTML = correct
+    ? `✅ Correct! <em>${q.ru}</em>`
+    : `❌ Correct: <strong>${q.answer}</strong>. <em>${q.ru}</em>`;
+
+  box.classList.add(correct ? 'correct' : 'incorrect');
+  if (correct) contextScores[prefix]++;
+  const scored = box.closest('[id$="-container"]').querySelectorAll('.answered').length;
+  document.getElementById(scoreId).textContent = `${contextScores[prefix]} / ${prefixData[prefix].length}`;
+  recordAnswer(level, correct);
+}
+
+// Fix mistakes (sentence choice)
+let ex6Scores = 0;
+function buildFixEx(data, containerId, scoreId, level) {
+  const container = document.getElementById(containerId);
+  data.forEach((q, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-box';
+    div.id = `ex6-q-${i}`;
+    const shuffled = [...q.options].sort(() => Math.random() - .5);
+    div.innerHTML = `
+      <div class="q-text"><strong>${i+1}.</strong> Which sentence is correct?</div>
+      <div class="options" style="flex-direction:column;align-items:stretch;">
+        ${shuffled.map(opt => `<button class="opt-btn" style="text-align:left;" onclick="checkFix(${i},'${opt.replace(/'/g,"\\'")}','${q.correct.replace(/'/g,"\\'")}',this,${level},'${scoreId}')">${opt}</button>`).join('')}
+      </div>
+      <div class="feedback" id="ex6-fb-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+
+function checkFix(idx, selected, correct, btn, level, scoreId) {
+  const q = ex6Data[idx];
+  const box = document.getElementById(`ex6-q-${idx}`);
+  if (box.classList.contains('answered')) return;
+  box.classList.add('answered');
+
+  const btns = box.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(`ex6-fb-${idx}`);
+
+  const isCorrect = selected === correct;
+  btn.classList.add(isCorrect ? 'correct-btn' : 'wrong-btn');
+  if (!isCorrect) btns.forEach(b => { if (b.textContent === correct) b.classList.add('correct-btn'); });
+
+  fb.className = `feedback show ${isCorrect ? 'fb-ok' : 'fb-no'}`;
+  fb.innerHTML = isCorrect
+    ? `✅ Correct! <em>${q.ru}</em>`
+    : `❌ Correct: "${correct}". <em>${q.ru}</em>`;
+
+  box.classList.add(isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) ex6Scores++;
+  document.getElementById(scoreId).textContent = `${ex6Scores} / ${ex6Data.length}`;
+  recordAnswer(level, isCorrect);
+}
+
+// Detective (pair: correct vs wrong)
+let ex7Scores = 0;
+function buildDetective(data, containerId, scoreId, level) {
+  const container = document.getElementById(containerId);
+  data.forEach((pair, i) => {
+    const div = document.createElement('div');
+    div.className = 'q-box';
+    div.id = `ex7-q-${i}`;
+    const opts = Math.random() > .5 ? [pair.correct, pair.wrong] : [pair.wrong, pair.correct];
+    div.innerHTML = `
+      <div class="q-text"><strong>${i+1}.</strong> Which sentence is correct?</div>
+      <div class="options" style="flex-direction:column;align-items:stretch;">
+        ${opts.map(opt => `<button class="opt-btn" style="text-align:left;" onclick="checkDetective(${i},'${opt.replace(/'/g,"\\'")}','${pair.correct.replace(/'/g,"\\'")}',this,${level},'${scoreId}')">${opt}</button>`).join('')}
+      </div>
+      <div class="feedback" id="ex7-fb-${i}"></div>`;
+    container.appendChild(div);
+  });
+}
+
+function checkDetective(idx, selected, correct, btn, level, scoreId) {
+  const pair = ex7Data[idx];
+  const box = document.getElementById(`ex7-q-${idx}`);
+  if (box.classList.contains('answered')) return;
+  box.classList.add('answered');
+
+  const btns = box.querySelectorAll('.opt-btn');
+  btns.forEach(b => b.disabled = true);
+  const fb = document.getElementById(`ex7-fb-${idx}`);
+
+  const isCorrect = selected === correct;
+  btn.classList.add(isCorrect ? 'correct-btn' : 'wrong-btn');
+  if (!isCorrect) btns.forEach(b => { if (b.textContent === correct) b.classList.add('correct-btn'); });
+
+  fb.className = `feedback show ${isCorrect ? 'fb-ok' : 'fb-no'}`;
+  fb.innerHTML = isCorrect
+    ? `✅ Great detective work! <em>${pair.ru}</em>`
+    : `❌ Correct: "${correct}". <em>${pair.ru}</em>`;
+
+  box.classList.add(isCorrect ? 'correct' : 'incorrect');
+  if (isCorrect) ex7Scores++;
+  document.getElementById(scoreId).textContent = `${ex7Scores} / ${ex7Data.length}`;
+  recordAnswer(level, isCorrect);
+}
+
+/* ══════════════════════════════════════════
+   INIT
+══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Level 1
+  prefixData['ex1'] = ex1Data;
+  buildClickExercise(ex1Data, 'ex1-container', 'score-ex1', 1, 'ex1');
+
+  prefixData['ex2sort'] = ex2Data;
+  buildSortGame(ex2Data, 'sort-word-bank', 'sort-col-a', 'sort-col-an', 'score-ex2', 1);
+
+  // Level 2
+  buildEx3(ex3Data, 'ex3-container', 'score-ex3', 2);
+  buildContextEx(ex4Data, 'ex4-container', 'score-ex4', 2, 'ex4ctx');
+
+  // Level 3
+  prefixData['ex5'] = ex5Data;
+  buildClickExercise(ex5Data, 'ex5-container', 'score-ex5', 3, 'ex5');
+  buildFixEx(ex6Data, 'ex6-container', 'score-ex6', 3);
+  buildDetective(ex7Data, 'ex7-container', 'score-ex7', 3);
+
+  // Init level cards
+  for (let l = 1; l <= 3; l++) updateLevelCard(l);
+  updateOverallProgress();
+});
+</script>
+</body>
+</html>
